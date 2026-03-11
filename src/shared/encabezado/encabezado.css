@@ -1,0 +1,89 @@
+.main-header {
+  width: 100%;
+  background: linear-gradient(135deg, #2c0a4c 0%, #450d80 100%);
+  color: whitesmoke;
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-bottom: 3px solid #6b46c1; /* Línea de acento */
+  box-sizing: border-box;
+}
+
+.header-content {
+  max-width: 1200px; /* Alineado con el ancho de tus tablas/formularios */
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+/* Círculo decorativo para el icono */
+.icon-circle {
+  background: rgba(255, 255, 255, 0.1);
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.icon-circle mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: #a78bfa;
+}
+
+.title-group h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.user-tag {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.clickable-logo {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.clickable-logo:hover {
+  opacity: 0.8; /* Efecto sutil de pulsado */
+}
+
+/* Ajustes Responsive */
+@media (max-width: 768px) {
+  .main-header {
+    padding: 1rem;
+  }
+
+  .subtitle {
+    display: none; /* Simplificamos en móvil */
+  }
+
+  .header-nav {
+    display: none;
+  }
+}

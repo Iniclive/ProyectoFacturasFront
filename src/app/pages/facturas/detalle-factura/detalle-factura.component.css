@@ -1,0 +1,166 @@
+/* --- CONFIGURACIÓN BASE (Móvil primero / Responsive) --- */
+
+.factura-card {
+  background: white;
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  margin: 0 auto;
+  /* Padding reducido para móviles */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.main-title {
+  font-size: 1.5rem; /* Más pequeño en móvil */
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #1a202c;
+  margin-bottom: 25px;
+}
+
+/* Auditoría: En móvil se apilan, en escritorio se alinean */
+.audit-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 0 5px;
+}
+
+.audit-item label {
+  display: block;
+  font-size: 0.85rem;
+  color: #718096;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.audit-item span {
+  font-size: 1rem;
+  color: #2d3748;
+  font-weight: 500;
+}
+
+/* Grid de Formulario: 1 columna por defecto */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin: 25px 0;
+}
+
+/* Fila de Número y Fecha: Se apilan en móvil */
+.row-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  grid-column: 1 / -1;
+}
+
+.row-group .campo {
+  flex: 1;
+}
+
+/* Totales */
+.totals-card {
+  background: #2d3748;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  color: #e2e8f0;
+}
+
+.amount-grand {
+  font-size: 1.5rem; /* Ajustado para móvil */
+  color: #48bb78;
+  font-weight: 800;
+}
+
+/* Acciones: Botones se ajustan al ancho en móvil */
+.form-actions {
+  display: flex;
+  flex-direction: column-reverse; /* Cancelar abajo, Guardar arriba en móvil */
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 20px;
+}
+
+/* --- ESTILOS PARA ESCRITORIO (Pantallas > 768px) --- */
+
+@media (min-width: 768px) {
+  .factura-card {
+    padding: 40px 50px; /* Recuperamos tus márgenes amplios */
+  }
+
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .audit-section {
+    flex-direction: row;
+    gap: 80px; /* Recuperamos tu separación de auditoría */
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr 1fr; /* Volvemos a las 2 columnas */
+    column-gap: 60px;
+    row-gap: 30px;
+  }
+
+  .row-group {
+    flex-direction: row;
+    gap: 60px;
+  }
+
+  .totals-card {
+    padding: 30px 45px;
+  }
+
+  .amount-grand {
+    font-size: 1.8rem;
+  }
+
+  .form-actions {
+    flex-direction: row; /* Botones en horizontal */
+    justify-content: flex-end;
+    gap: 15px;
+  }
+}
+
+/* --- OVERRIDES DE COMPONENTES (Se mantienen igual) --- */
+
+.campo label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.modern-input, .modern-select {
+  width: 100%;
+  height: 45px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.datepicker-flat { width: 100%; }
+::ng-deep .datepicker-flat .mat-mdc-form-field-subscript-wrapper { display: none; }
+::ng-deep .datepicker-flat .mat-mdc-text-field-wrapper {
+  height: 45px !important;
+  background-color: #ffffff !important;
+}

@@ -1,0 +1,104 @@
+<div class="page-container">
+  <div class="factura-card">
+    <header class="factura-header">
+      <h1 class="main-title">
+        <mat-icon>receipt_long</mat-icon>
+        {{ mostrarNumero() ? 'Factura: ' + factura().numeroFactura : 'Nueva Factura' }}
+      </h1>
+    </header>
+
+    <div class="factura-content">
+      <div class="audit-section">
+        <div class="audit-item">
+          <label>USUARIO</label>
+          <span>{{ factura().nombreUsuario || '---' }}</span>
+        </div>
+        <div class="audit-item">
+          <label>CREADO</label>
+          <span>{{ factura().creado | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="audit-item">
+          <label>MODIFICADO</label>
+          <span>{{ factura().modificado | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="row-group">
+          <div class="campo">
+            <label>Número de Factura</label>
+            <input
+              [(ngModel)]="factura().numeroFactura"
+              name="numeroFactura"
+              class="modern-input"
+            />
+          </div>
+
+          <div class="campo">
+            <label>Fecha de la Factura</label>
+            <mat-form-field appearance="outline" class="datepicker-flat">
+              <input
+                matInput
+                [matDatepicker]="picker"
+                [ngModel]="factura().fechaFactura"
+                (dateChange)="onFechaChange($event)"
+              />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row-group">
+          <div class="campo">
+            <label>Aseguradora</label>
+            <select [(ngModel)]="factura().aseguradora" class="modern-select">
+              <option [value]="0" disabled>Seleccione aseguradora</option>
+              @for (insurance of insurances(); track insurance.idInsurance) {
+                <option [value]="insurance.idInsurance">{{ insurance.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="campo">
+            <label>Tipo de IVA</label>
+            <select [(ngModel)]="factura().tipoIva" class="modern-select">
+              <option [value]="null" disabled>Seleccione IVA</option>
+              @for (iva of tiposIva(); track iva.valor) {
+                <option [value]="iva.valor">{{ iva.etiqueta }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="totals-card">
+        <div class="total-line">
+          <span class="label">Base Imponible</span>
+          <span class="amount">{{ (factura().importe || 0) | currency: 'EUR' }}</span>
+        </div>
+        <div class="total-line">
+          <span class="label">IVA ({{ factura().tipoIva || 0 }}%)</span>
+          <span class="amount">{{ (factura().importeIva || 0) | currency: 'EUR' }}</span>
+        </div>
+        <div class="total-line highlight">
+          <span class="label">TOTAL FACTURA</span>
+          <span class="amount-grand">{{ (factura().importeTotal || 0) | currency: 'EUR' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="form-actions">
+      <app-boton-propio
+        [texto]="'Cancelar'"
+        [color]="'#e74c3c'"
+        (pulsado)="cancelar()"
+      ></app-boton-propio>
+      <app-boton-propio
+        [texto]="estaGuardando() ? 'Guardando...' : 'Guardar Factura'"
+        [color]="'#27ae60'"
+        (pulsado)="guardarCabecera()"
+      >
+      </app-boton-propio>
+    </footer>
+  </div>
+</div>

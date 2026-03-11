@@ -1,0 +1,15 @@
+/* app.css */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.contenedor-principal {
+  flex: 1; /* Esto empuja al footer hacia abajo y deja espacio al contenido */
+  padding: 20px;
+}
+
+footer{
+margin-left: 3%;
+}

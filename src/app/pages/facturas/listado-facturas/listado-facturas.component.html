@@ -1,0 +1,64 @@
+<div class="page-container">
+  <div class="factura-card">
+
+    <header class="list-header">
+      <h1 class="main-title">
+        <mat-icon>format_list_bulleted</mat-icon>
+        LISTADO DE FACTURAS
+      </h1>
+
+      <app-boton-propio
+        [texto]="'Nueva Factura'"
+        [color]="'#27ae60'"
+        (pulsado)="editarFactura()">
+      </app-boton-propio>
+    </header>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Nº Factura</th>
+            <th>Aseguradora</th>
+            <th class="text-right">Importe</th>
+            <th class="text-right">IVA</th>
+            <th class="text-right">Total</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (factura of facturas(); track factura.idFactura) {
+            <tr>
+              <td class="bold">{{ factura.numeroFactura }}</td>
+              <td>{{ factura.nombreAseguradora }}</td>
+              <td class="text-right amount">{{ factura.importe | currency: 'EUR' }}</td>
+              <td class="text-right">{{ factura.tipoIva }}%</td>
+              <td class="text-right bold total-cell">
+                {{ factura.importeTotal | currency: 'EUR' }}
+              </td>
+              <td class="text-center actions-cell">
+                <app-boton-propio
+                  [texto]="'Editar'"
+                  [color]="'#2c3e50'"
+                  (pulsado)="editarFactura(factura.idFactura.toString())"
+                ></app-boton-propio>
+                <app-boton-propio
+                  [texto]="'Borrar'"
+                  [color]="'#e74c3c'">
+                </app-boton-propio>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">
+                <mat-icon>inbox</mat-icon>
+                <p>No hay facturas registradas en este momento.</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
