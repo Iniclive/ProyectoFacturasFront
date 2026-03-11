@@ -51,17 +51,31 @@
         <div class="row-group">
           <div class="campo">
             <label>Aseguradora</label>
-            <select [(ngModel)]="factura().aseguradora" class="modern-select">
+            <select
+              [ngModel]="factura().aseguradora"
+              class="modern-select"
+              (ngModelChange)="actualizarAseguradora($event)"
+            >
               <option [value]="0" disabled>Seleccione aseguradora</option>
               @for (insurance of insurances(); track insurance.idInsurance) {
                 <option [value]="insurance.idInsurance">{{ insurance.name }}</option>
               }
             </select>
           </div>
+          @if (mostrarErrorAseguradora()) {
+            <div class="error-text fade-in">
+              <mat-icon>error_outline</mat-icon>
+              Debe seleccionar una aseguradora
+            </div>
+          }
 
           <div class="campo">
             <label>Tipo de IVA</label>
-            <select [(ngModel)]="factura().tipoIva" class="modern-select">
+            <select
+              [ngModel]="factura().tipoIva"
+              (ngModelChange)="actualizarTipoIva($event)"
+              class="modern-select"
+            >
               <option [value]="null" disabled>Seleccione IVA</option>
               @for (iva of tiposIva(); track iva.valor) {
                 <option [value]="iva.valor">{{ iva.etiqueta }}</option>
@@ -73,16 +87,16 @@
 
       <div class="totals-card">
         <div class="total-line">
-          <span class="label">Base Imponible</span>
-          <span class="amount">{{ (factura().importe || 0) | currency: 'EUR' }}</span>
+          <span class="label">Importe</span>
+          <span class="amount">{{ factura().importe || 0 | currency: 'EUR' }}</span>
         </div>
         <div class="total-line">
           <span class="label">IVA ({{ factura().tipoIva || 0 }}%)</span>
-          <span class="amount">{{ (factura().importeIva || 0) | currency: 'EUR' }}</span>
+          <span class="amount">{{ factura().importeIva || 0 | currency: 'EUR' }}</span>
         </div>
         <div class="total-line highlight">
           <span class="label">TOTAL FACTURA</span>
-          <span class="amount-grand">{{ (factura().importeTotal || 0) | currency: 'EUR' }}</span>
+          <span class="amount-grand">{{ factura().importeTotal || 0 | currency: 'EUR' }}</span>
         </div>
       </div>
     </div>

@@ -67,7 +67,7 @@
 
 /* Totales */
 .totals-card {
-  background: #2d3748;
+  background: #fafafa;
   border-radius: 12px;
   padding: 20px;
   margin-top: 30px;
@@ -78,7 +78,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  color: #e2e8f0;
+  color: #000000;
 }
 
 .amount-grand {
@@ -163,4 +163,34 @@
 ::ng-deep .datepicker-flat .mat-mdc-text-field-wrapper {
   height: 45px !important;
   background-color: #ffffff !important;
+}
+.error-text {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-text mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+/* El borde rojo para el input */
+.input-error {
+  border-color: #e74c3c !important;
+  background-color: #fff5f5 !important;
+}
+
+/* Animación sutil */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

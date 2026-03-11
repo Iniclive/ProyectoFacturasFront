@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { mapearAFacturaCreate } from '../../../core/mappers/factura.mapper';
 
 @Component({
   standalone: true,
@@ -28,16 +30,13 @@ import { ActivatedRoute, Router } from '@angular/router';
     MatDatepickerModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './detalle-factura.component.html',
   styleUrl: './detalle-factura.component.css',
 })
 export class DetalleFacturaComponent implements OnInit {
 
-  abrirModalNuevaLinea() {
-    throw new Error('Method not implemented.');
-  }
   private readonly facturasService = inject(FacturasService);
   private readonly insuranceService = inject(InsuranceService);
   /*private readonly dialogRef = inject(MatDialogRef<DetalleFacturaComponent>);
@@ -47,63 +46,63 @@ export class DetalleFacturaComponent implements OnInit {
   tiposIva = signal(TIPOS_IVA_DEFAULT);
   insurances = this.insuranceService.insurances;
   private destroyRef = inject(DestroyRef);
-  factura = signal<Factura>({ ...FACTURA_INICIAL });
+  factura = this.facturasService.currentFactura;
   estaGuardando = signal(false);
   mostrarNumero = computed(() => this.factura().idFactura !== 'nueva');
+  formEnviado = signal(false);
+  aseguradoraTocada = signal(false);
+  aseguradoraValida = computed(() => {
+    const id = this.factura().aseguradora;
+    return id !== null && id !== 0;
+  });
+  mostrarErrorAseguradora = computed(() => {
+    return !this.aseguradoraValida() && (this.formEnviado() || this.aseguradoraTocada());
+  });
+  formularioEsValido = computed(() => this.aseguradoraValida()); //&& this.numeroFacturaValido()
 
   ngOnInit(): void {
-  const id = this.route.snapshot.paramMap.get('id');
-  if (id && id !== 'nueva') {
-    this.cargarDatos(id);
-  }
-  this.cargarInsurance();
+    const id = this.route.snapshot.paramMap.get('id');
+    this.facturasService.cargarFacturaId(id ?? 'nueva');
+    this.insuranceService.cargarInsurances();
   }
 
-  cargarDatos(id: string) {
-    this.facturasService.cargarFacturaId(id).subscribe((datos) => {
-      this.factura.set(datos);
-    });
-
-  }
 
   guardarCabecera() {
-    this.estaGuardando.set(true);
-    this.facturasService.guardarFactura(this.factura()).subscribe({
-      next: (facturaGuardada) => {
-        this.factura.set(facturaGuardada);
-        this.estaGuardando.set(false);
-        console.log('Cabecera guardada, ya puedes añadir líneas.');
-      },
-      error: () => this.estaGuardando.set(false),
-    });
-  }
-  cargarInsurance() {
-    this.insuranceService
-      .cargarInsurances()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (datos) => {
-          console.log('Se han cargado los datos de las Aseguradoras!', datos);
+    this.formEnviado.set(true);
+    if (this.formularioEsValido()) {
+      this.estaGuardando.set(true);
+      this.facturasService.guardarFactura(mapearAFacturaCreate(this.factura())).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+          this.router.navigate(['/facturas', this.factura().idFactura], { replaceUrl: true });
+          console.log('Cabecera guardada, ya puedes añadir líneas.');
         },
-        error: () => {
-          //this.error.set('Error al cargar las imagenes');
-        },
-        complete: () => {},
+        error: () => this.estaGuardando.set(false),
       });
+    } else {
+      console.error('Formulario inválido');
+    }
   }
 
   cancelar() {
-    // Cerramos el modal sin devolver datos
     this.router.navigate(['/facturas']);
   }
 
   onFechaChange(event: any) {
-  const fechaSeleccionada = event.value; // Esto es un objeto Date
-  if (fechaSeleccionada) {
-    // Convertimos a string ISO y actualizamos el signal
-    const fechaIso = fechaSeleccionada.toISOString();
-    this.factura.update(f => ({ ...f, fechaFactura: fechaIso }));
-    console.log("Nueva fecha guardada:", fechaIso);
+    const fechaSeleccionada = event.value;
+    if (fechaSeleccionada) {
+      this.facturasService.actualizarFacturaSeleccionada({
+        fechaFactura: fechaSeleccionada.toISOString()
+      });
+    }
+  }
+
+  actualizarAseguradora(id: number) {
+    this.facturasService.actualizarFacturaSeleccionada({ aseguradora: id });
+  }
+
+  actualizarTipoIva(valor: number | null) {
+    this.facturasService.actualizarFacturaSeleccionada({ tipoIva: valor });
   }
 }
-}
+

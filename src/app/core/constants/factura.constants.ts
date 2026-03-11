@@ -3,7 +3,7 @@ import { Factura } from '../models/factura.model';
 
 export const FACTURA_INICIAL: Factura = {
   // Identificadores (C# Int32 lo tratamos como string '0' por tu interfaz)
-  idFactura: '0',
+  idFactura: '',
   numeroFactura: '',
   fechaFactura: new Date().toISOString(), // Fecha de hoy por defecto
 

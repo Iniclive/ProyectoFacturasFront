@@ -21,6 +21,7 @@ export interface Factura {
   // Campos de la Vista (JOINs)
   nombreUsuario: string | null;
   nombreEstado: string | null;
+  nombreAseguradora?: string | null; // Para mostrar el nombre en la lista simple
 }
 
 
@@ -31,4 +32,15 @@ export interface FacturaSimple {
   importe: number;
   tipoIva: number;
   importeTotal: number;
+}
+
+export interface FacturaCreate {
+  numeroFactura: string | null;
+  fechaFactura: string;
+  aseguradora: number;
+  importe: number | null;
+  tipoIva: number | null;
+  importeIva: number | null;
+  importeTotal: number | null;
+  status: number;
 }
