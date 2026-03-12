@@ -8,3 +8,8 @@ export interface IvaItem {
   valor: number;
   etiqueta: string;
 }
+
+export interface Material{
+  idMaterial: number;
+  name: string;
+}

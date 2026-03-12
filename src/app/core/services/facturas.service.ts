@@ -75,6 +75,22 @@ export class FacturasService {
       ...cambios,
     }));
   }
+
+  eliminarFactura(idFac: string) {
+    const facturasPrevias = [...this.listaFacturasSimple()];
+    this.listaFacturasSimple.update((lista) => lista.filter((f) => String(f.idFactura) !== String(idFac)));
+
+    return this.httpClient
+      .delete(ENDPOINTS.FACTURA_POR_ID(idFac))
+      .pipe(
+        catchError((err) => {
+          this.listaFacturasSimple.set(facturasPrevias);
+          console.log(err);
+          return throwError(() => err);
+        }),
+      );
+
+  }
 }
 
 /*

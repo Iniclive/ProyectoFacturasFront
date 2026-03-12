@@ -1,16 +1,12 @@
 <div class="page-container">
   <div class="factura-card">
-
     <header class="list-header">
       <h1 class="main-title">
         <mat-icon>format_list_bulleted</mat-icon>
         LISTADO DE FACTURAS
       </h1>
 
-      <app-boton-propio
-        [texto]="'Nueva Factura'"
-        [color]="'#27ae60'"
-        (pulsado)="editarFactura()">
+      <app-boton-propio [texto]="'Nueva Factura'" [color]="'#27ae60'" (pulsado)="editarFactura()">
       </app-boton-propio>
     </header>
 
@@ -43,8 +39,13 @@
                   (pulsado)="editarFactura(factura.idFactura.toString())"
                 ></app-boton-propio>
                 <app-boton-propio
+                  appConfirm
+                  action="delete"
+                  [message]="'¿Estás seguro de que deseas eliminar la factura?'"
+                  (confirmed)="borrarfactura(factura.idFactura.toString())"
                   [texto]="'Borrar'"
-                  [color]="'#e74c3c'">
+                  [color]="'#e74c3c'"
+                >
                 </app-boton-propio>
               </td>
             </tr>
@@ -59,6 +60,5 @@
         </tbody>
       </table>
     </div>
-
   </div>
 </div>

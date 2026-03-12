@@ -1,0 +1,138 @@
+.dialog-container {
+  padding: 30px 40px;
+  min-width: 420px;
+  max-width: 520px;
+  box-sizing: border-box;
+}
+
+.dialog-header {
+  margin-bottom: 25px;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.campo label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.modern-input,
+.modern-select {
+  width: 100%;
+  height: 45px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #2d3748;
+}
+
+.modern-input:focus,
+.modern-select:focus {
+  outline: none;
+  border-color: #2c3e50;
+}
+
+.readonly-input {
+  background-color: #f8fafc !important;
+  color: #94a3b8 !important;
+  cursor: not-allowed;
+}
+
+/* Totales — mismo estilo que totals-card del detalle-factura */
+.totals-card {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.total-line .amount {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.total-line.highlight {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 8px;
+  padding-top: 12px;
+}
+
+.total-line.highlight .label {
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.amount-grand {
+  font-size: 1.3rem;
+  color: #48bb78;
+  font-weight: 800;
+}
+
+/* Errores — idéntico al detalle-factura */
+.input-error {
+  border-color: #e74c3c !important;
+  background-color: #fff5f5 !important;
+}
+
+.error-text {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-text mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Acciones — mismo patrón que form-actions del detalle-factura */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #e2e8f0;
+}

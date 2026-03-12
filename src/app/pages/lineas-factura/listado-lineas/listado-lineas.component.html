@@ -1,0 +1,61 @@
+<div class="lineas-container">
+  <header class="list-header">
+    <h2 class="section-title">
+      <mat-icon>receipt_long</mat-icon>
+      LÍNEAS DE FACTURA
+    </h2>
+    <app-boton-propio
+      [texto]="'Nueva Línea'"
+      [color]="'#27ae60'"
+      (pulsado)="abrirDialogLinea()">
+    </app-boton-propio>
+  </header>
+
+  <div class="table-responsive">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Material</th>
+          <th class="text-right">Cantidad</th>
+          <th class="text-right">Importe</th>
+          <th class="text-right">Total</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (linea of lineas(); track linea.idLineaFactura) {
+          <tr>
+            <td class="bold">{{ linea.nombreMaterial }}</td>
+            <td class="text-right">{{ linea.cantidad }}</td>
+            <td class="text-right amount">{{ linea.importe | currency: 'EUR' }}</td>
+            <td class="text-right bold total-cell">
+              {{ linea.importeTotal | currency: 'EUR' }}
+            </td>
+            <td class="actions-cell">
+              <app-boton-propio
+                [texto]="'Editar'"
+                [color]="'#2c3e50'"
+                (pulsado)="abrirDialogLinea(linea.idLineaFactura)"
+              ></app-boton-propio>
+              <app-boton-propio
+                appConfirm
+                action="delete"
+                [message]="'¿Estás seguro de que deseas eliminar la línea?'"
+                (confirmed)="borrarLinea(linea.idLineaFactura)"
+                [texto]="'Borrar'"
+                [color]="'#e74c3c'"
+              ></app-boton-propio>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <p>No hay líneas registradas en esta factura.</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

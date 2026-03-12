@@ -1,0 +1,85 @@
+<div class="dialog-container">
+  <header class="dialog-header">
+    <h2 class="dialog-title">
+      <mat-icon>receipt_long</mat-icon>
+      {{ data.idLinea ? 'Editar Línea' : 'Nueva Línea' }}
+    </h2>
+  </header>
+
+  <div class="form-grid">
+
+    <!-- Material -->
+    <div class="campo">
+      <label>Material</label>
+      <select
+        class="modern-select"
+        [class.input-error]="mostrarErrorMaterial()"
+        [ngModel]="linea().idMaterial"
+        (ngModelChange)="actualizarMaterial($event)">
+        <option [value]="0" disabled>Selecciona un material</option>
+        @for (material of materials(); track material.idMaterial) {
+          <option [value]="material.idMaterial">{{ material.name }}</option>
+        }
+      </select>
+      @if (mostrarErrorMaterial()) {
+        <span class="error-text">
+          <mat-icon>error_outline</mat-icon>
+          Selecciona un material
+        </span>
+      }
+    </div>
+
+    <!-- Cantidad -->
+    <div class="campo">
+      <label>Cantidad</label>
+      <input
+        class="modern-input"
+        type="number"
+        min="1"
+        [ngModel]="linea().cantidad"
+        (ngModelChange)="actualizarCantidad($event)"
+        placeholder="0"
+      />
+    </div>
+
+    <!-- Importe -->
+    <div class="campo">
+      <label>Importe (€)</label>
+      <input
+        class="modern-input"
+        type="number"
+        min="0"
+        step="0.01"
+        [ngModel]="linea().importe"
+        (ngModelChange)="actualizarImporte($event)"
+        placeholder="0.00"
+      />
+    </div>
+
+    <!-- Importe Total (readonly) -->
+    <div class="campo">
+      <label>Importe Total (€)</label>
+      <input
+        class="modern-input readonly-input"
+        type="number"
+        [ngModel]="linea().importeTotal"
+        readonly
+        placeholder="0.00"
+      />
+    </div>
+
+  </div>
+
+  <div class="dialog-actions">
+    <app-boton-propio
+      [texto]="'Cancelar'"
+      [color]="'#e74c3c'"
+      (pulsado)="cancelar()">
+    </app-boton-propio>
+    <app-boton-propio
+      [texto]="estaGuardando() ? 'Guardando...' : 'Guardar Línea'"
+      [color]="'#27ae60'"
+      (pulsado)="guardar()">
+    </app-boton-propio>
+  </div>
+</div>

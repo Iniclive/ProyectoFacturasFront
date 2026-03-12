@@ -1,0 +1,64 @@
+/* Eliminamos el padding por defecto de Material para controlarlo nosotros */
+:host {
+  display: block;
+  padding: 16px 24px;
+}
+
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center; /* Alinea icono y texto verticalmente */
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* El icono ahora tiene un tamaño consistente y color suave de fondo si quieres */
+.header-icon {
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h2[mat-dialog-title] {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}
+
+.dialog-content {
+  margin: 0 !important;
+  padding: 0 0 24px 0 !important; /* Espacio solo abajo para separar de botones */
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 1rem;
+  min-height: auto !important;
+}
+
+.dialog-actions {
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 8px;
+}
+
+/* Botones con bordes más redondeados para estilo moderno */
+button {
+  border-radius: 20px !important;
+  padding: 0 20px !important;
+  text-transform: none; /* Evita mayúsculas forzadas */
+}
+
+/* Ajuste responsive para móviles estrechos */
+@media (max-width: 400px) {
+  .dialog-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -3,7 +3,7 @@
     <header class="factura-header">
       <h1 class="main-title">
         <mat-icon>receipt_long</mat-icon>
-        {{ mostrarNumero() ? 'Factura: ' + factura().numeroFactura : 'Nueva Factura' }}
+        {{ isSaved() ? 'Editar Factura: ' + factura().numeroFactura : 'Crear Factura' }}
       </h1>
     </header>
 
@@ -103,9 +103,12 @@
 
     <footer class="form-actions">
       <app-boton-propio
+        appConfirm
+        [message]="'¿Quieres salir y descartar los cambios?'"
+        [action]="'custom'"
+        (confirmed)="cancelar()"
         [texto]="'Cancelar'"
         [color]="'#e74c3c'"
-        (pulsado)="cancelar()"
       ></app-boton-propio>
       <app-boton-propio
         [texto]="estaGuardando() ? 'Guardando...' : 'Guardar Factura'"
@@ -114,5 +117,9 @@
       >
       </app-boton-propio>
     </footer>
+    @if (isSaved()) {
+    <app-listado-lineas [idFactura]="+idRuta()"></app-listado-lineas>
+  }
   </div>
+
 </div>
