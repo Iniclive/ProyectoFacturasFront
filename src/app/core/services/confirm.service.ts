@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmDialogModel } from '../models/confirm-dialog.model';
-import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component/confirm-dialog.component';
 
 @Injectable({
   providedIn: 'root'

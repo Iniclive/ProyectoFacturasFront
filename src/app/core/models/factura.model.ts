@@ -1,3 +1,5 @@
+import { LineaFacturaCreate } from "./linea-factura.model";
+
 export interface Factura {
   // Identificadores y Claves
   idFactura: string; // En C# es Int32
@@ -43,4 +45,10 @@ export interface FacturaCreate {
   importeIva: number | null;
   importeTotal: number | null;
   status: number;
+}
+
+export interface FacturaLineasCreate {
+  idFactura: number;
+  lineas: LineaFacturaCreate[];
+  importeBase: number; // suma de todos los subtotales, calculado en front
 }

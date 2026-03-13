@@ -7,7 +7,7 @@
       </h1>
     </header>
 
-    <div class="factura-content">
+    <form #facturaForm="ngForm" (ngSubmit)="guardarCabecera()" class="factura-content">
       <div class="audit-section">
         <div class="audit-item">
           <label>USUARIO</label>
@@ -26,55 +26,66 @@
       <div class="form-grid">
         <div class="row-group">
           <div class="campo">
-            <label>Número de Factura</label>
+            <label for="numeroFactura">Número de Factura</label>
             <input
-              [(ngModel)]="factura().numeroFactura"
+              id="numeroFactura"
               name="numeroFactura"
+              [ngModel]="factura().numeroFactura"
+              (ngModelChange)="actualizarFactura({ numeroFactura: $event })"
               class="modern-input"
+              required
             />
           </div>
 
           <div class="campo">
-            <label>Fecha de la Factura</label>
+            <label for="fechaFactura">Fecha de la Factura</label>
             <mat-form-field appearance="outline" class="datepicker-flat">
               <input
+                id="fechaFactura"
+                name="fechaFactura"
                 matInput
                 [matDatepicker]="picker"
                 [ngModel]="factura().fechaFactura"
-                (dateChange)="onFechaChange($event)"
+                (dateChange)="onFechaChange($event.value)"
+                required
               />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
           </div>
         </div>
+
         <div class="row-group">
           <div class="campo">
-            <label>Aseguradora</label>
+            <label for="aseguradora">Aseguradora</label>
             <select
+              id="aseguradora"
+              name="aseguradora"
               [ngModel]="factura().aseguradora"
+              (ngModelChange)="actualizarFactura({ aseguradora: $event })"
               class="modern-select"
-              (ngModelChange)="actualizarAseguradora($event)"
+              required
             >
               <option [value]="0" disabled>Seleccione aseguradora</option>
               @for (insurance of insurances(); track insurance.idInsurance) {
                 <option [value]="insurance.idInsurance">{{ insurance.name }}</option>
               }
             </select>
+            <app-form-error
+              [mostrar]="mostrarErrorAseguradora()"
+              mensaje="Debe seleccionar una aseguradora"
+            />
           </div>
-          @if (mostrarErrorAseguradora()) {
-            <div class="error-text fade-in">
-              <mat-icon>error_outline</mat-icon>
-              Debe seleccionar una aseguradora
-            </div>
-          }
 
           <div class="campo">
-            <label>Tipo de IVA</label>
+            <label for="tipoIva">Tipo de IVA</label>
             <select
+              id="tipoIva"
+              name="tipoIva"
               [ngModel]="factura().tipoIva"
-              (ngModelChange)="actualizarTipoIva($event)"
+              (ngModelChange)="actualizarFactura({ tipoIva: $event })"
               class="modern-select"
+              required
             >
               <option [value]="null" disabled>Seleccione IVA</option>
               @for (iva of tiposIva(); track iva.valor) {
@@ -84,7 +95,6 @@
           </div>
         </div>
       </div>
-
       <div class="totals-card">
         <div class="total-line">
           <span class="label">Importe</span>
@@ -99,27 +109,29 @@
           <span class="amount-grand">{{ factura().importeTotal || 0 | currency: 'EUR' }}</span>
         </div>
       </div>
-    </div>
 
-    <footer class="form-actions">
-      <app-boton-propio
-        appConfirm
-        [message]="'¿Quieres salir y descartar los cambios?'"
-        [action]="'custom'"
-        (confirmed)="cancelar()"
-        [texto]="'Cancelar'"
-        [color]="'#e74c3c'"
-      ></app-boton-propio>
-      <app-boton-propio
-        [texto]="estaGuardando() ? 'Guardando...' : 'Guardar Factura'"
-        [color]="'#27ae60'"
-        (pulsado)="guardarCabecera()"
-      >
-      </app-boton-propio>
-    </footer>
+
+      <footer class="form-actions">
+        <app-boton-propio
+          appConfirm
+          [message]="'¿Quieres salir y descartar los cambios?'"
+          [action]="'custom'"
+          (confirmed)="cancelar()"
+          [texto]="'Cancelar'"
+          [tipoBoton]="'delete'"
+        ></app-boton-propio>
+        <app-boton-propio
+          [texto]="textoBoton()"
+          [color]="'#27ae60'"
+          tipoBoton="submit"
+          [disabled]="facturaForm.invalid || estaGuardando()"
+        >
+        </app-boton-propio>
+      </footer>
+    </form>
+
     @if (isSaved()) {
-    <app-listado-lineas [idFactura]="+idRuta()"></app-listado-lineas>
-  }
+      <app-listado-lineas [idFactura]="+idRuta()"></app-listado-lineas>
+    }
   </div>
-
 </div>

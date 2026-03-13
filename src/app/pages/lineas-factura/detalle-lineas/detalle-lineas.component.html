@@ -21,12 +21,7 @@
           <option [value]="material.idMaterial">{{ material.name }}</option>
         }
       </select>
-      @if (mostrarErrorMaterial()) {
-        <span class="error-text">
-          <mat-icon>error_outline</mat-icon>
-          Selecciona un material
-        </span>
-      }
+      <app-form-error [mostrar]="mostrarErrorMaterial()" mensaje="Selecciona un material" />
     </div>
 
     <!-- Cantidad -->
@@ -73,7 +68,7 @@
   <div class="dialog-actions">
     <app-boton-propio
       [texto]="'Cancelar'"
-      [color]="'#e74c3c'"
+      [tipoBoton]="'delete'"
       (pulsado)="cancelar()">
     </app-boton-propio>
     <app-boton-propio

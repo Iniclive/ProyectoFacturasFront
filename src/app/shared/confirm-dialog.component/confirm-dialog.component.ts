@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ConfirmDialogModel } from '../../app/core/models/confirm-dialog.model';
+import { ConfirmDialogModel } from '../../core/models/confirm-dialog.model';
+
 
 
 @Component({

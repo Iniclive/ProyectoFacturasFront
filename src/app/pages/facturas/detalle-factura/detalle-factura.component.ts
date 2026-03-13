@@ -12,10 +12,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FacturasService } from '../../../core/services/facturas.service';
 import { TIPOS_IVA_DEFAULT } from '../../../core/constants/factura.constants';
 import { FormsModule } from '@angular/forms';
-import { BotonPropio } from '../../../../shared/boton-propio/boton-propio';
+import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { InsuranceService } from '../../../core/services/insurance.service';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,8 +25,11 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { mapearAFacturaCreate } from '../../../core/mappers/factura.mapper';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
-import { map } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import { ListadoLineasComponent } from '../../lineas-factura/listado-lineas/listado-lineas.component';
+import { FormErrorComponent } from '../../../shared/form-error.component/form-error.component';
+import { Factura } from '../../../core/models/factura.model';
+import { FacturaStateService } from '../../../core/services/facturas-state.service';
 
 @Component({
   standalone: true,
@@ -34,16 +37,17 @@ import { ListadoLineasComponent } from '../../lineas-factura/listado-lineas/list
   imports: [
     MatDialogModule,
     FormsModule,
-    BotonPropio,
-    CurrencyPipe,
     DatePipe,
     FormsModule,
     MatDatepickerModule,
     MatInputModule,
+    CurrencyPipe,
     MatFormFieldModule,
     MatIconModule,
     ConfirmDirective,
     ListadoLineasComponent,
+    FormErrorComponent,
+    BotonPropioComponent,
   ],
   templateUrl: './detalle-factura.component.html',
   styleUrl: './detalle-factura.component.css',
@@ -51,6 +55,7 @@ import { ListadoLineasComponent } from '../../lineas-factura/listado-lineas/list
 export class DetalleFacturaComponent implements OnInit {
   private readonly facturasService = inject(FacturasService);
   private readonly insuranceService = inject(InsuranceService);
+  private readonly facturaState = inject(FacturaStateService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -58,10 +63,13 @@ export class DetalleFacturaComponent implements OnInit {
   // Señales de UI
   tiposIva = signal(TIPOS_IVA_DEFAULT);
   insurances = this.insuranceService.insurances;
-  factura = this.facturasService.currentFactura;
+  factura = this.facturaState.currentFactura;
   estaGuardando = signal(false);
   formEnviado = signal(false);
   aseguradoraTocada = signal(false);
+  textoBoton = computed(() =>
+    this.estaGuardando() ? 'Guardando...' : this.isSaved() ? 'Actualizar Factura' : 'Crear Factura',
+  );
 
   // ID de la ruta como signal, actualizable automáticamente
   idRuta = toSignal(
@@ -84,15 +92,15 @@ export class DetalleFacturaComponent implements OnInit {
   formularioEsValido = computed(() => this.aseguradoraValida());
 
   constructor() {
-    // Cada vez que cambie idRuta, se carga la factura correspondiente
-    effect(() => {
-      const id = this.idRuta();
-      this.facturasService.cargarFacturaId(id === 'nueva' ? 'nueva' : id);
-    });
+    toObservable(this.idRuta)
+      .pipe(
+        switchMap((id) => this.facturasService.cargarFacturaId(id)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   ngOnInit(): void {
-    // Cargar aseguradoras
     this.insuranceService.cargarInsurances();
   }
 
@@ -117,20 +125,11 @@ export class DetalleFacturaComponent implements OnInit {
     this.router.navigate(['/facturas']);
   }
 
-  onFechaChange(event: any) {
-    const fechaSeleccionada = event.value;
-    if (fechaSeleccionada) {
-      this.facturasService.actualizarFacturaSeleccionada({
-        fechaFactura: fechaSeleccionada.toISOString(),
-      });
-    }
+  onFechaChange(fecha: Date | null) {
+    if (fecha) this.actualizarFactura({ fechaFactura: fecha.toISOString() });
   }
 
-  actualizarAseguradora(id: number) {
-    this.facturasService.actualizarFacturaSeleccionada({ aseguradora: id });
-  }
-
-  actualizarTipoIva(valor: number | null) {
-    this.facturasService.actualizarFacturaSeleccionada({ tipoIva: valor });
+  actualizarFactura(cambios: Partial<Factura>) {
+    this.facturaState.actualizarFactura(cambios);
   }
 }

@@ -35,7 +35,7 @@
               <td class="text-center actions-cell">
                 <app-boton-propio
                   [texto]="'Editar'"
-                  [color]="'#2c3e50'"
+                  [tipoBoton]="'button'"
                   (pulsado)="editarFactura(factura.idFactura.toString())"
                 ></app-boton-propio>
                 <app-boton-propio
@@ -44,7 +44,7 @@
                   [message]="'¿Estás seguro de que deseas eliminar la factura?'"
                   (confirmed)="borrarfactura(factura.idFactura.toString())"
                   [texto]="'Borrar'"
-                  [color]="'#e74c3c'"
+                  [tipoBoton]="'delete'"
                 >
                 </app-boton-propio>
               </td>

@@ -34,7 +34,7 @@
             <td class="actions-cell">
               <app-boton-propio
                 [texto]="'Editar'"
-                [color]="'#2c3e50'"
+                [tipoBoton]="'button'"
                 (pulsado)="abrirDialogLinea(linea.idLineaFactura)"
               ></app-boton-propio>
               <app-boton-propio
@@ -43,7 +43,7 @@
                 [message]="'¿Estás seguro de que deseas eliminar la línea?'"
                 (confirmed)="borrarLinea(linea.idLineaFactura)"
                 [texto]="'Borrar'"
-                [color]="'#e74c3c'"
+                [tipoBoton]="'delete'"
               ></app-boton-propio>
             </td>
           </tr>

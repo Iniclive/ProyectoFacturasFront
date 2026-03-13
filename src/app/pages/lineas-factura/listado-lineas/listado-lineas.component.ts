@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BotonPropio } from '../../../../shared/boton-propio/boton-propio';
+import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -11,7 +11,7 @@ import { DetalleLineaComponent, DetalleLineaDialogData } from '../detalle-lineas
 
 @Component({
   selector: 'app-listado-lineas',
-  imports: [CurrencyPipe, BotonPropio, MatIconModule, MatDialogModule, ConfirmDirective],
+  imports: [CurrencyPipe, BotonPropioComponent, MatIconModule, MatDialogModule, ConfirmDirective],
   templateUrl: './listado-lineas.component.html',
   styleUrl: './listado-lineas.component.css',
   standalone: true,

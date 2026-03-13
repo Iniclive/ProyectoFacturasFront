@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FacturasService } from '../../../core/services/facturas.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BotonPropio } from '../../../../shared/boton-propio/boton-propio';
+import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
@@ -10,7 +10,7 @@ import { ConfirmDirective } from '../../../core/directives/app-confirm.directive
 
 @Component({
   selector: 'app-listado-facturas',
-  imports: [CurrencyPipe, BotonPropio, MatIconModule,ConfirmDirective],
+  imports: [CurrencyPipe, BotonPropioComponent, MatIconModule,ConfirmDirective],
   templateUrl: './listado-facturas.component.html',
   styleUrl: './listado-facturas.component.css',
   standalone: true,

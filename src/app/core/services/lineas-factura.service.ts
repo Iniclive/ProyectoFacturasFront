@@ -1,12 +1,13 @@
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, of, tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
-import { LineaFactura, LineaFacturaCreate, LineaSimple } from '../models/linea-factura.model';
+import { FacturaLineasUpdateDto, LineaFactura, LineaFacturaCreate, LineaSimple } from '../models/linea-factura.model';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LINEA_INICIAL } from '../constants/linea-factura.constants';
-import { mapearALineaSimple } from '../mappers/linea-factura.mapper';
+import { mapearAFacturaLineasUpdateDto, mapearALineaSimple } from '../mappers/linea-factura.mapper';
+import { LineaStateService } from './lineas-state.service';
 
 
 @Injectable({
@@ -21,10 +22,12 @@ export class LineasFacturaService {
 
   lineasSimple = this.listaLineasSimple.asReadonly();
   lineasCompleto = this.listaLineasCompleta.asReadonly();
-
+  lineaState = inject(LineaStateService);
   private lineaSeleccionada = signal<LineaFactura>({ ...LINEA_INICIAL });
   currentLinea = this.lineaSeleccionada.asReadonly();
-
+  importeBase = computed(() =>
+  this.lineasCompleto().reduce((acc, linea) => acc + linea.cantidad * linea.importe, 0)
+    );
   cargarLineasSimple(idFactura: string) {
     return this.httpClient.get<LineaSimple[]>(ENDPOINTS.LINEAS_SIMPLE(idFactura)).pipe(
       tap((lineas) => {
@@ -68,6 +71,21 @@ export class LineasFacturaService {
       }),
     );
   }
+  //Envia los cambios es todas las lineas a la vez, junto con el importe base
+guardarLineas(idFactura: number) {
+  const pendientes = this.lineaState.lineasPendientes();
+  if (pendientes.length === 0) return of(null);
+
+  const payload = mapearAFacturaLineasUpdateDto(
+    idFactura,
+    this.lineaState.importeBase(),
+    pendientes
+  );
+
+  return this.httpClient.put(ENDPOINTS.FACTURA_LINEAS(idFactura), payload).pipe(
+    tap(() => this.lineaState.confirmarGuardado())
+  );
+}
 
   actualizarLineaSeleccionada(cambios: Partial<LineaFactura>) {
     this.lineaSeleccionada.update((l) => ({

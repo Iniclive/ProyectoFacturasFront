@@ -2,10 +2,11 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { BotonPropio } from '../../../../shared/boton-propio/boton-propio';
+import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
 import { MaterialService } from '../../../core/services/materials.service';
 import { mapearALineaFacturaCreate } from '../../../core/mappers/linea-factura.mapper';
+import { FormErrorComponent } from "../../../shared/form-error.component/form-error.component";
 
 export interface DetalleLineaDialogData {
   idLinea: number | null;
@@ -15,7 +16,7 @@ export interface DetalleLineaDialogData {
 @Component({
   selector: 'app-detalle-linea',
   standalone: true,
-  imports: [MatDialogModule, FormsModule, MatIconModule, BotonPropio],
+  imports: [MatDialogModule, FormsModule, MatIconModule, FormErrorComponent, BotonPropioComponent],
   templateUrl: './detalle-lineas.component.html',
   styleUrl: './detalle-lineas.component.css',
 })

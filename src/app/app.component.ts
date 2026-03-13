@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from "@angular/router";
-import { Encabezado } from "../shared/encabezado/encabezado";
+import { Encabezado } from "./shared/encabezado/encabezado";
 
 @Component({
   selector: 'app-root',
