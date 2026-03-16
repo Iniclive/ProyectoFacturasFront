@@ -9,22 +9,18 @@ export interface LineaSimple {
   nombreMaterial: string;
 }
 
-// DTO para crear una línea individual — back calcula importeTotal
 export interface LineaFacturaCreate {
   idMaterial: number;
   idFactura: number;
   importe: number;
   cantidad: number;
+  nombreMaterial: string;   // necesario para mostrar en tabla antes de guardar
+  importeTotal: number;
 }
 
-// DTO para modificar una línea individual — con id obligatorio
-export interface LineaFacturaUpdate extends LineaFacturaCreate {
-  idLineaFactura: number;
-}
-
-// Modelo completo con auditoría — idLineaFactura opcional para líneas nuevas no persistidas
+// Modelo completo — idLineaFactura opcional para líneas nuevas no persistidas
 export interface LineaFactura {
-  idLineaFactura?: number;
+  idLineaFactura?: number;   // undefined = nueva, número = existente
   idFactura: number;
   idMaterial: number;
   importe: number;
@@ -37,32 +33,19 @@ export interface LineaFactura {
   nombreMaterial: string;
 }
 
-// DTO para envío en bloque — front no envía importeTotal, back lo calcula por línea
-export interface LineaFacturaBulkCreate {
-  idMaterial: number;
+// DTO que se envía al endpoint — el back recibe todo y hace el diff
+export interface FacturaUpdateDto {
   idFactura: number;
+  lineas: LineaFacturaDto[];
+}
+
+// Una línea en el DTO: id opcional (sin id = nueva para el back)
+export interface LineaFacturaDto {
+  idLineaFactura?: number;
+  idMaterial: number;
   importe: number;
   cantidad: number;
 }
-
-// DTO para modificar en bloque — igual que bulk create pero con id obligatorio
-export interface LineaFacturaBulkUpdate extends LineaFacturaBulkCreate {
-  idLineaFactura: number;
-}
-
-// DTO completo que se envía al endpoint bulk
-export interface FacturaLineasUpdateDto {
-  idFactura: number;
-  importeBase: number;        // calculado en front: suma de (importe * cantidad) de todas las líneas
-  nuevas: LineaFacturaBulkCreate[];
-  modificadas: LineaFacturaBulkUpdate[];
-  eliminadas: number[];       // solo los ids
-}
-
-// Tracking de estado para gestión reactiva en el front
-export type LineaEstado = 'nueva' | 'modificada' | 'eliminada' | 'sin_cambios';
-
-export interface LineaFacturaTracked {
-  datos: LineaFactura;
-  estado: LineaEstado;
+export interface LineaFacturaLocal extends LineaFactura {
+  _tempId: string;
 }

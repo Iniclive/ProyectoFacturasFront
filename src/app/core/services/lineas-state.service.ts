@@ -1,71 +1,57 @@
 import { computed, Injectable, signal } from "@angular/core";
-import { LineaEstado, LineaFactura, LineaFacturaCreate, LineaFacturaTracked } from "../models/linea-factura.model";
+import { LineaFactura, LineaFacturaCreate, LineaFacturaLocal} from "../models/linea-factura.model";
+import { LINEA_INICIAL } from "../constants/linea-factura.constants";
 
 @Injectable({ providedIn: 'root' })
 export class LineaStateService {
-  private lineasTracked = signal<LineaFacturaTracked[]>([]);
-
-  // Vista pública solo de los datos
-  lineas = computed(() =>
-  this.lineasTracked()
-    .filter(l => l.estado !== 'eliminada')
-    .map(l => l.datos)
-);
-
-  // Solo las líneas que hay que persistir
-  lineasPendientes = computed(() =>
-  this.lineasTracked().filter(l => l.estado !== 'sin_cambios')
-);
-
+  private _lineas = signal<LineaFacturaLocal[]>([]);
+  lineas = this._lineas.asReadonly();
+  private cargando = signal(false);
+  private error = signal<string | null>(null);
+  cargando$ = this.cargando.asReadonly();
+  error$ = this.error.asReadonly();
   importeBase = computed(() =>
-    this.lineas().reduce((acc, l) => acc + l.cantidad * l.importe, 0)
+    this._lineas().reduce((acc, l) => acc + l.cantidad * l.importe, 0)
   );
 
- hayPendientes = computed(() => this.lineasPendientes().length > 0);
-
-  // Carga inicial desde API — todas como sin_cambios
+  // Carga inicial desde API — asigna _tempId a cada línea
   setLineas(lineas: LineaFactura[]) {
-    this.lineasTracked.set(
-      lineas.map(l => ({ datos: l, estado: 'sin_cambios' }))
+    this._lineas.set(
+      lineas.map(l => ({ ...l, _tempId: crypto.randomUUID() }))
     );
   }
 
-  agregarLinea(linea: LineaFactura) {
-    this.lineasTracked.update(lista => [
-      ...lista,
-      { datos: linea, estado: 'nueva' }
-    ]);
+  agregarLinea(linea: LineaFacturaCreate) {
+    const nueva: LineaFacturaLocal = {
+      ...LINEA_INICIAL,
+      ...linea,
+      _tempId: crypto.randomUUID(),
+    };
+    this._lineas.update(lista => [...lista, nueva]);
   }
 
-  modificarLinea(index: number, cambios: Partial<LineaFacturaCreate>) {
-    this.lineasTracked.update(lista =>
-      lista.map((l, i) => {
-        if (i !== index) return l;
-        return {
-          datos: { ...l.datos, ...cambios },
-          // Si ya era nueva, sigue siendo nueva
-          estado: l.estado === 'nueva' ? 'nueva' : 'modificada'
-        };
-      })
+  modificarLinea(tempId: string, cambios: Partial<LineaFacturaCreate>) {
+    this._lineas.update(lista =>
+      lista.map(l => l._tempId === tempId ? { ...l, ...cambios } : l)
     );
   }
 
-  eliminarLinea(index: number) {
-  this.lineasTracked.update(lista =>
-    lista.map((l, i) => {
-      if (i !== index) return l;
-      // Si era nueva y aún no está en BD, simplemente la quitamos
-      if (l.estado === 'nueva') return null;
-      // Si ya existía en BD, la marcamos para borrar
-      return { ...l, estado: 'eliminada' as LineaEstado };
-    }).filter(Boolean) as LineaFacturaTracked[]
-  );
-}
-
-  // Tras guardar con éxito, resetea el estado de todas
-  confirmarGuardado() {
-    this.lineasTracked.update(lista =>
-      lista.map(l => ({ ...l, estado: 'sin_cambios' }))
+  eliminarLinea(tempId: string) {
+    this._lineas.update(lista =>
+      lista.filter(l => l._tempId !== tempId)
     );
+  }
+
+  // Tras guardar, recarga con los ids reales del back
+  setLineasTrasGuardado(lineas: LineaFactura[]) {
+    this.setLineas(lineas);
+  }
+
+  setCargando(valor: boolean) {
+    this.cargando.set(valor);
+  }
+
+  setError(mensaje: string | null) {
+    this.error.set(mensaje);
   }
 }

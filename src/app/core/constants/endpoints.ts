@@ -11,5 +11,5 @@ export const ENDPOINTS = {
   LINEAS_SIMPLE: (idFactura: string) => `${API_URL}/api/LineaSimple?idFactura=${idFactura}`,
   LINEA_POR_ID: (id: string) => `${API_URL}/api/LineasFactura/${id}`,
   MATERIALS: `${API_URL}/api/Material`,
-  FACTURA_LINEAS: (idFactura: number) => `${API_URL}/api/Facturas/${idFactura}/lineas`,
+  LINEAS_POR_FACTURA: (idFactura: number) => `${API_URL}/api/Facturas/${idFactura}/lineas`,
 };

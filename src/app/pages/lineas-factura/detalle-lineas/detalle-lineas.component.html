@@ -2,7 +2,7 @@
   <header class="dialog-header">
     <h2 class="dialog-title">
       <mat-icon>receipt_long</mat-icon>
-      {{ data.idLinea ? 'Editar Línea' : 'Nueva Línea' }}
+      {{ data.tempId ? 'Editar Línea' : 'Nueva Línea' }}
     </h2>
   </header>
 
@@ -15,7 +15,7 @@
         class="modern-select"
         [class.input-error]="mostrarErrorMaterial()"
         [ngModel]="linea().idMaterial"
-        (ngModelChange)="actualizarMaterial($event)">
+        (ngModelChange)="actualizarCampo({idMaterial: +$event})">
         <option [value]="0" disabled>Selecciona un material</option>
         @for (material of materials(); track material.idMaterial) {
           <option [value]="material.idMaterial">{{ material.name }}</option>
@@ -32,7 +32,7 @@
         type="number"
         min="1"
         [ngModel]="linea().cantidad"
-        (ngModelChange)="actualizarCantidad($event)"
+        (ngModelChange)="actualizarCampo({cantidad : +$event})"
         placeholder="0"
       />
     </div>
@@ -46,7 +46,7 @@
         min="0"
         step="0.01"
         [ngModel]="linea().importe"
-        (ngModelChange)="actualizarImporte($event)"
+        (ngModelChange)="actualizarCampo({importe: +$event})"
         placeholder="0.00"
       />
     </div>
@@ -57,7 +57,7 @@
       <input
         class="modern-input readonly-input"
         type="number"
-        [ngModel]="linea().importeTotal"
+        [ngModel]="importeTotal()"
         readonly
         placeholder="0.00"
       />
@@ -72,7 +72,7 @@
       (pulsado)="cancelar()">
     </app-boton-propio>
     <app-boton-propio
-      [texto]="estaGuardando() ? 'Guardando...' : 'Guardar Línea'"
+      [texto]="'Guardar Línea'"
       [color]="'#27ae60'"
       (pulsado)="guardar()">
     </app-boton-propio>

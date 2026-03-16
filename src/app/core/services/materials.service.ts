@@ -30,4 +30,8 @@ export class MaterialService {
       complete: () => {},
     });
   }
+  // materials.service.ts
+getNombre(idMaterial: number): string {
+  return this.materials().find(m => m.idMaterial === idMaterial)?.name ?? '';
+}
 }

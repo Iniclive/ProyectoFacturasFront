@@ -1,5 +1,4 @@
-import { FacturaLineasUpdateDto, LineaFactura, LineaFacturaBulkCreate, LineaFacturaBulkUpdate, LineaFacturaCreate, LineaFacturaTracked, LineaSimple } from '../models/linea-factura.model';
-
+import { LineaFactura, LineaFacturaCreate,  LineaSimple } from '../models/linea-factura.model';
 
 export function mapearALineaSimple(l: LineaFactura): LineaSimple {
   return {
@@ -17,42 +16,10 @@ export function mapearALineaFacturaCreate(l: LineaFactura): LineaFacturaCreate {
     idMaterial: l.idMaterial,
     importe: l.importe,
     cantidad: l.cantidad,
-  };
-}
-// mappers/linea-factura.mapper.ts
-
-export function mapearALineaFacturaBulkCreate(linea: LineaFactura): LineaFacturaBulkCreate {
-  return {
-    idMaterial: linea.idMaterial,
-    idFactura: linea.idFactura,
-    importe: linea.importe,
-    cantidad: linea.cantidad,
+    nombreMaterial: l.nombreMaterial,
+    importeTotal: l.importeTotal,
   };
 }
 
-export function mapearALineaFacturaBulkUpdate(linea: LineaFactura): LineaFacturaBulkUpdate {
-  return {
-    idLineaFactura: linea.idLineaFactura!,
-    ...mapearALineaFacturaBulkCreate(linea),
-  };
-}
 
-export function mapearAFacturaLineasUpdateDto(
-  idFactura: number,
-  importeBase: number,
-  pendientes: LineaFacturaTracked[]
-): FacturaLineasUpdateDto {
-  return {
-    idFactura,
-    importeBase,
-    nuevas: pendientes
-      .filter(l => l.estado === 'nueva')
-      .map(l => mapearALineaFacturaBulkCreate(l.datos)),
-    modificadas: pendientes
-      .filter(l => l.estado === 'modificada')
-      .map(l => mapearALineaFacturaBulkUpdate(l.datos)),
-    eliminadas: pendientes
-      .filter(l => l.estado === 'eliminada')
-      .map(l => l.datos.idLineaFactura!),
-  };
-}
+

@@ -35,13 +35,13 @@
               <app-boton-propio
                 [texto]="'Editar'"
                 [tipoBoton]="'button'"
-                (pulsado)="abrirDialogLinea(linea.idLineaFactura)"
+                (pulsado)="abrirDialogLinea(linea._tempId)"
               ></app-boton-propio>
               <app-boton-propio
                 appConfirm
                 action="delete"
                 [message]="'¿Estás seguro de que deseas eliminar la línea?'"
-                (confirmed)="borrarLinea(linea.idLineaFactura)"
+                (confirmed)="borrarLinea(linea._tempId)"
                 [texto]="'Borrar'"
                 [tipoBoton]="'delete'"
               ></app-boton-propio>

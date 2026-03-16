@@ -1,4 +1,4 @@
-import { LineaFacturaCreate } from "./linea-factura.model";
+import { LineaFactura, LineaFacturaCreate } from "./linea-factura.model";
 
 export interface Factura {
   // Identificadores y Claves
@@ -51,4 +51,9 @@ export interface FacturaLineasCreate {
   idFactura: number;
   lineas: LineaFacturaCreate[];
   importeBase: number; // suma de todos los subtotales, calculado en front
+}
+
+export interface FacturaUpdateResponseDto{
+  factura: Factura;
+  lineas : LineaFactura [];
 }

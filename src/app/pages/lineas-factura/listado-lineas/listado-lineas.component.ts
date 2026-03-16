@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, DestroyRef, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { DetalleLineaComponent, DetalleLineaDialogData } from '../detalle-lineas/detalle-lineas.component';
+import { LineaStateService } from '../../../core/services/lineas-state.service';
 
 @Component({
   selector: 'app-listado-lineas',
@@ -16,15 +17,17 @@ import { DetalleLineaComponent, DetalleLineaDialogData } from '../detalle-lineas
   styleUrl: './listado-lineas.component.css',
   standalone: true,
 })
-export class ListadoLineasComponent {
+export class ListadoLineasComponent implements OnInit {
   private readonly lineasService = inject(LineasFacturaService);
+  private readonly lineasState = inject(LineaStateService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
 
   idFactura = input.required<number>();
 
-  lineas = this.lineasService.lineasSimple;
-  error = signal('');
+  lineas = this.lineasState.lineas;
+  importeBase = this.lineasState.importeBase;
+  error = this.lineasState.error$; // error viene del state, no local
 
   ngOnInit() {
     this.cargarLineas();
@@ -32,34 +35,28 @@ export class ListadoLineasComponent {
 
   private cargarLineas() {
     this.lineasService
-      .cargarLineasSimple(String(this.idFactura()))
+      .cargarLineas(this.idFactura())
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (datos) => console.log('¡Líneas cargadas!', datos),
-        error: () => this.error.set('Error al cargar las líneas'),
-      });
+      .subscribe();  // el tap/catchError ya están en el servicio
   }
 
-  abrirDialogLinea(id?: number) {
+  abrirDialogLinea(tempId?: string) {
     const dialogRef = this.dialog.open(DetalleLineaComponent, {
-    width: '520px',
-    data: {
-      idLinea: id ?? null,
-      idFactura: this.idFactura()
-    } as DetalleLineaDialogData
-  });
+      width: '520px',
+      data: {
+        tempId: tempId ?? null,
+        idFactura: this.idFactura()
+      } as DetalleLineaDialogData
+    });
 
-  dialogRef.afterClosed().subscribe(resultado => {
-    if (resultado) this.cargarLineas();
-  });
-    console.log(id ? `Editando línea: ${id}` : 'Nueva línea');
-  }
-
-  borrarLinea(id: number) {
-    console.log('Intentando borrar la línea con id ' + id);
-    this.lineasService.eliminarLinea(String(id)).subscribe({
-      next: () => {},
-      error: (err) => console.error(err),
+    // Ya no recargamos desde API — el estado ya fue mutado en el diálogo
+    dialogRef.afterClosed().subscribe(resultado => {
+      if (resultado) console.log('Línea guardada en estado local');
     });
   }
+
+  borrarLinea(tempId: string) {
+    this.lineasState.eliminarLinea(tempId);
+  }
 }
+

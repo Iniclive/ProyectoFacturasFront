@@ -98,7 +98,7 @@
       <div class="totals-card">
         <div class="total-line">
           <span class="label">Importe</span>
-          <span class="amount">{{ factura().importe || 0 | currency: 'EUR' }}</span>
+          <span class="amount">{{ factura().importeBase || 0 | currency: 'EUR' }}</span>
         </div>
         <div class="total-line">
           <span class="label">IVA ({{ factura().tipoIva || 0 }}%)</span>
