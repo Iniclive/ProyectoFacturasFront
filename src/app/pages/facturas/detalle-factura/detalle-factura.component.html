@@ -83,7 +83,7 @@
               id="tipoIva"
               name="tipoIva"
               [ngModel]="factura().tipoIva"
-              (ngModelChange)="actualizarFactura({ tipoIva: $event })"
+              (ngModelChange)="actualizarFacturaIva({ tipoIva: $event })"
               class="modern-select"
               required
             >
@@ -114,7 +114,7 @@
       <footer class="form-actions">
         <app-boton-propio
           appConfirm
-          [message]="'¿Quieres salir y descartar los cambios?'"
+          [message]="'¿Quieres salir y descartar los cambios no guardados?'"
           [action]="'custom'"
           (confirmed)="cancelar()"
           [texto]="'Cancelar'"

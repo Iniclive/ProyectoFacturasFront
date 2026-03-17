@@ -1,109 +1,81 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of, tap, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
-import { FacturaLineasUpdateDto, LineaFactura, LineaFacturaCreate, LineaSimple } from '../models/linea-factura.model';
-
+import { LineaFactura, LineaFacturaCreate, LineaFacturaResponse, LineaFacturaUpdate } from '../models/linea-factura.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { LINEA_INICIAL } from '../constants/linea-factura.constants';
-import { mapearAFacturaLineasUpdateDto, mapearALineaSimple } from '../mappers/linea-factura.mapper';
 import { LineaStateService } from './lineas-state.service';
+import { FacturaStateService } from './facturas-state.service';
+import { FacturaResumen } from '../models/factura.model';
 
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class LineasFacturaService {
   private httpClient = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
+  private lineaState = inject(LineaStateService);
+  private facturaState = inject(FacturaStateService);
+  private _lineas = signal<LineaFactura[]>([]);
 
-  private listaLineasSimple = signal<LineaSimple[]>([]);
-  private listaLineasCompleta = signal<LineaFactura[]>([]);
-
-  lineasSimple = this.listaLineasSimple.asReadonly();
-  lineasCompleto = this.listaLineasCompleta.asReadonly();
-  lineaState = inject(LineaStateService);
-  private lineaSeleccionada = signal<LineaFactura>({ ...LINEA_INICIAL });
-  currentLinea = this.lineaSeleccionada.asReadonly();
+  lineas = this._lineas.asReadonly();
+  lineaSeleccionada = this.lineaState.lineaSeleccionada;
   importeBase = computed(() =>
-  this.lineasCompleto().reduce((acc, linea) => acc + linea.cantidad * linea.importe, 0)
-    );
-  cargarLineasSimple(idFactura: string) {
-    return this.httpClient.get<LineaSimple[]>(ENDPOINTS.LINEAS_SIMPLE(idFactura)).pipe(
-      tap((lineas) => {
-        this.listaLineasSimple.set(lineas);
-      }),
-      catchError((err) => {
-        console.error(err);
-        return throwError(() => new Error('Error en API'));
-      }),
+    this._lineas().reduce((acc, l) => acc + l.cantidad * l.importe, 0)
+  );
+
+  cargarLineas(idFactura: string) {
+    return this.httpClient.get<LineaFactura[]>(ENDPOINTS.LINEAS_FACTURA(idFactura)).pipe(
+      tap((lineas) => this._lineas.set(lineas)),
+      catchError((err) => throwError(() => err)),
       takeUntilDestroyed(this.destroyRef),
     );
   }
 
   cargarLineaId(id: string) {
     if (id === 'nueva') {
-      this.lineaSeleccionada.set({ ...LINEA_INICIAL });
+      this.lineaState.reset();
       return;
     }
-    return this.httpClient
-      .get<LineaFactura>(ENDPOINTS.LINEA_POR_ID(id))
-      .pipe(
-        catchError((err) => {
-          console.error(err);
-          return throwError(() => new Error('Error en API'));
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (datos) => {
-          console.log('¡Datos de línea cargados!', datos);
-          this.lineaSeleccionada.set(datos);
-        },
-      });
+    const linea = this._lineas().find((l) => String(l.idLineaFactura) === id);
+    if (linea) this.lineaState.seleccionar(linea);
+  }
+
+  actualizarLineaSeleccionada(cambios: Partial<LineaFactura>) {
+    this.lineaState.actualizar(cambios);
   }
 
   guardarLinea(linea: LineaFacturaCreate) {
-    return this.httpClient.post<LineaFactura>(ENDPOINTS.LINEAS, linea).pipe(
-      tap((nuevaLinea) => {
-        this.lineaSeleccionada.set(nuevaLinea);
-        this.listaLineasSimple.update((lista) => [mapearALineaSimple(nuevaLinea), ...lista]);
+    return this.httpClient.post<LineaFacturaResponse>(ENDPOINTS.LINEAS, linea).pipe(
+      tap((nueva) => {
+        this.lineaState.seleccionar(nueva.linea);
+        this._lineas.update((lista) => [nueva.linea, ...lista]);
+        this.facturaState.actualizarFactura(nueva.factura)
       }),
     );
   }
-  //Envia los cambios es todas las lineas a la vez, junto con el importe base
-guardarLineas(idFactura: number) {
-  const pendientes = this.lineaState.lineasPendientes();
-  if (pendientes.length === 0) return of(null);
 
-  const payload = mapearAFacturaLineasUpdateDto(
-    idFactura,
-    this.lineaState.importeBase(),
-    pendientes
-  );
-
-  return this.httpClient.put(ENDPOINTS.FACTURA_LINEAS(idFactura), payload).pipe(
-    tap(() => this.lineaState.confirmarGuardado())
-  );
-}
-
-  actualizarLineaSeleccionada(cambios: Partial<LineaFactura>) {
-    this.lineaSeleccionada.update((l) => ({
-      ...l,
-      ...cambios,
-    }));
+  actualizarLinea(linea: LineaFacturaUpdate) {
+    return this.httpClient.put<LineaFacturaResponse>(ENDPOINTS.LINEAS, linea).pipe(
+      tap((actualizada) => {
+        this._lineas.update((lista) =>
+          lista.map((l) => l.idLineaFactura === actualizada.linea.idLineaFactura ? actualizada.linea
+        : l)
+        );
+        this.facturaState.actualizarFactura(actualizada.factura)
+      }),
+    );
   }
 
-  eliminarLinea(idLinea: string) {
-    const lineasPrevias = [...this.listaLineasSimple()];
-    this.listaLineasSimple.update((lista) =>
-      lista.filter((l) => String(l.idLineaFactura) !== String(idLinea))
+  eliminarLinea(idLinea: number | undefined) {
+    const previas = this._lineas();
+    this._lineas.update((lista) =>
+      lista.filter((l) => l.idLineaFactura !== idLinea)
     );
-
-    return this.httpClient.delete(ENDPOINTS.LINEA_POR_ID(idLinea)).pipe(
+    return this.httpClient.delete<FacturaResumen>(ENDPOINTS.LINEA_POR_ID(idLinea)).pipe(
+      tap((actualizada) => {
+       this.facturaState.actualizarFactura(actualizada);
+      }),
       catchError((err) => {
-        this.listaLineasSimple.set(lineasPrevias);
-        console.log(err);
+        this._lineas.set(previas);
         return throwError(() => err);
       }),
     );

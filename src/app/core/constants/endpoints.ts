@@ -8,8 +8,8 @@ export const ENDPOINTS = {
   FACTURA_POR_ID: (id: string) => `${API_URL}/api/Facturas/${id}`,
   INSURANCES: `${API_URL}/api/Insurance`,
   LINEAS: `${API_URL}/api/LineasFactura`,
-  LINEAS_SIMPLE: (idFactura: string) => `${API_URL}/api/LineaSimple?idFactura=${idFactura}`,
-  LINEA_POR_ID: (id: string) => `${API_URL}/api/LineasFactura/${id}`,
+  LINEAS_FACTURA: (idFactura: string) => `${API_URL}/api/LineasFactura?idFactura=${idFactura}`,
+  LINEA_POR_ID: (id: number|undefined) => `${API_URL}/api/LineasFactura/${id}`,
   MATERIALS: `${API_URL}/api/Material`,
   FACTURA_LINEAS: (idFactura: number) => `${API_URL}/api/Facturas/${idFactura}/lineas`,
 };

@@ -40,15 +40,27 @@ export interface FacturaCreate {
   numeroFactura: string | null;
   fechaFactura: string;
   aseguradora: number;
-  importe: number | null;
   tipoIva: number | null;
-  importeIva: number | null;
-  importeTotal: number | null;
   status: number;
+}
+
+export interface FacturaUpdate extends FacturaCreate{
+idFactura: string;
+
 }
 
 export interface FacturaLineasCreate {
   idFactura: number;
   lineas: LineaFacturaCreate[];
   importeBase: number; // suma de todos los subtotales, calculado en front
+}
+
+
+export interface FacturaResumen{
+importe: number | null;
+importeIva: number | null;
+importeTotal: number | null;
+modificado: string;
+modificadoPor: number;
+
 }

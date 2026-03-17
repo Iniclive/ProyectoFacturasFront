@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
 import { MaterialService } from '../../../core/services/materials.service';
-import { mapearALineaFacturaCreate } from '../../../core/mappers/linea-factura.mapper';
+import { mapearALineaFacturaCreate, mapearALineaFacturaUpdate } from '../../../core/mappers/linea-factura.mapper';
 import { FormErrorComponent } from "../../../shared/form-error.component/form-error.component";
 
 export interface DetalleLineaDialogData {
@@ -27,7 +27,7 @@ export class DetalleLineaComponent implements OnInit {
   readonly data = inject<DetalleLineaDialogData>(MAT_DIALOG_DATA);
 
   materials = this.materialService.materials;
-  linea = this.lineasService.currentLinea;
+  linea = this.lineasService.lineaSeleccionada;
 
   estaGuardando = signal(false);
   formEnviado = signal(false);
@@ -39,6 +39,7 @@ export class DetalleLineaComponent implements OnInit {
 
   cantidadValida = computed(() => this.linea().cantidad > 0);
   importeValido = computed(() => this.linea().importe > 0);
+  importeTotalCalculado = computed(() => this.linea().cantidad * this.linea().importe);
 
   formularioEsValido = computed(() =>
     this.materialValido() && this.cantidadValida() && this.importeValido()
@@ -72,18 +73,30 @@ export class DetalleLineaComponent implements OnInit {
     if (!this.formularioEsValido()) return;
 
     this.estaGuardando.set(true);
-    const lineaCreate = {
-      ...mapearALineaFacturaCreate(this.linea()),
-      idFactura: this.data.idFactura,
-    };
+    const esEdicion = !!this.data.idLinea;
 
-    this.lineasService.guardarLinea(lineaCreate).subscribe({
-      next: () => {
-        this.estaGuardando.set(false);
-        this.dialogRef.close(true); // true = recargar lista
-      },
-      error: () => this.estaGuardando.set(false),
-    });
+    if (esEdicion) {
+      const lineaUpdate = mapearALineaFacturaUpdate(this.linea());
+      this.lineasService.actualizarLinea(lineaUpdate).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+          this.dialogRef.close(true);
+        },
+        error: () => this.estaGuardando.set(false),
+      });
+    } else {
+      const lineaCreate = {
+        ...mapearALineaFacturaCreate(this.linea()),
+        idFactura: this.data.idFactura,
+      };
+      this.lineasService.guardarLinea(lineaCreate).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+          this.dialogRef.close(true);
+        },
+        error: () => this.estaGuardando.set(false),
+      });
+    }
   }
 
   cancelar() {

@@ -1,4 +1,4 @@
-import { Injectable, signal } from "@angular/core";
+import { computed, Injectable, signal } from "@angular/core";
 import { Factura } from "../models/factura.model";
 import { FACTURA_INICIAL } from "../constants/factura.constants";
 
@@ -24,6 +24,20 @@ export class FacturaStateService {
 
   actualizarFactura(cambios: Partial<Factura>) {
     this.facturaSeleccionada.update((f) => ({ ...f, ...cambios }));
+  }
+
+  actualizarFacturaIva(cambios: Partial<Factura>) {
+    this.facturaSeleccionada.update((f) => {
+
+      const facturaActualizada = { ...f, ...cambios };
+      const base = facturaActualizada.importe || 0;
+      const tipo = facturaActualizada.tipoIva || 0;
+
+      facturaActualizada.importeIva = base * (tipo / 100);
+      facturaActualizada.importeTotal = base + facturaActualizada.importeIva;
+
+      return facturaActualizada;
+    });
   }
 
   setCargando(valor: boolean) {

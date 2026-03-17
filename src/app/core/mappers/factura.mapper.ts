@@ -1,13 +1,21 @@
-import { Factura, FacturaCreate, FacturaSimple } from "../models/factura.model";
+import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate } from "../models/factura.model";
 export function mapearAFacturaCreate(f: Factura): FacturaCreate {
   return {
     numeroFactura: f.numeroFactura,
     fechaFactura: f.fechaFactura,
     aseguradora: f.aseguradora,
-    importe: f.importe,
     tipoIva: f.tipoIva,
-    importeIva: f.importeIva,
-    importeTotal: f.importeTotal,
+    status: f.status
+  };
+}
+
+export function mapearAFacturaUpdate(f: Factura): FacturaUpdate {
+  return {
+    idFactura: f.idFactura,
+    numeroFactura: f.numeroFactura,
+    fechaFactura: f.fechaFactura,
+    aseguradora: f.aseguradora,
+    tipoIva: f.tipoIva,
     status: f.status
   };
 }

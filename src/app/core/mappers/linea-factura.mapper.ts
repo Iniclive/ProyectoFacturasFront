@@ -1,4 +1,4 @@
-import { FacturaLineasUpdateDto, LineaFactura, LineaFacturaBulkCreate, LineaFacturaBulkUpdate, LineaFacturaCreate, LineaFacturaTracked, LineaSimple } from '../models/linea-factura.model';
+import { FacturaLineasUpdateDto, LineaFactura, LineaFacturaBulkCreate, LineaFacturaBulkUpdate, LineaFacturaCreate, LineaFacturaTracked, LineaFacturaUpdate, LineaSimple } from '../models/linea-factura.model';
 
 
 export function mapearALineaSimple(l: LineaFactura): LineaSimple {
@@ -13,6 +13,16 @@ export function mapearALineaSimple(l: LineaFactura): LineaSimple {
 }
 export function mapearALineaFacturaCreate(l: LineaFactura): LineaFacturaCreate {
   return {
+    idFactura: l.idFactura,
+    idMaterial: l.idMaterial,
+    importe: l.importe,
+    cantidad: l.cantidad,
+  } as LineaFacturaCreate;
+}
+
+export function mapearALineaFacturaUpdate(l: LineaFactura): LineaFacturaUpdate {
+  return {
+    idLineaFactura: l.idLineaFactura!,
     idFactura: l.idFactura,
     idMaterial: l.idMaterial,
     importe: l.importe,

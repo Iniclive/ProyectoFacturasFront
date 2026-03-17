@@ -23,7 +23,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
-import { mapearAFacturaCreate } from '../../../core/mappers/factura.mapper';
+import { mapearAFacturaCreate, mapearAFacturaUpdate } from '../../../core/mappers/factura.mapper';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { map, switchMap } from 'rxjs';
 import { ListadoLineasComponent } from '../../lineas-factura/listado-lineas/listado-lineas.component';
@@ -71,6 +71,7 @@ export class DetalleFacturaComponent implements OnInit {
     this.estaGuardando() ? 'Guardando...' : this.isSaved() ? 'Actualizar Factura' : 'Crear Factura',
   );
 
+
   // ID de la ruta como signal, actualizable automáticamente
   idRuta = toSignal(
     this.route.paramMap.pipe(map((params: ParamMap) => params.get('id') ?? 'nueva')),
@@ -107,8 +108,9 @@ export class DetalleFacturaComponent implements OnInit {
   guardarCabecera() {
     this.formEnviado.set(true);
     if (this.formularioEsValido()) {
-      this.estaGuardando.set(true);
-      this.facturasService.guardarFactura(mapearAFacturaCreate(this.factura())).subscribe({
+      if(!this.isSaved()){
+        this.estaGuardando.set(true);
+        this.facturasService.guardarFactura(mapearAFacturaCreate(this.factura())).subscribe({
         next: () => {
           this.estaGuardando.set(false);
           this.router.navigate(['/facturas', this.factura().idFactura], { replaceUrl: true });
@@ -116,6 +118,18 @@ export class DetalleFacturaComponent implements OnInit {
         },
         error: () => this.estaGuardando.set(false),
       });
+      }
+      else{
+        this.estaGuardando.set(true);
+        this.facturasService.actualizarFactura(mapearAFacturaUpdate(this.factura())).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+          console.log('Se ha actualizado la factura');
+        },
+        error: () => this.estaGuardando.set(false),
+      });
+
+      }
     } else {
       console.error('Formulario inválido');
     }
@@ -131,5 +145,9 @@ export class DetalleFacturaComponent implements OnInit {
 
   actualizarFactura(cambios: Partial<Factura>) {
     this.facturaState.actualizarFactura(cambios);
+  }
+
+  actualizarFacturaIva(cambios: Partial<Factura>) {
+    this.facturaState.actualizarFacturaIva(cambios);
   }
 }

@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, of, switchMap, tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
-import { Factura, FacturaCreate, FacturaSimple } from '../models/factura.model';
+import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate } from '../models/factura.model';
 import { FACTURA_INICIAL } from '../constants/factura.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { mapearAFacturaSimple } from '../mappers/factura.mapper';
@@ -59,7 +59,16 @@ export class FacturasService {
       }),
     );
   }
-  
+
+  actualizarFactura(factura: FacturaUpdate) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURAS, factura).pipe(
+      tap((nuevaFactura) => {
+        this.estadoFactura.setFactura(nuevaFactura);
+        //this.listaFacturasSimple.update((lista) => [mapearAFacturaSimple(nuevaFactura), ...lista]);
+      }),
+    );
+  }
+
   eliminarFactura(idFac: string) {
     const facturasPrevias = [...this.listaFacturasSimple()];
     this.listaFacturasSimple.update((lista) => lista.filter((f) => String(f.idFactura) !== String(idFac)));

@@ -23,7 +23,7 @@ export class ListadoLineasComponent {
 
   idFactura = input.required<number>();
 
-  lineas = this.lineasService.lineasSimple;
+  lineas = this.lineasService.lineas;
   error = signal('');
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class ListadoLineasComponent {
 
   private cargarLineas() {
     this.lineasService
-      .cargarLineasSimple(String(this.idFactura()))
+      .cargarLineas(String(this.idFactura()))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (datos) => console.log('¡Líneas cargadas!', datos),
@@ -55,9 +55,9 @@ export class ListadoLineasComponent {
     console.log(id ? `Editando línea: ${id}` : 'Nueva línea');
   }
 
-  borrarLinea(id: number) {
+  borrarLinea(id?: number) {
     console.log('Intentando borrar la línea con id ' + id);
-    this.lineasService.eliminarLinea(String(id)).subscribe({
+    this.lineasService.eliminarLinea(id).subscribe({
       next: () => {},
       error: (err) => console.error(err),
     });

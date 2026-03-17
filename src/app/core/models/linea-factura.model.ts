@@ -1,5 +1,7 @@
 // models/linea-factura.model.ts
 
+import { FacturaResumen } from "./factura.model";
+
 export interface LineaSimple {
   idLineaFactura?: number;
   idFactura: number;
@@ -66,3 +68,9 @@ export interface LineaFacturaTracked {
   datos: LineaFactura;
   estado: LineaEstado;
 }
+
+export interface LineaFacturaResponse {
+  linea: LineaFactura;
+  factura: FacturaResumen;
+}
+
