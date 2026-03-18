@@ -22,6 +22,8 @@ import { Factura } from '../../../core/models/factura.model';
 import { FacturaStateService } from '../../../core/services/facturas-state.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { DisabledTooltipDirective } from '../../../core/directives/disabled-tooltip.directive';
+import { LoadingComponent } from "../../../shared/loading-component/loading-component";
+import { LoadingService } from '../../../core/services/loading.service';
 
 @Component({
   standalone: true,
@@ -40,8 +42,9 @@ import { DisabledTooltipDirective } from '../../../core/directives/disabled-tool
     ListadoLineasComponent,
     FormErrorComponent,
     BotonPropioComponent,
-    DisabledTooltipDirective
-  ],
+    DisabledTooltipDirective,
+    LoadingComponent
+],
   templateUrl: './detalle-factura.component.html',
   styleUrl: './detalle-factura.component.css',
 })
@@ -49,6 +52,7 @@ export class DetalleFacturaComponent implements OnInit {
   private readonly facturasService = inject(FacturasService);
   private readonly insuranceService = inject(InsuranceService);
   private readonly facturaState = inject(FacturaStateService);
+  private readonly loadingService = inject(LoadingService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -72,8 +76,6 @@ export class DetalleFacturaComponent implements OnInit {
     this.route.paramMap.pipe(map((params: ParamMap) => params.get('id') ?? 'nueva')),
     { initialValue: 'nueva' as string },
   );
-
-  isLoading = signal(this.idRuta() !== 'nueva');
 
   // Computeds derivados
   isSaved = computed(() => this.idRuta() !== 'nueva');
@@ -101,11 +103,11 @@ export class DetalleFacturaComponent implements OnInit {
     toObservable(this.idRuta)
       .pipe(
         tap(() => {
-        this.isLoading.set(true);
+        this.loadingService.show();
         this.formEnviado.set(false); // reset del estado del form también
       }),
       switchMap((id) => this.facturasService.cargarFacturaId(id)),
-      tap(() => this.isLoading.set(false)),
+      tap(() => this.loadingService.hide()),
       takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();

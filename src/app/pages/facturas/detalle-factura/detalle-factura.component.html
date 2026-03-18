@@ -1,5 +1,6 @@
 <div class="page-container">
-  <div class="factura-card">
+<app-loading-component>
+  <div class="factura-card" >
     <header class="factura-header">
       <h1 class="main-title">
         <mat-icon>receipt_long</mat-icon>
@@ -142,4 +143,5 @@
       <app-listado-lineas [idFactura]="+idRuta()"></app-listado-lineas>
     }
   </div>
+</app-loading-component>
 </div>

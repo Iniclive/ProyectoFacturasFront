@@ -1,0 +1,10 @@
+<div class="wrapper">
+      @if (loadingService.isLoading()) {
+        <div class="loading-overlay">
+          <mat-spinner diameter="48" />
+        </div>
+      }
+      <div [class.hidden]="loadingService.isLoading()">
+        <ng-content />
+      </div>
+    </div>
