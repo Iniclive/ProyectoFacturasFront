@@ -40,6 +40,7 @@ export interface FacturaCreate {
   numeroFactura: string | null;
   fechaFactura: string;
   aseguradora: number;
+  importe: number|null;
   tipoIva: number | null;
   status: number;
 }

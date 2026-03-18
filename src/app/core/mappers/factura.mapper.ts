@@ -4,6 +4,7 @@ export function mapearAFacturaCreate(f: Factura): FacturaCreate {
     numeroFactura: f.numeroFactura,
     fechaFactura: f.fechaFactura,
     aseguradora: f.aseguradora,
+    importe: f.importe,
     tipoIva: f.tipoIva,
     status: f.status
   };
@@ -15,6 +16,7 @@ export function mapearAFacturaUpdate(f: Factura): FacturaUpdate {
     numeroFactura: f.numeroFactura,
     fechaFactura: f.fechaFactura,
     aseguradora: f.aseguradora,
+    importe: f.importe,
     tipoIva: f.tipoIva,
     status: f.status
   };

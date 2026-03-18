@@ -35,6 +35,10 @@
               class="modern-input"
               required
             />
+            <app-form-error
+              [mostrar]="mostrarErrorNumeroFactura()"
+              mensaje="Debe ingresar un número de factura válido"
+            />
           </div>
 
           <div class="campo">
@@ -114,17 +118,21 @@
       <footer class="form-actions">
         <app-boton-propio
           appConfirm
+          [enabled]="facturaActualizada()"
           [message]="'¿Quieres salir y descartar los cambios no guardados?'"
           [action]="'custom'"
+          [title]="''"
           (confirmed)="cancelar()"
           [texto]="'Cancelar'"
-          [tipoBoton]="'delete'"
+          [tipo]="'button'"
+          [variante]="'danger'"
         ></app-boton-propio>
         <app-boton-propio
           [texto]="textoBoton()"
           [color]="'#27ae60'"
-          tipoBoton="submit"
-          [disabled]="facturaForm.invalid || estaGuardando()"
+          [tipo]="'submit'"
+          [disabled]="estaGuardando() || !facturaActualizada() || !formularioEsValido()"
+          [disabledTooltip]="tooltipGuardar()"
         >
         </app-boton-propio>
       </footer>

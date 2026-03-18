@@ -13,10 +13,18 @@ export class ConfirmDirective {
   action = input<ConfirmAction>('delete');
   message = input<string>();
   title = input<string>();
+  enabled = input<boolean>(true);
   confirmed = output<void>();
 
   @HostListener('click')
   async onClick() {
+
+    // Si está deshabilitado, emite directamente sin mostrar modal
+    if (!this.enabled()) {
+      this.confirmed.emit();
+      return;
+    }
+
     let ok = false;
 
     switch (this.action()) {

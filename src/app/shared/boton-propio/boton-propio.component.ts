@@ -1,22 +1,28 @@
 import { Component, input, computed, output } from '@angular/core';
 
 // Definimos los colores por defecto para cada propósito
-const COLORES_POR_DEFECTO: Record<string, string> = {
-  submit: '#27ae60', // Verde
-  button: '#3498db', // Azul
-  delete: '#e74c3c',  // Rojo
-  cancelar: '#95a5a6' // Gris
+const COLORES_POR_VARIANTE: Record<string, string> = {
+  primary: '#3498db',
+  success: '#27ae60',
+  danger: '#e74c3c',
+  neutral: '#95a5a6'
 };
 
 @Component({
   selector: 'app-boton-propio',
   standalone: true,
   templateUrl: './boton-propio.component.html',
-  styleUrls: ['./boton-propio.component.css']
+  styleUrls: ['./boton-propio.component.css'],
+  host: {
+    // Propaga disabled al elemento host para que la directiva lo detecte
+    '[attr.disabled]': 'disabled() || null',
+    '[attr.aria-disabled]': 'disabled()',
+  }
 })
 export class BotonPropioComponent {
   texto = input.required<string>();
-  tipoBoton = input<'button' | 'submit' | 'delete'>('button');
+  tipo = input<'button' | 'submit' | 'reset'>('button');
+  variante = input<'primary' | 'success' | 'danger' | 'neutral'>('primary');
   disabled = input<boolean>(false);
 
   // Hacemos el color opcional. Si no se provee, será undefined
@@ -28,7 +34,7 @@ export class BotonPropioComponent {
     if (this.colorPersonalizado()) {
       return this.colorPersonalizado();
     }
-    return COLORES_POR_DEFECTO[this.tipoBoton()] || COLORES_POR_DEFECTO['button'];
+    return COLORES_POR_VARIANTE[this.variante()] || COLORES_POR_VARIANTE['primary'];
   });
 
   pulsado = output<Event>();

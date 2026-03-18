@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, switchMap, tap, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
 import { Insurance } from '../models/catalogos.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

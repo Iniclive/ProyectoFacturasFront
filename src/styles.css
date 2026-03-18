@@ -1,1 +1,57 @@
-/* You can add global styles to this file, and also import other style files */
+.custom-toast-panel {
+  /* 1. Quitamos el fondo oscuro y la sombra de la superficie de Material */
+  .mdc-snackbar__surface {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* 2. Quitamos el padding interno que Material le pone al texto por defecto */
+  .mdc-snackbar__label {
+    padding: 0 !important;
+  }
+
+  /* 3. Aseguramos que el contenedor general no restrinja el tamaño de nuestro componente */
+  .mat-mdc-snack-bar-container {
+    margin: 16px !important;
+  }
+}
+.disabled-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1000;
+
+  .tooltip-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      flex-shrink: 0;
+    }
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 4px;
+      margin-bottom: 2px;
+    }
+  }
+
+
+}

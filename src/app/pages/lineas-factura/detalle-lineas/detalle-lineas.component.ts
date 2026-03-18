@@ -5,8 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
 import { MaterialService } from '../../../core/services/materials.service';
-import { mapearALineaFacturaCreate, mapearALineaFacturaUpdate } from '../../../core/mappers/linea-factura.mapper';
-import { FormErrorComponent } from "../../../shared/form-error.component/form-error.component";
+import {
+  mapearALineaFacturaCreate,
+  mapearALineaFacturaUpdate,
+} from '../../../core/mappers/linea-factura.mapper';
+import { FormErrorComponent } from '../../../shared/form-error.component/form-error.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 export interface DetalleLineaDialogData {
   idLinea: number | null;
@@ -24,6 +28,7 @@ export class DetalleLineaComponent implements OnInit {
   private readonly lineasService = inject(LineasFacturaService);
   private readonly materialService = inject(MaterialService);
   private readonly dialogRef = inject(MatDialogRef<DetalleLineaComponent>);
+  private toastService = inject(ToastService);
   readonly data = inject<DetalleLineaDialogData>(MAT_DIALOG_DATA);
 
   materials = this.materialService.materials;
@@ -41,19 +46,17 @@ export class DetalleLineaComponent implements OnInit {
   importeValido = computed(() => this.linea().importe > 0);
   importeTotalCalculado = computed(() => this.linea().cantidad * this.linea().importe);
 
-  formularioEsValido = computed(() =>
-    this.materialValido() && this.cantidadValida() && this.importeValido()
+  formularioEsValido = computed(
+    () => this.materialValido() && this.cantidadValida() && this.importeValido(),
   );
 
-  mostrarErrorMaterial = computed(() =>
-    !this.materialValido() && this.formEnviado()
-  );
+  mostrarErrorMaterial = computed(() => !this.materialValido() && this.formEnviado());
+  mostrarErrorImporte = computed(() => !this.importeValido() && this.formEnviado());
+  mostrarErrorCantidad = computed(() => !this.cantidadValida() && this.formEnviado());
 
   ngOnInit(): void {
     this.materialService.cargarMateriales();
-    this.lineasService.cargarLineaId(
-      this.data.idLinea ? String(this.data.idLinea) : 'nueva'
-    );
+    this.lineasService.cargarLineaId(this.data.idLinea ? String(this.data.idLinea) : 'nueva');
   }
 
   actualizarMaterial(id: number) {
@@ -81,8 +84,15 @@ export class DetalleLineaComponent implements OnInit {
         next: () => {
           this.estaGuardando.set(false);
           this.dialogRef.close(true);
+          this.toastService.mostrar({
+            texto: 'Se ha actualizado la linea correctamente',
+            tipoToast: 'submit',
+          });
         },
-        error: () => this.estaGuardando.set(false),
+        error: () => {
+          this.estaGuardando.set(false);
+          this.toastService.mostrar({ texto: 'Error al actualizar la linea', tipoToast: 'delete' });
+        },
       });
     } else {
       const lineaCreate = {
@@ -93,8 +103,15 @@ export class DetalleLineaComponent implements OnInit {
         next: () => {
           this.estaGuardando.set(false);
           this.dialogRef.close(true);
+          this.toastService.mostrar({
+            texto: 'Se ha agregado la linea correctamente',
+            tipoToast: 'submit',
+          });
         },
-        error: () => this.estaGuardando.set(false),
+        error: () => {
+          this.estaGuardando.set(false);
+          this.toastService.mostrar({ texto: 'Error al agregar la linea', tipoToast: 'delete' });
+        },
       });
     }
   }

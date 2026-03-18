@@ -1,0 +1,53 @@
+.custom-toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px; /* Un poco más estilizado */
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 320px;
+  /* 1. Separación del texto principal respecto al botón */
+  gap: 24px;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1; /* Esto asegura que el contenido ocupe el espacio y empuje al botón */
+}
+
+.message {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+
+  /* 2. Más opaco (menos visible) por defecto */
+  opacity: 0.5;
+  transition: opacity 0.2s ease; /* Transición suave */
+
+  &:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1); /* Ligero feedback al pasar el mouse */
+    border-radius: 50%;
+  }
+
+  /* 3. Icono más pequeño */
+  mat-icon {
+    font-size: 16px; /* 16px suele ser el mínimo para que se lea bien la 'X' */
+    width: 16px;
+    height: 16px;
+  }
+}

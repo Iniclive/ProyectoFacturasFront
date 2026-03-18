@@ -6,7 +6,7 @@
         LISTADO DE FACTURAS
       </h1>
 
-      <app-boton-propio [texto]="'Nueva Factura'" [color]="'#27ae60'" (pulsado)="editarFactura()">
+      <app-boton-propio [texto]="'Nueva Factura'" [variante]="'success'" (pulsado)="editarFactura()">
       </app-boton-propio>
     </header>
 
@@ -35,7 +35,6 @@
               <td class="text-center actions-cell">
                 <app-boton-propio
                   [texto]="'Editar'"
-                  [tipoBoton]="'button'"
                   (pulsado)="editarFactura(factura.idFactura.toString())"
                 ></app-boton-propio>
                 <app-boton-propio
@@ -44,7 +43,7 @@
                   [message]="'¿Estás seguro de que deseas eliminar la factura?'"
                   (confirmed)="borrarfactura(factura.idFactura.toString())"
                   [texto]="'Borrar'"
-                  [tipoBoton]="'delete'"
+                  [variante]="'danger'"
                 >
                 </app-boton-propio>
               </td>

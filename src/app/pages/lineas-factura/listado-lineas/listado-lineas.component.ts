@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { DetalleLineaComponent, DetalleLineaDialogData } from '../detalle-lineas/detalle-lineas.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-listado-lineas',
@@ -20,6 +21,7 @@ export class ListadoLineasComponent {
   private readonly lineasService = inject(LineasFacturaService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
 
   idFactura = input.required<number>();
 
@@ -58,7 +60,10 @@ export class ListadoLineasComponent {
   borrarLinea(id?: number) {
     console.log('Intentando borrar la línea con id ' + id);
     this.lineasService.eliminarLinea(id).subscribe({
-      next: () => {},
+      next: () => this.toastService.mostrar({
+            texto: 'Se ha eliminado la linea correctamente',
+            tipoToast: 'submit',
+          }),
       error: (err) => console.error(err),
     });
   }

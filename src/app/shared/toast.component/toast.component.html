@@ -1,0 +1,9 @@
+<div class="custom-toast" [style.background-color]="config.color">
+      <div class="content">
+        <mat-icon>{{ config.icon }}</mat-icon>
+        <span class="message">{{ data.texto }}</span>
+      </div>
+      <button class="close-btn" (click)="snackBarRef.dismiss()">
+        <mat-icon>close</mat-icon>
+      </button>
+</div>

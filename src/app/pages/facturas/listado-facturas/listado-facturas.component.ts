@@ -6,6 +6,7 @@ import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
+import { ToastService } from '../../../core/services/toast.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class ListadoFacturasComponent {
   facturas = this.facturasService.facturasSimple;
   error = signal('');
   private destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
 
   ngOnInit() {
     this.facturasService
@@ -51,8 +53,10 @@ export class ListadoFacturasComponent {
       console.log("Intentando borrar la factura con id " + id)
       this.facturasService.eliminarFactura(id).subscribe({
     next: () => {
+      this.toastService.mostrar({texto: 'Se ha eliminado la factura correctamente', tipoToast: 'submit'})
     },
-    error: (err) => {
+    error: () => {
+      this.toastService.mostrar({texto: 'Error al eliminar la factura', tipoToast: 'delete'});
     }
   });
     }

@@ -1,9 +1,10 @@
 <button
-  [type]="tipoBoton()"
+  [type]="tipo()"
   [disabled]="disabled()"
   [style.backgroundColor]="disabled() ? '#bdc3c7' : colorFinal()"
   (click)="manejarClick($event)"
   class="mi-boton-base"
 >
   {{ texto() }}
+  
 </button>

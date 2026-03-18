@@ -1,10 +1,10 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, of,  tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
 import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate } from '../models/factura.model';
 import { FACTURA_INICIAL } from '../constants/factura.constants';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { mapearAFacturaSimple } from '../mappers/factura.mapper';
 import { FacturaStateService } from './facturas-state.service';
 //import { ErrorService } from '../compartido/compartido/error.service';
