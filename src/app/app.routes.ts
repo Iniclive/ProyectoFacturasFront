@@ -1,15 +1,18 @@
 import { Routes } from '@angular/router';
-
-// Importamos los componentes con sus nuevos nombres/rutas
-// Ajusta la ruta relativa './features/...' según dónde los hayas movido finalmente
 import { ListadoFacturasComponent } from './pages/facturas/listado-facturas/listado-facturas.component';
 import { DetalleFacturaComponent } from './pages/facturas/detalle-factura/detalle-factura.component';
+import { LoginComponent } from './pages/auth/login/login.component';
+import { RegistroComponent } from './pages/auth/registro/registro.component';
 export const routes: Routes = [
   // 1. Ruta inicial: Cuando la URL esté vacía, redirige al listado
   {
     path: '',
-    redirectTo: 'facturas',
+    redirectTo: 'login',
     pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
   },
   // 2. Ruta del Listado: Aquí se mostrará tu tabla actual
   {
@@ -21,6 +24,10 @@ export const routes: Routes = [
     path: 'facturas/:id', // Este :id capturará tanto un número como la palabra 'nueva'
     component: DetalleFacturaComponent,
     title: 'Detalle de Factura',
+  },
+  {
+    path: 'register',
+    component: RegistroComponent,
   },
 
   // 5. Comodín (Wildcard): Si el usuario escribe cualquier otra cosa, al listado

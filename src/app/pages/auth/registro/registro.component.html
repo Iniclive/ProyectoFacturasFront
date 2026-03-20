@@ -1,0 +1,101 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <header class="card-header">
+      <h2 class="card-title">
+        <mat-icon>person_add</mat-icon>
+        Crear Cuenta
+      </h2>
+    </header>
+
+    <form class="form-grid" (submit)="$event.preventDefault(); registerSubmit()">
+      <div class="campo">
+        <label>Nombre de usuario</label>
+        <input
+          class="modern-input"
+          [class.input-error]="showNameError()"
+          type="text"
+          name="nombreUsuario"
+          [value]="formData().name"
+          (input)="updateField('name', $any($event.target).value)"
+          placeholder="Ej: usuario123"
+        />
+        <app-form-error [mostrar]="showNameError()" [mensaje]="nameError()" />
+      </div>
+
+      <div class="campo">
+        <label>Email</label>
+        <input
+          class="modern-input"
+          [class.input-error]="showMailError()"
+          type="email"
+          name="email"
+          [value]="formData().email"
+          (input)="updateField('email', $any($event.target).value)"
+          placeholder="ejemplo@correo.com"
+        />
+        <app-form-error [mostrar]="showMailError()" [mensaje]="emailError()" />
+      </div>
+
+      <div class="campo">
+        <label>Contraseña</label>
+        <div class="input-wrapper">
+          <input
+            class="modern-input"
+            [class.input-error]="showPasswordError()"
+            [type]="showPassword() ? 'text' : 'password'"
+            name="contrasena"
+            [value]="formData().password"
+            (input)="updateField('password', $any($event.target).value)"
+            placeholder="••••••••"
+          />
+          <button
+            type="button"
+            class="toggle-visibility"
+            (click)="showPassword.update(v => !v)"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <app-form-error [mostrar]="showPasswordError()" [mensaje]="passwordError()" />
+      </div>
+
+      <div class="campo">
+        <label>Confirmar contraseña</label>
+        <div class="input-wrapper">
+          <input
+            class="modern-input"
+            [class.input-error]="showConfirmPasswordError()"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            name="confirmPassword"
+            [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)"
+            placeholder="••••••••"
+          />
+          <button
+            type="button"
+            class="toggle-visibility"
+            (click)="showConfirmPassword.update(v => !v)"
+            [attr.aria-label]="showConfirmPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <app-form-error [mostrar]="showConfirmPasswordError()" [mensaje]="confirmPasswordError()" />
+      </div>
+
+      <div class="card-actions">
+        <app-boton-propio
+          [texto]="isRegistering() ? 'Creando cuenta...' : 'Registrarse'"
+          [color]="'#27ae60'"
+          [tipo]="'submit'"
+        />
+      </div>
+    </form>
+
+    <div class="registro-section">
+      <p>¿Ya tienes una cuenta?</p>
+      <a routerLink="/login" class="registro-link">Inicia sesión aquí</a>
+    </div>
+  </div>
+</div>

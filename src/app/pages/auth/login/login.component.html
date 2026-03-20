@@ -1,0 +1,56 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <header class="card-header">
+      <h2 class="card-title">
+        <mat-icon>account_circle</mat-icon>
+        Iniciar Sesión
+      </h2>
+    </header>
+
+    <form class="form-grid" (ngSubmit)="loginSubmit()">
+
+      <div class="campo">
+        <label>Email</label>
+        <input
+          class="modern-input"
+          [class.input-error]="showUserError()"
+          type="text"
+          name="usuario"
+          [ngModel]="userMail()"
+          (ngModelChange)="userMail.set($event)"
+          placeholder="Introduce tu usuario o email"
+        />
+        <app-form-error [mostrar]="showUserError()" mensaje="El email es obligatorio" />
+      </div>
+
+      <div class="campo">
+        <label>Contraseña</label>
+        <input
+          class="modern-input"
+          [class.input-error]="showPasswordError()"
+          type="password"
+          name="contrasena"
+          [ngModel]="userPassword()"
+          (ngModelChange)="userPassword.set($event)"
+          placeholder="••••••••"
+        />
+        <app-form-error [mostrar]="showPasswordError()" mensaje="La contraseña es obligatoria" />
+      </div>
+
+      <div class="card-actions">
+        <app-boton-propio
+          [texto]="isLoginIn() ? 'Cargando...' : 'Entrar'"
+          [color]="'#27ae60'"
+          [tipo] ="'submit'"
+          (pulsado)="loginSubmit()">
+        </app-boton-propio>
+      </div>
+
+    </form>
+
+    <div class="registro-section">
+      <p>¿No tienes una cuenta?</p>
+      <a routerLink="/register" class="registro-link">Regístrate ahora</a>
+    </div>
+  </div>
+</div>

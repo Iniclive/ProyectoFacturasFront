@@ -1,0 +1,169 @@
+/* DESPUÉS */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 75px); /* 75px ≈ altura de tu header */
+  background-color: #f7fafc;
+  padding: 20px;
+  padding-top: 20px; /* margen limpio desde el header */
+}
+
+/* --- TARJETA DE LOGIN (Responsive) --- */
+.login-card {
+  width: 100%;
+  max-width: 420px; /* Tamaño máximo en pantallas grandes */
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); /* Sombra más pronunciada para darle profundidad */
+  box-sizing: border-box;
+}
+
+.card-header {
+  margin-bottom: 30px;
+  text-align: center; /* Centramos el título */
+}
+
+.card-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a202c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.card-title mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #2c3e50;
+}
+
+/* --- FORMULARIO Y CAMPOS --- */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.campo label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.modern-input {
+  width: 100%;
+  height: 45px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #2d3748;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1); /* Anillo de enfoque sutil */
+}
+
+.input-error {
+  border-color: #e74c3c !important;
+  background-color: #fff5f5 !important;
+}
+
+/* --- BOTÓN Y ACCIONES --- */
+.card-actions {
+  margin-top: 10px;
+  width: 100%;
+
+}
+
+.card-actions app-boton-propio {
+  display: block;  /* CRUCIAL: Los componentes personalizados son inline por defecto */
+  width: 100%;
+}
+.card-actions app-boton-propio ::ng-deep .mi-boton-base {
+  width: 100%;
+}
+
+/* --- SECCIÓN DE REGISTRO --- */
+.registro-section {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #718096;
+}
+
+.registro-section p {
+  margin: 0 0 8px 0;
+}
+
+.registro-link {
+  color: #3e21bd; /* Usamos el mismo verde de tu botón para mantener coherencia */
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.registro-link:hover {
+  color: #1e8449;
+  text-decoration: underline;
+}
+
+/* --- MEDIA QUERIES (Para móviles) --- */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 20px; /* Reducimos el padding en pantallas pequeñas */
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+}
+.registro-link {
+  cursor: pointer; /* Fuerza a que salga la mano al pasar por encima */
+  display: inline-block;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .modern-input {
+  width: 100%;
+  padding-right: 2.8rem; /* espacio para el botón */
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--text-secondary, #888);
+  display: flex;
+  align-items: center;
+}
+
+.toggle-visibility:hover {
+  color: var(--text-primary, #333);
+}
+
+.toggle-visibility mat-icon {
+  font-size: 1.2rem;
+}

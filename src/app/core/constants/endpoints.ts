@@ -12,4 +12,5 @@ export const ENDPOINTS = {
   LINEA_POR_ID: (id: number|undefined) => `${API_URL}/api/LineasFactura/${id}`,
   MATERIALS: `${API_URL}/api/Material`,
   FACTURA_LINEAS: (idFactura: number) => `${API_URL}/api/Facturas/${idFactura}/lineas`,
+  AUTH_REGISTRO: `${API_URL}/api/Auth/register`,
 };
