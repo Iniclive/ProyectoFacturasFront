@@ -72,7 +72,8 @@
               "buildTarget": "ProyectoFacturasFront:build:production"
             },
             "development": {
-              "buildTarget": "ProyectoFacturasFront:build:development"
+              "buildTarget": "ProyectoFacturasFront:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

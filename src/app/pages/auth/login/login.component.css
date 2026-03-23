@@ -1,14 +1,12 @@
+/* DESPUÉS */
 .login-wrapper {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-
-  min-height: 100vh;
+  min-height: calc(100vh - 75px); /* 75px ≈ altura de tu header */
   background-color: #f7fafc;
   padding: 20px;
-
-  /* 👇 CLAVE: respetar el header + posicionar en tercio superior */
-  padding-top: clamp(100px, 12vh, 180px);
+  padding-top: 20px; /* margen limpio desde el header */
 }
 
 /* --- TARJETA DE LOGIN (Responsive) --- */
@@ -138,4 +136,34 @@
 .registro-link {
   cursor: pointer; /* Fuerza a que salga la mano al pasar por encima */
   display: inline-block;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .modern-input {
+  width: 100%;
+  padding-right: 2.8rem; /* espacio para el botón */
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--text-secondary, #888);
+  display: flex;
+  align-items: center;
+}
+
+.toggle-visibility:hover {
+  color: var(--text-primary, #333);
+}
+
+.toggle-visibility mat-icon {
+  font-size: 1.2rem;
 }

@@ -7,6 +7,7 @@ import { ToastService } from '../../../core/services/toast.service';
 import { FormErrorComponent } from '../../../shared/form-error.component/form-error.component';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { UserInfoCreate } from '../../../core/models/auth.model';
+import { StorageService } from '../../../core/services/storage.service';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 6;
@@ -22,12 +23,13 @@ const MIN_USERNAME_LENGTH = 3;
 export class RegistroComponent {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private storageService = inject(StorageService);
   private router = inject(Router);
 
   // Estado del formulario agrupado
   formData = signal<UserInfoCreate>({ name: '', email: '', password: '' });
   confirmPassword = signal('');
-  showPassword        = signal(false);
+  showPassword = signal(false);
   showConfirmPassword = signal(false);
   formEnviado = signal(false);
   isRegistering = signal(false);
@@ -82,7 +84,7 @@ export class RegistroComponent {
     this.authService.register(this.formData()).subscribe({
       next: (newUser) => {
         this.isRegistering.set(false);
-        localStorage.setItem('lastRegisteredEmail', newUser.email);
+        this.storageService.setItem('lastRegisteredEmail', newUser.email);
         this.router.navigate(['/login']);
         this.toastService.mostrar({
           texto: `Se ha registrado el usuario ${newUser.name} correctamente`,

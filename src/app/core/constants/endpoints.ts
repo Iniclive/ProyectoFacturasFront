@@ -13,4 +13,7 @@ export const ENDPOINTS = {
   MATERIALS: `${API_URL}/api/Material`,
   FACTURA_LINEAS: (idFactura: number) => `${API_URL}/api/Facturas/${idFactura}/lineas`,
   AUTH_REGISTRO: `${API_URL}/api/Auth/register`,
+  AUTH_LOGIN: `${API_URL}/api/Auth/login`,
+  AUTH_LOGOUT: `${API_URL}/api/Auth/logout`,
+  AUTH_ME: `${API_URL}/api/Auth/me`,
 };

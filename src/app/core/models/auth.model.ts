@@ -3,11 +3,12 @@ export interface LoginRequest {
   password: string;
 }
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
+  //accessToken: string;
+  //refreshToken: string;
+ 
 }
 export interface UserInfor {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: 'admin' | 'user';

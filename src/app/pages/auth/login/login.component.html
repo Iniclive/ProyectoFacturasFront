@@ -7,42 +7,51 @@
       </h2>
     </header>
 
-    <form class="form-grid" (ngSubmit)="loginSubmit()">
+    <form class="form-grid" (submit)="$event.preventDefault(); loginSubmit()">
 
       <div class="campo">
         <label>Email</label>
         <input
           class="modern-input"
-          [class.input-error]="showUserError()"
+          [class.input-error]="showMailError()"
           type="text"
-          name="usuario"
-          [ngModel]="userMail()"
-          (ngModelChange)="userMail.set($event)"
-          placeholder="Introduce tu usuario o email"
+          name="nombreUsuario"
+          [value]="formData().email"
+          (input)="updateField('email', $any($event.target).value)"
+          placeholder="Ej: usuario@email.com"
         />
-        <app-form-error [mostrar]="showUserError()" mensaje="El email es obligatorio" />
+        <app-form-error [mostrar]="showMailError()" mensaje="El email es obligatorio" />
       </div>
 
       <div class="campo">
         <label>Contraseña</label>
-        <input
-          class="modern-input"
-          [class.input-error]="showPasswordError()"
-          type="password"
-          name="contrasena"
-          [ngModel]="userPassword()"
-          (ngModelChange)="userPassword.set($event)"
-          placeholder="••••••••"
-        />
-        <app-form-error [mostrar]="showPasswordError()" mensaje="La contraseña es obligatoria" />
+        <div class="input-wrapper">
+          <input
+            class="modern-input"
+            [class.input-error]="showPasswordError()"
+            [type]="showPassword() ? 'text' : 'password'"
+            name="contrasena"
+            [value]="formData().password"
+            (input)="updateField('password', $any($event.target).value)"
+            placeholder="••••••••"
+          />
+          <button
+            type="button"
+            class="toggle-visibility"
+            (click)="showPassword.update(v => !v)"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <app-form-error [mostrar]="showPasswordError()" [mensaje]="passwordError()" />
       </div>
 
       <div class="card-actions">
         <app-boton-propio
           [texto]="isLoginIn() ? 'Cargando...' : 'Entrar'"
           [color]="'#27ae60'"
-          [tipo] ="'submit'"
-          (pulsado)="loginSubmit()">
+          [tipo] ="'submit'">
         </app-boton-propio>
       </div>
 

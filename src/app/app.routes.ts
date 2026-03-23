@@ -3,6 +3,8 @@ import { ListadoFacturasComponent } from './pages/facturas/listado-facturas/list
 import { DetalleFacturaComponent } from './pages/facturas/detalle-factura/detalle-factura.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegistroComponent } from './pages/auth/registro/registro.component';
+import { authGuard } from './core/guards/auth.guard';
+import { noAuthGuard } from './core/guards/no-auth.guard';
 export const routes: Routes = [
   // 1. Ruta inicial: Cuando la URL esté vacía, redirige al listado
   {
@@ -13,11 +15,13 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [noAuthGuard]
   },
   // 2. Ruta del Listado: Aquí se mostrará tu tabla actual
   {
     path: 'facturas',
     component: ListadoFacturasComponent,
+    canActivate: [authGuard]
   },
   // 3. Ruta para Crear: Formulario vacío
   {
