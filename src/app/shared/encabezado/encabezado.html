@@ -13,5 +13,18 @@
     <nav class="header-nav">
        <span class="user-tag">Admin Panel</span>
     </nav>
+    @if(isAutenticated()){
+      <nav class="header-nav">
+         <app-boton-propio
+                  appConfirm
+                  action="logout"
+                  (confirmed)="logout()"
+                  [texto]="'Logout'"
+                >
+                </app-boton-propio>
+    </nav>
+    }
+
+
   </div>
 </header>

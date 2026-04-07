@@ -32,8 +32,10 @@ export class FacturaStateService {
       const facturaActualizada = { ...f, ...cambios };
       const base = facturaActualizada.importe || 0;
       const tipo = facturaActualizada.tipoIva || 0;
+      const importeIva = +(base * tipo / 100).toFixed(2);
+      const importeTotal = +(base + importeIva).toFixed(2);
 
-      return facturaActualizada;
+    return { ...facturaActualizada, importeIva, importeTotal };
     });
   }
 

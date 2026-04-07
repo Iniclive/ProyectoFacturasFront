@@ -5,6 +5,7 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { RegistroComponent } from './pages/auth/registro/registro.component';
 import { authGuard } from './core/guards/auth.guard';
 import { noAuthGuard } from './core/guards/no-auth.guard';
+import { ForbiddenComponent } from './pages/auth/forbidden/forbidden.component';
 export const routes: Routes = [
   // 1. Ruta inicial: Cuando la URL esté vacía, redirige al listado
   {
@@ -27,11 +28,16 @@ export const routes: Routes = [
   {
     path: 'facturas/:id', // Este :id capturará tanto un número como la palabra 'nueva'
     component: DetalleFacturaComponent,
+    canActivate: [authGuard],
     title: 'Detalle de Factura',
   },
   {
     path: 'register',
     component: RegistroComponent,
+  },
+  {
+    path: 'forbidden',
+    component: ForbiddenComponent,
   },
 
   // 5. Comodín (Wildcard): Si el usuario escribe cualquier otra cosa, al listado

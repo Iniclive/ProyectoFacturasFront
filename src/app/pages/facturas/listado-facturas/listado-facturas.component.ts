@@ -19,14 +19,14 @@ import { ToastService } from '../../../core/services/toast.service';
 export class ListadoFacturasComponent {
   facturasService = inject(FacturasService);
   private readonly router = inject(Router);
-  facturas = this.facturasService.facturasSimple;
+  facturas = this.facturasService.facturasCompleto;
   error = signal('');
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
 
   ngOnInit() {
     this.facturasService
-      .cargarFacturasSimple()
+      .cargarFacturas()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (datos) => {

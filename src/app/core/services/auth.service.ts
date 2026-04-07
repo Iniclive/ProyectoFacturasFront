@@ -44,7 +44,7 @@ export class AuthService {
       tap(() => this.currentUser.set(null))
     );
   }
-  
+
   loadUserInfo() {
   console.log('🔄 loadUserInfo llamado');
   return this.httpClient.get<UserInfor>(ENDPOINTS.AUTH_ME).pipe(

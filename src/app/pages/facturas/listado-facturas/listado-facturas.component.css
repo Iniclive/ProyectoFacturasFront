@@ -72,10 +72,6 @@
 }
 
 /* Detalles de celdas */
-.amount {
-  font-family: 'Courier New', monospace;
-  font-weight: 600;
-}
 
 .total-cell {
   color: #2c3e50;
