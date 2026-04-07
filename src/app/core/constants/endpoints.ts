@@ -16,4 +16,6 @@ export const ENDPOINTS = {
   AUTH_LOGIN: `${API_URL}/api/Auth/login`,
   AUTH_LOGOUT: `${API_URL}/api/Auth/logout`,
   AUTH_ME: `${API_URL}/api/Auth/me`,
+  USERS: `${API_URL}/api/Users`,
+  USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
 };

@@ -1,13 +1,113 @@
 <div class="page-container">
   <div class="factura-card">
     <header class="list-header">
-      <h1 class="main-title">
-        <mat-icon>format_list_bulleted</mat-icon>
-        LISTADO DE FACTURAS
-      </h1>
+      <div class="header-top">
+        <h1 class="main-title">
+          <mat-icon>format_list_bulleted</mat-icon>
+          LISTADO DE FACTURAS
+        </h1>
 
-      <app-boton-propio [texto]="'Nueva Factura'" [variante]="'success'" (pulsado)="editarFactura()">
-      </app-boton-propio>
+        <div class="header-actions">
+          <button class="btn-toggle-filtros" (click)="mostrarFiltros.set(!mostrarFiltros())">
+            <mat-icon>filter_list</mat-icon>
+            {{ mostrarFiltros() ? 'Ocultar filtros' : 'Mostrar filtros' }}
+          </button>
+
+          <app-boton-propio
+            [texto]="'Nueva Factura'"
+            [variante]="'success'"
+            (pulsado)="editarFactura()"
+          >
+          </app-boton-propio>
+        </div>
+      </div>
+
+      @if (mostrarFiltros()) {
+        <div class="filtros-panel">
+          <div class="filtros-grid">
+            <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>tag</mat-icon>
+                Nº Factura
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="Ej: 1234"
+                  [value]="searchNumero()"
+                  (input)="searchNumero.set($any($event.target).value)"
+                />
+                @if (searchNumero()) {
+                  <mat-icon class="clear-icon" (click)="searchNumero.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+
+            <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>business</mat-icon>
+                Aseguradora
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="Nombre aseguradora..."
+                  [value]="searchAseguradora()"
+                  (input)="searchAseguradora.set($any($event.target).value)"
+                />
+                @if (searchAseguradora()) {
+                  <mat-icon class="clear-icon" (click)="searchAseguradora.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+
+            <div class="filtro-campo filtro-importe">
+              <label class="filtro-label">
+                <mat-icon>euro</mat-icon>
+                Importe Total
+              </label>
+              <div class="importe-wrapper">
+                <select
+                  class="filtro-select"
+                  [value]="importeOperador()"
+                  (change)="importeOperador.set($any($event.target).value)"
+                >
+                  <option value="">— Sin filtro —</option>
+                  <option value="mayor">Mayor que</option>
+                  <option value="menor">Menor que</option>
+                </select>
+                <input
+                  class="filtro-input importe-input"
+                  type="number"
+                  placeholder="0,00"
+                  min="0"
+                  [disabled]="!importeOperador()"
+                  [value]="importeValor() ?? ''"
+                  (input)="importeValor.set(+$any($event.target).value || null)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="filtros-footer">
+            <span class="resultados-count">
+              {{ facturasFiltradas().length }} resultado{{ facturasFiltradas().length !== 1 ? 's' : '' }}
+              @if (hayFiltrosActivos()) {
+                <span class="de-total">de {{ facturas().length }}</span>
+              }
+            </span>
+
+            @if (hayFiltrosActivos()) {
+              <button class="btn-limpiar" (click)="limpiarFiltros()">
+                <mat-icon>filter_alt_off</mat-icon>
+                Limpiar filtros
+              </button>
+            }
+          </div>
+        </div>
+      }
     </header>
 
     <div class="table-responsive">
@@ -23,11 +123,13 @@
           </tr>
         </thead>
         <tbody>
-          @for (factura of facturas(); track factura.idFactura) {
+          @for (factura of facturasFiltradas(); track factura.idFactura) {
             <tr>
               <td class="bold">{{ factura.numeroFactura }}</td>
               <td>{{ factura.nombreAseguradora }}</td>
-              <td class="text-right">{{ factura.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}</td>
+              <td class="text-right">
+                {{ factura.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+              </td>
               <td class="text-right">{{ factura.tipoIva }}%</td>
               <td class="text-right bold total-cell">
                 {{ factura.importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}

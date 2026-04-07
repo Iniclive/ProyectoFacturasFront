@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { FacturasService } from '../../../core/services/facturas.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
@@ -23,6 +23,13 @@ export class ListadoFacturasComponent {
   error = signal('');
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
+  mostrarFiltros = signal(false);
+  searchNumero = signal('');
+  searchAseguradora = signal('');
+  importeOperador = signal<'mayor' | 'menor' | ''>('');
+  importeValor = signal<number | null>(null);
+
+
 
   ngOnInit() {
     this.facturasService
@@ -60,5 +67,49 @@ export class ListadoFacturasComponent {
     }
   });
     }
+
+    // Computed con todos los filtros combinados
+facturasFiltradas = computed(() => {
+  let resultado = this.facturas();
+
+  const numero = this.searchNumero().toLowerCase().trim();
+  if (numero) {
+    resultado = resultado.filter(f =>
+      f.numeroFactura?.toString().toLowerCase().includes(numero)
+    );
+  }
+
+  const aseguradora = this.searchAseguradora().toLowerCase().trim();
+  if (aseguradora) {
+    resultado = resultado.filter(f =>
+      f.nombreAseguradora?.toLowerCase().includes(aseguradora)
+    );
+  }
+
+  const operador = this.importeOperador();
+  const valor = this.importeValor();
+  if (operador && valor !== null) {
+    resultado = resultado.filter(f =>
+      operador === 'mayor'
+        ? (f.importeTotal !== null && f.importeTotal > valor)
+        : (f.importeTotal !== null && f.importeTotal < valor)
+    );
+  }
+
+  return resultado;
+});
+
+hayFiltrosActivos = computed(() =>
+  !!this.searchNumero() ||
+  !!this.searchAseguradora() ||
+  (!!this.importeOperador() && this.importeValor() !== null)
+);
+
+limpiarFiltros() {
+  this.searchNumero.set('');
+  this.searchAseguradora.set('');
+  this.importeOperador.set('');
+  this.importeValor.set(null);
+}
 
 }

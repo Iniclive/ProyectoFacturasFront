@@ -9,10 +9,28 @@
         <p class="subtitle">Gestión Administrativa v1.0</p>
       </div>
     </div>
-
-    <nav class="header-nav">
+    @if(isAutenticated() && (currentUser()?.role === 'admin')) {
+      <nav class="header-nav">
+        <a
+          routerLink="/facturas"
+          routerLinkActive="active-link"
+          class="nav-link"
+        >
+          <mat-icon>receipt_long</mat-icon>
+          Facturas
+        </a>
+        <a
+          routerLink="/users"
+          routerLinkActive="active-link"
+          class="nav-link"
+        >
+          <mat-icon>person</mat-icon>
+          Usuarios
+        </a>
        <span class="user-tag">Admin Panel</span>
     </nav>
+    }
+
     @if(isAutenticated()){
       <nav class="header-nav">
          <app-boton-propio

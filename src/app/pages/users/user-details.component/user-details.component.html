@@ -1,0 +1,99 @@
+<div class="dialog-container">
+  <header class="dialog-header">
+    <h2 class="dialog-title">
+      <mat-icon>manage_accounts</mat-icon>
+      {{ isEditing() ? 'Editar Usuario ' + formData().name : 'Nuevo Usuario' }}
+    </h2>
+  </header>
+
+  <div class="form-grid">
+
+    <!-- Nombre -->
+    <div class="campo">
+      <label>Nombre</label>
+      <input
+        class="modern-input"
+        [class.input-error]="showNameError()"
+        type="text"
+        [value]="formData().name"
+        (input)="updateField('name', $any($event.target).value)"
+        placeholder="Ej: Juan García"
+      />
+      <app-form-error [mostrar]="showNameError()" [mensaje]="nameError()" />
+    </div>
+
+    <!-- Email -->
+    <div class="campo">
+      <label>Email</label>
+      <input
+        class="modern-input"
+        [class.input-error]="showEmailError()"
+        type="text"
+        [value]="formData().email"
+        (input)="updateField('email', $any($event.target).value)"
+        placeholder="Ej: usuario@email.com"
+      />
+      <app-form-error [mostrar]="showEmailError()" [mensaje]="emailError()" />
+    </div>
+
+    <!-- Contraseña -->
+    <div class="campo">
+      <label>
+        Contraseña
+        @if (isEditing()) {
+          <span class="label-hint">(dejar vacío para no cambiar)</span>
+        }
+      </label>
+      <div class="input-wrapper">
+        <input
+          class="modern-input"
+          [class.input-error]="showPasswordError()"
+          [type]="showPassword() ? 'text' : 'password'"
+          [value]="formData().password"
+          (input)="updateField('password', $any($event.target).value)"
+          [placeholder]="isEditing() ? '••••••' : 'Mínimo 6 caracteres'"
+        />
+        <button
+          type="button"
+          class="toggle-visibility"
+          (click)="showPassword.update(v => !v)"
+          [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        >
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+      <app-form-error [mostrar]="showPasswordError()" [mensaje]="passwordError()" />
+    </div>
+    <div class="campo">
+  <label>
+    Confirmar contraseña
+    @if (isEditing()) {
+      <span class="label-hint">(dejar vacío para no cambiar)</span>
+    }
+  </label>
+  <input
+    class="modern-input"
+    [class.input-error]="showConfirmPasswordError()"
+    type="password"
+    [value]="formData().confirmPassword"
+    (input)="updateField('confirmPassword', $any($event.target).value)"
+    placeholder="Repite la contraseña"
+  />
+  <app-form-error [mostrar]="showConfirmPasswordError()" [mensaje]="confirmPasswordError()" />
+</div>
+
+  </div>
+
+  <div class="dialog-actions">
+    <app-boton-propio
+      [texto]="'Cancelar'"
+      [variante]="'danger'"
+      (pulsado)="cancelar()">
+    </app-boton-propio>
+    <app-boton-propio
+      [texto]="isSaving() ? 'Guardando...' : (isEditing() ? 'Guardar Cambios' : 'Crear Usuario')"
+      [color]="'#27ae60'"
+      (pulsado)="saveUser()">
+    </app-boton-propio>
+  </div>
+</div>

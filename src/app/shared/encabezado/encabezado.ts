@@ -15,6 +15,7 @@ import { ConfirmDirective } from '../../core/directives/app-confirm.directive';
 export class Encabezado {
 authservice = inject(AuthService);
 isAutenticated = this.authservice.isAuthenticated;
+currentUser = this.authservice.currentUser;
 private readonly router = inject(Router);
 
 logout() {
