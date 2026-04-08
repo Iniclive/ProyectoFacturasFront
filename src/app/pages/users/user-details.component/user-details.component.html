@@ -51,7 +51,7 @@
           [type]="showPassword() ? 'text' : 'password'"
           [value]="formData().password"
           (input)="updateField('password', $any($event.target).value)"
-          [placeholder]="isEditing() ? '••••••' : 'Mínimo 6 caracteres'"
+          [placeholder]="isEditing() ? '' : 'Mínimo 6 caracteres'"
         />
         <button
           type="button"
@@ -77,7 +77,6 @@
     type="password"
     [value]="formData().confirmPassword"
     (input)="updateField('confirmPassword', $any($event.target).value)"
-    placeholder="Repite la contraseña"
   />
   <app-form-error [mostrar]="showConfirmPasswordError()" [mensaje]="confirmPasswordError()" />
 </div>
@@ -91,9 +90,13 @@
       (pulsado)="cancelar()">
     </app-boton-propio>
     <app-boton-propio
+      appConfirm
+      action="save"
+      [message]="isSaving() ? 'Actualizando' : (isEditing() ? 'Deseas actualizar el usuario?' : 'Deseas crear un nuevo usuario?')"
+      (confirmed)="saveUser()"
       [texto]="isSaving() ? 'Guardando...' : (isEditing() ? 'Guardar Cambios' : 'Crear Usuario')"
       [color]="'#27ae60'"
-      (pulsado)="saveUser()">
+      >
     </app-boton-propio>
   </div>
 </div>

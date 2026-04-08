@@ -29,7 +29,6 @@ export function mapearALineaFacturaUpdate(l: LineaFactura): LineaFacturaUpdate {
     cantidad: l.cantidad,
   };
 }
-// mappers/linea-factura.mapper.ts
 
 export function mapearALineaFacturaBulkCreate(linea: LineaFactura): LineaFacturaBulkCreate {
   return {

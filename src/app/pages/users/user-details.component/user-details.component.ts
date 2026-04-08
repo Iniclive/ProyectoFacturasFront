@@ -7,6 +7,8 @@ import { FormErrorComponent } from '../../../shared/form-error.component/form-er
 import { ToastService } from '../../../core/services/toast.service';
 import { UsersService } from '../../../core/services/users.service';
 import { User } from '../../../core/models/user.models';
+import { UserInfoCreate, UserInfoUpdate } from '../../../core/models/auth.model';
+import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
@@ -21,7 +23,7 @@ export interface UserDialogData {
 @Component({
   selector: 'app-user-details',
   standalone: true,
-  imports: [MatDialogModule, FormsModule, MatIconModule, FormErrorComponent, BotonPropioComponent],
+  imports: [MatDialogModule, FormsModule, MatIconModule, FormErrorComponent, BotonPropioComponent, ConfirmDirective],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
 })
@@ -45,7 +47,6 @@ export class UserDetailsComponent implements OnInit {
   private name = computed(() => this.formData().name.trim());
   private email = computed(() => this.formData().email.trim());
   private password = computed(() => this.formData().password);
-  private confirmPassword = computed(() => this.formData().confirmPassword);
   readonly isEditing = computed(() => !!this.data.id);
 
   nameError = computed((): string => {
@@ -112,7 +113,14 @@ export class UserDetailsComponent implements OnInit {
     };
 
     if (this.isEditing()) {
-      this.usersService.updateUser(this.data.id!, payload).subscribe({
+      const updatedUser: UserInfoUpdate ={
+        idUser: this.data.id,
+        name: this.name(),
+        email: this.email(),
+        password: this.password(),
+      }
+
+      this.usersService.updateUser(updatedUser).subscribe({
         next: () => {
           this.isSaving.set(false);
           this.dialogRef.close(true);
@@ -127,7 +135,14 @@ export class UserDetailsComponent implements OnInit {
         },
       });
     } else {
-      this.usersService.createUser({ ...payload, role: this.data.role } as User).subscribe({
+
+       const newUser: UserInfoCreate ={
+        name: this.name(),
+        email: this.email(),
+        password: this.password(),
+      }
+
+      this.usersService.createUser(newUser).subscribe({
         next: () => {
           this.isSaving.set(false);
           this.dialogRef.close(true);

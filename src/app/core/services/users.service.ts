@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, of,  tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
 import { User } from '../models/user.models';
+import { UserInfoCreate, UserInfoUpdate } from '../models/auth.model';
 //import { ErrorService } from '../compartido/compartido/error.service';
 @Injectable({
   providedIn: 'root',
@@ -47,8 +48,8 @@ export class UsersService {
       );
   }
 
-  createUser(userData: Partial<User>) {
-    return this.httpClient.post<User>(ENDPOINTS.USERS, userData).pipe(
+  createUser(newUserInfo: UserInfoCreate) {
+    return this.httpClient.post<User>(ENDPOINTS.USERS, newUserInfo).pipe(
       tap((newUser) => {
         this.usersList.update((lista) => [...lista, newUser]);
       }),
@@ -59,10 +60,10 @@ export class UsersService {
     );
   }
 
-  updateUser(id: string, userData: Partial<User>) {
-    return this.httpClient.put<User>(ENDPOINTS.USERS_ID(id), userData).pipe(
+  updateUser(userUpdated: UserInfoUpdate) {
+    return this.httpClient.put<User>(ENDPOINTS.USERS,userUpdated).pipe(
       tap((updatedUser) => {
-        this.usersList.update((lista) => lista.map((u) => (String(u.idUser) === String(id) ? updatedUser : u)));
+        this.usersList.update((lista) => lista.map((u) => (String(u.idUser) === String(userUpdated.idUser) ? updatedUser : u)));
       }),
       catchError((err) => {
         console.error(err);
