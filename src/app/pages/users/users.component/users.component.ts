@@ -19,9 +19,7 @@ import { User } from '../../../core/models/user.models';
   styleUrl: './users.component.css',
 })
 export class UsersComponent {
-editarUsuario() {
-throw new Error('Method not implemented.');
-}
+
   usersService = inject(UsersService);
   private readonly router = inject(Router);
   users = this.usersService.users;

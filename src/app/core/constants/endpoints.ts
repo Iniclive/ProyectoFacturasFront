@@ -18,4 +18,6 @@ export const ENDPOINTS = {
   AUTH_ME: `${API_URL}/api/Auth/me`,
   USERS: `${API_URL}/api/Users`,
   USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
+  CLIENTS: `${API_URL}/api/Clients`,
+  CLIENTS_ID: (id: string) => `${API_URL}/api/Clients/${id}`,
 };

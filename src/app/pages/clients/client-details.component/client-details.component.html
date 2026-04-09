@@ -1,0 +1,107 @@
+<div class="dialog-container">
+  <header class="dialog-header">
+    <h2 class="dialog-title">
+      <mat-icon>manage_accounts</mat-icon>
+      {{ isEditing() ? 'Editar Cliente ' + currentClient()?.cif : 'Nuevo Cliente' }}
+    </h2>
+  </header>
+
+  <div class="form-grid">
+    <!-- CIF -->
+    @if (!isEditing()) {
+      <div class="campo">
+        <label>CIF</label>
+        <input
+          class="modern-input"
+          [class.input-error]="showCifError()"
+          type="text"
+          [value]="currentClient()?.cif"
+          (input)="updateField({ cif: $any($event.target).value })"
+          placeholder="Ej: B1324657"
+        />
+        <app-form-error [mostrar]="showCifError()" [mensaje]="cifError()" />
+      </div>
+    }
+    <!-- Nombre Legal -->
+    <div class="campo">
+      <label>Nombre Legal</label>
+      <input
+        class="modern-input"
+        [class.input-error]="showLegalNameError()"
+        type="text"
+        [value]="currentClient()?.legalName"
+        (input)="updateField({ legalName: $any($event.target).value })"
+        placeholder="Ej: Empresa S.A."
+      />
+      <app-form-error [mostrar]="showLegalNameError()" [mensaje]="legalNameError()" />
+    </div>
+    <!-- Nombre Comercial -->
+    <div class="campo">
+      <label>Nombre Comercial</label>
+      <input
+        class="modern-input"
+        type="text"
+        [value]="currentClient()?.commercialName"
+        (input)="updateField({ commercialName: $any($event.target).value })"
+        placeholder="Ej: Nombre Comercial"
+
+      />
+    </div>
+    <!-- Email -->
+    <div class="campo">
+      <label>Email</label>
+      <input
+        class="modern-input"
+        [class.input-error]="showEmailError()"
+        type="text"
+        [value]="currentClient()?.email"
+        (input)="updateField({ email: $any($event.target).value })"
+        placeholder="Ej: usuario@email.com"
+      />
+      <app-form-error [mostrar]="showEmailError()" [mensaje]="emailError()" />
+    </div>
+    <!-- Telefono -->
+    <div class="campo">
+      <label>Teléfono</label>
+      <input
+        class="modern-input"
+        type="text"
+        [value]="currentClient()?.phone"
+        (input)="updateField({ phone: $any($event.target).value })"
+        placeholder="Ej: 612345678"
+      />
+    </div>
+    <!-- Dirección -->
+    <div class="campo">
+      <label>Dirección</label>
+      <input
+        class="modern-input"
+        type="text"
+        [value]="currentClient()?.address"
+        (input)="updateField({ address: $any($event.target).value })"
+        placeholder="Ej: Calle Falsa 123"
+      />
+    </div>
+  </div>
+
+  <div class="dialog-actions">
+    <app-boton-propio [texto]="'Cancelar'" [variante]="'danger'" (pulsado)="cancelar()">
+    </app-boton-propio>
+    <app-boton-propio
+      appConfirm
+      action="save"
+      [message]="
+        isSaving()
+          ? 'Actualizando'
+          : isEditing()
+            ? 'Deseas actualizar el cliente?'
+            : 'Deseas crear un nuevo cliente?'
+      "
+      (confirmed)="saveClient()"
+      [texto]="isSaving() ? 'Guardando...' : isEditing() ? 'Guardar Cambios' : 'Crear Cliente'"
+      [color]="'#27ae60'"
+      [tipo] = "'submit'"
+    >
+    </app-boton-propio>
+  </div>
+</div>

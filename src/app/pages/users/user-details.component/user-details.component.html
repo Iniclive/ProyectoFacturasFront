@@ -7,7 +7,6 @@
   </header>
 
   <div class="form-grid">
-
     <!-- Nombre -->
     <div class="campo">
       <label>Nombre</label>
@@ -65,38 +64,40 @@
       <app-form-error [mostrar]="showPasswordError()" [mensaje]="passwordError()" />
     </div>
     <div class="campo">
-  <label>
-    Confirmar contraseña
-    @if (isEditing()) {
-      <span class="label-hint">(dejar vacío para no cambiar)</span>
-    }
-  </label>
-  <input
-    class="modern-input"
-    [class.input-error]="showConfirmPasswordError()"
-    type="password"
-    [value]="formData().confirmPassword"
-    (input)="updateField('confirmPassword', $any($event.target).value)"
-  />
-  <app-form-error [mostrar]="showConfirmPasswordError()" [mensaje]="confirmPasswordError()" />
-</div>
-
+      <label>
+        Confirmar contraseña
+        @if (isEditing()) {
+          <span class="label-hint">(dejar vacío para no cambiar)</span>
+        }
+      </label>
+      <input
+        class="modern-input"
+        [class.input-error]="showConfirmPasswordError()"
+        type="password"
+        [value]="formData().confirmPassword"
+        (input)="updateField('confirmPassword', $any($event.target).value)"
+      />
+      <app-form-error [mostrar]="showConfirmPasswordError()" [mensaje]="confirmPasswordError()" />
+    </div>
   </div>
 
   <div class="dialog-actions">
-    <app-boton-propio
-      [texto]="'Cancelar'"
-      [variante]="'danger'"
-      (pulsado)="cancelar()">
+    <app-boton-propio [texto]="'Cancelar'" [variante]="'danger'" (pulsado)="cancelar()">
     </app-boton-propio>
     <app-boton-propio
       appConfirm
       action="save"
-      [message]="isSaving() ? 'Actualizando' : (isEditing() ? 'Deseas actualizar el usuario?' : 'Deseas crear un nuevo usuario?')"
+      [message]="
+        isSaving()
+          ? 'Actualizando'
+          : isEditing()
+            ? 'Deseas actualizar el usuario?'
+            : 'Deseas crear un nuevo usuario?'
+      "
       (confirmed)="saveUser()"
-      [texto]="isSaving() ? 'Guardando...' : (isEditing() ? 'Guardar Cambios' : 'Crear Usuario')"
+      [texto]="isSaving() ? 'Guardando...' : isEditing() ? 'Guardar Cambios' : 'Crear Usuario'"
       [color]="'#27ae60'"
-      >
+    >
     </app-boton-propio>
   </div>
 </div>

@@ -1,0 +1,171 @@
+<div class="page-container">
+  <div class="factura-card">
+    <header class="list-header">
+      <div class="header-top">
+        <h1 class="main-title">
+          <mat-icon>format_list_bulleted</mat-icon>
+          LISTADO DE CLIENTES
+        </h1>
+
+        <div class="header-actions">
+          <button class="btn-toggle-filtros" (click)="showFilters.set(!showFilters())">
+            <mat-icon>filter_list</mat-icon>
+            {{ showFilters() ? 'Ocultar filtros' : 'Mostrar filtros' }}
+          </button>
+
+          <app-boton-propio
+            [texto]="'Nuevo Cliente'"
+            [variante]="'success'"
+            (pulsado)="createClient()"
+          >
+          </app-boton-propio>
+        </div>
+      </div>
+
+      @if (showFilters()) {
+        <div class="filtros-panel">
+          <div class="filtros-grid">
+            <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>tag</mat-icon>
+                CIF
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="Ej: B1234234P"
+                  [value]="searchCif()"
+                  (input)="searchCif.set($any($event.target).value)"
+                />
+                @if (searchCif()) {
+                  <mat-icon class="clear-icon" (click)="searchCif.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+
+            <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>work_outline</mat-icon>
+                Nombre Legal
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="Nombre legal..."
+                  [value]="searchLegalName()"
+                  (input)="searchLegalName.set($any($event.target).value)"
+                />
+                @if (searchLegalName()) {
+                  <mat-icon class="clear-icon" (click)="searchLegalName.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+            <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>card_travel</mat-icon>
+                Nombre Comercial
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="Nombre comercial..."
+                  [value]="searchCommercialName()"
+                  (input)="searchCommercialName.set($any($event.target).value)"
+                />
+                @if (searchCommercialName()) {
+                  <mat-icon class="clear-icon" (click)="searchCommercialName.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+
+            <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>email</mat-icon>
+                Email
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="empr@mail.com..."
+                  [value]="searchEmail()"
+                  (input)="searchEmail.set($any($event.target).value)"
+                />
+                @if (searchEmail()) {
+                  <mat-icon class="clear-icon" (click)="searchEmail.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+
+          </div>
+          <div class="filtros-footer">
+            <span class="resultados-count">
+              {{ filteredClients().length }} resultado{{ filteredClients().length !== 1 ? 's' : '' }}
+
+              @if (activeFilters()) {
+                <span class="de-total">de {{ clients().length }}</span>
+              }
+            </span>
+
+            @if (activeFilters()) {
+              <button class="btn-limpiar" (click)="resetFilters()">
+                <mat-icon>filter_alt_off</mat-icon>
+                Limpiar filtros
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </header>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>CIF</th>
+            <th>Nombre Legal</th>
+            <th>Nombre Comercial</th>
+            <th>Email</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (client of filteredClients(); track client.clientId) {
+            <tr>
+              <td class="bold">{{ client.cif }}</td>
+              <td>{{ client.legalName }}</td>
+              <td>{{ client.commercialName }}</td>
+              <td>{{ client.email }}</td>
+              <td class="text-center actions-cell">
+                <app-boton-propio
+                  [texto]="'Editar'"
+                  (pulsado)="showClientDetails(client.clientId)"
+                ></app-boton-propio>
+                <app-boton-propio
+                  appConfirm
+                  action="delete"
+                  [message]="'¿Estás seguro de que deseas eliminar el cliente?'"
+                  (confirmed)="deleteClient(client.clientId)"
+                  [texto]="'Borrar'"
+                  [variante]="'danger'"
+                >
+                </app-boton-propio>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">
+                <mat-icon>inbox</mat-icon>
+                <p>No hay clientes registrados en este momento.</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

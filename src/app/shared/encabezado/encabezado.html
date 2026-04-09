@@ -9,7 +9,7 @@
         <p class="subtitle">Gestión Administrativa v1.0</p>
       </div>
     </div>
-    @if(isAutenticated() && (currentUser()?.role === 'admin')) {
+    @if(isAutenticated()){
       <nav class="header-nav">
         <a
           routerLink="/facturas"
@@ -20,18 +20,24 @@
           Facturas
         </a>
         <a
+          routerLink="/clients"
+          routerLinkActive="active-link"
+          class="nav-link"
+          >
+          <mat-icon>work_outline</mat-icon>
+          Clientes
+        </a>
+        @if(currentUser()?.role === 'admin'){
+          <a
           routerLink="/users"
           routerLinkActive="active-link"
           class="nav-link"
-        >
+          >
           <mat-icon>person</mat-icon>
           Usuarios
-        </a>
-       
-    </nav>
-    }
+        </a>}
 
-    @if(isAutenticated()){
+      </nav>
       <nav class="header-nav">
          <app-boton-propio
                   appConfirm

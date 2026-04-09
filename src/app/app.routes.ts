@@ -7,6 +7,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { noAuthGuard } from './core/guards/no-auth.guard';
 import { ForbiddenComponent } from './pages/auth/forbidden/forbidden.component';
 import { UsersComponent } from './pages/users/users.component/users.component';
+import { ClientComponent } from './pages/clients/client.component/client.component';
 export const routes: Routes = [
   // 1. Ruta inicial: Cuando la URL esté vacía, redirige al listado
   {
@@ -44,6 +45,11 @@ export const routes: Routes = [
     path: 'users',
     canActivate: [authGuard],
     component: UsersComponent,
+  },
+  {
+    path: 'clients',
+    canActivate: [authGuard],
+    component: ClientComponent,
   },
 
   // 5. Comodín (Wildcard): Si el usuario escribe cualquier otra cosa, al listado

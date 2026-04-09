@@ -1,0 +1,340 @@
+/* Reutilizamos el contenedor de página y tarjeta */
+.page-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+.factura-card {
+  background: white;
+  width: 100%;
+  max-width: 1100px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  padding: 40px 50px;
+}
+
+/* Encabezado: Título y Botón alineados */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* Para que en móvil el botón baje si no cabe */
+  gap: 20px;
+}
+
+.main-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Estilos de la Tabla Moderna */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Scroll horizontal en móvil */
+  border-radius: 8px;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px; /* Evita que las columnas se amontonen */
+}
+
+.modern-table th {
+  background-color: #f1f5f9;
+  color: #475569;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 16px;
+  text-align: left;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.modern-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.modern-table tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Detalles de celdas */
+
+.total-cell {
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Estados */
+.text-right {text-align: right; }
+.text-center { text-align: center; }
+.bold { font-weight: 600; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px !important;
+  color: #94a3b8;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
+}
+
+
+
+.modern-table th.text-right {
+  text-align: right;
+  /* Aseguramos que el padding sea idéntico al de los td para que encajen */
+  padding-right: 16px;
+}
+
+.modern-table td.text-right {
+  text-align: right;
+  padding-right: 16px;
+}
+
+/* Si usas iconos de ordenación (sort) de Material,
+   esto evita que el icono desplace el texto a la izquierda */
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  justify-content: flex-end; /* Alinea el contenido del header de Material a la derecha */
+}
+
+/* Alineación estándar para texto */
+.text-center {
+  text-align: center !important;
+}
+
+/* Ajuste específico para la celda de botones */
+.actions-cell {
+  display: flex;
+  gap: 12px;                /* Espacio entre botones */
+  justify-content: center;  /* Esto es lo que centra los botones horizontalmente */
+  align-items: center;      /* Esto los centra verticalmente */
+  border-bottom: none;      /* Limpieza visual si es necesario */
+}
+
+/* Ajuste para el encabezado (th) */
+.modern-table th.text-center {
+  text-align: center;
+  /* Si Angular Material está metiendo mano, esto asegura el centrado */
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.filtros-panel {
+  background: #f8fafc;
+  border: 1px solid #e8edf3;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: 16px;
+  align-items: end;
+}
+
+.filtro-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtro-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #667085;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  mat-icon { font-size: 15px; height: 15px; width: 15px; }
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filtro-input {
+  width: 100%;
+  padding: 8px 32px 8px 10px;
+  border: 1px solid #d0d7e2;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: #4a90d9; }
+  &:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; }
+  &::placeholder { color: #bbb; }
+}
+
+.clear-icon {
+  position: absolute;
+  right: 8px;
+  font-size: 16px;
+  color: #aaa;
+  cursor: pointer;
+  &:hover { color: #555; }
+}
+
+.importe-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.filtro-select {
+  padding: 8px 10px;
+  border: 1px solid #d0d7e2;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  flex: 1.2;
+
+  &:focus { border-color: #4a90d9; }
+}
+
+.importe-input {
+  flex: 1;
+  padding-right: 10px;
+}
+
+.filtros-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e8edf3;
+}
+
+.resultados-count {
+  font-size: 0.85rem;
+  color: #667085;
+  font-weight: 500;
+
+  .de-total { color: #aab; margin-left: 4px; }
+}
+
+.btn-limpiar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid #d0d7e2;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  color: #667085;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  mat-icon { font-size: 16px; height: 16px; width: 16px; }
+  &:hover { background: #fff; border-color: #e05; color: #e05; }
+}
+
+.list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between; /* Empuja el título a la izquierda y acciones a la derecha */
+  align-items: center;           /* Centra verticalmente los elementos */
+  width: 100%;
+  margin-bottom: 1.5rem;         /* Espacio con el panel de filtros o la tabla */
+  gap: 1rem;                     /* Espacio mínimo entre título y botones */
+}
+.main-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;                     /* Quitamos márgenes por defecto del h1 */
+  font-size: 1.5rem;
+  white-space: nowrap;           /* Evita que el título se parta en dos líneas si hay espacio */
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;                     /* Espacio entre el botón de filtros y Nueva Factura */
+}
+
+/* Estilos básicos para el nuevo botón de alternar filtros */
+.btn-toggle-filtros {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-toggle-filtros:hover {
+  background-color: #f5f5f5;
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+  .factura-card {
+    padding: 20px;
+  }
+
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+  }
+   .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;     /* Alinea todo a la izquierda en móvil */
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
