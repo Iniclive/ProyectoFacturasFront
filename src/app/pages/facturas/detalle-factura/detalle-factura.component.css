@@ -194,3 +194,103 @@
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Contenedor del Autocomplete */
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Posicionamiento del Icono de Búsqueda */
+.search-icon {
+  position: absolute;
+  left: 10px; /* Ajusta según el padding de tu .modern-input */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7f8c8d; /* Color gris suave, ajusta a tu variable */
+  pointer-events: none; /* Evita que el click en el icono bloquee el input */
+  font-size: 20px;
+}
+
+/* Variante del input para dejar espacio al icono */
+.modern-input.input-with-icon {
+  padding-left: 38px; /* Deja espacio para la lupa a la izquierda */
+}
+
+/* Spinner opcional a la derecha */
+.spinner-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 100% { transform: translateY(-50%) rotate(360deg); } }
+
+/* Contenedor del Menú Desplegable */
+.popup-results {
+  position: absolute;
+  top: calc(100% + 4px); /* Justo debajo del input con un pequeño margen */
+  left: 0;
+  width: 100%;
+  background-color: #ffffff; /* Ajusta a tu var(--page-background) si es necesario */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Asegura que flote sobre otros inputs */
+  overflow: hidden; /* Mantiene los bordes redondeados */
+}
+
+/* Lista con Scroll después de ~5 elementos */
+.options-list {
+  max-height: 200px; /* 5 elementos * 40px de alto aprox */
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilo del Scrollbar (opcional, para navegadores Webkit) */
+.options-list::-webkit-scrollbar {
+  width: 6px;
+}
+.options-list::-webkit-scrollbar-thumb {
+  background-color: #bdc3c7;
+  border-radius: 4px;
+}
+
+/* Elementos de la lista */
+.option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  min-height: 40px; /* Altura base para calcular el scroll */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+}
+
+.option-item:hover {
+  background-color: #f5f7fa; /* Un gris muy clarito al pasar el ratón */
+}
+
+.option-item.selected {
+  background-color: #e8f4f8; /* Un tono azulado para el seleccionado */
+  color: #2980b9;
+  font-weight: 500;
+}
+
+.check-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+.no-results {
+  padding: 16px;
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 14px;
+}

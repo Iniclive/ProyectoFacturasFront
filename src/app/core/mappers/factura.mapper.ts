@@ -6,6 +6,7 @@ export function mapearAFacturaCreate(f: Factura): FacturaCreate {
     aseguradora: f.aseguradora,
     importe: f.importe,
     tipoIva: f.tipoIva,
+    clientId: f.clientId,
     status: f.status
   };
 }
@@ -18,6 +19,7 @@ export function mapearAFacturaUpdate(f: Factura): FacturaUpdate {
     aseguradora: f.aseguradora,
     importe: f.importe,
     tipoIva: f.tipoIva,
+    clientId: f.clientId,
     status: f.status
   };
 }
@@ -25,7 +27,7 @@ export function mapearAFacturaSimple(f: Factura): FacturaSimple {
   return {
     idFactura: f.idFactura,
     numeroFactura: f.numeroFactura || '',
-    nombreAseguradora: f.nombreAseguradora || '',
+    insuranceName: f.insuranceName || '',
     importe: f.importe || 0,
     tipoIva: f.tipoIva || 0,
     importeTotal: f.importeTotal || 0

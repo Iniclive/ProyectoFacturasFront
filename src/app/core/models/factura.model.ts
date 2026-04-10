@@ -13,6 +13,7 @@ export interface Factura {
   importeIva: number | null;
   importeTotal: number | null;
   status: number;
+  clientId: number;
 
   // Auditoría
   creado: string;
@@ -21,16 +22,16 @@ export interface Factura {
   modificadoPor: number;
 
   // Campos de la Vista (JOINs)
-  nombreUsuario: string | null;
-  nombreEstado: string | null;
-  nombreAseguradora?: string | null; // Para mostrar el nombre en la lista simple
+  userName: string | null;
+  statusName: string | null;
+  insuranceName?: string | null; // Para mostrar el nombre en la lista simple
 }
 
 
 export interface FacturaSimple {
   idFactura: string,
   numeroFactura: string;
-  nombreAseguradora: string;
+  insuranceName: string;
   importe: number;
   tipoIva: number;
   importeTotal: number;
@@ -42,6 +43,7 @@ export interface FacturaCreate {
   aseguradora: number;
   importe: number|null;
   tipoIva: number | null;
+  clientId: number;
   status: number;
 }
 

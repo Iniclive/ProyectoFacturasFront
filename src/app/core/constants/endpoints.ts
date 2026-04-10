@@ -7,6 +7,7 @@ export const ENDPOINTS = {
   FACTURAS: `${API_URL}/api/Facturas`,
   FACTURA_POR_ID: (id: string) => `${API_URL}/api/Facturas/${id}`,
   INSURANCES: `${API_URL}/api/Insurance`,
+  INSURANCES_FILTERED: (searchString: string) => `${API_URL}/api/Insurance/${searchString}`,
   LINEAS: `${API_URL}/api/LineasFactura`,
   LINEAS_FACTURA: (idFactura: string) => `${API_URL}/api/LineasFactura?idFactura=${idFactura}`,
   LINEA_POR_ID: (id: number|undefined) => `${API_URL}/api/LineasFactura/${id}`,
@@ -20,4 +21,5 @@ export const ENDPOINTS = {
   USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
   CLIENTS: `${API_URL}/api/Clients`,
   CLIENTS_ID: (id: string) => `${API_URL}/api/Clients/${id}`,
+  
 };

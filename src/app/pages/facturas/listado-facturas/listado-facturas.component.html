@@ -126,7 +126,7 @@
           @for (factura of facturasFiltradas(); track factura.idFactura) {
             <tr>
               <td class="bold">{{ factura.numeroFactura }}</td>
-              <td>{{ factura.nombreAseguradora }}</td>
+              <td>{{ factura.insuranceName }}</td>
               <td class="text-right">
                 {{ factura.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
               </td>

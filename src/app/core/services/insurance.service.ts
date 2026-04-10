@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
 import { Insurance } from '../models/catalogos.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,18 +12,22 @@ export class InsuranceService {
   private httpClient = inject(HttpClient);
   //private errorService = inject(ErrorService)
   private listaAseguradoras = signal<Insurance[]>([]);
+  private filteredInsurances = signal<Insurance[]>([]);
   insurances = this.listaAseguradoras.asReadonly();
+  filteredInsurancesList = this.filteredInsurances.asReadonly();
   private destroyRef = inject(DestroyRef);
 
   cargarInsurances() {
-    return this.httpClient.get<Insurance[]>(ENDPOINTS.INSURANCES).pipe(
-      catchError((err) => {
-        console.error(err);
-        //this.errorService.mostrarerror('Error al cargar lugares disponibles');
-        return throwError(() => new Error('Error en API'));
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe({
+    return this.httpClient
+      .get<Insurance[]>(ENDPOINTS.INSURANCES)
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          return throwError(() => new Error('Error en API'));
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
         next: (datos) => {
           console.log('Se han cargado los datos de las Aseguradoras!', datos);
           this.listaAseguradoras.set(datos);
@@ -33,7 +37,17 @@ export class InsuranceService {
         },
         complete: () => {},
       });
-
   }
 
+  loadFilteredInsurances(searchString: string) {
+    return this.httpClient.get<Insurance[]>(ENDPOINTS.INSURANCES_FILTERED(searchString)).pipe(
+      tap((insurances) => {
+              this.filteredInsurances.set(insurances);
+              }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => new Error('Error en API'));
+      }),
+    );
+  }
 }

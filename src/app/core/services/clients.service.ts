@@ -81,4 +81,5 @@ export class ClientsService {
   updateCurrentClient(cambios: Partial<Client>) {
       this.selectedClient.update((c) => ({ ...c, ...cambios } as Client));
     }
+
 }

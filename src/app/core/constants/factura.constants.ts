@@ -9,6 +9,7 @@ export const FACTURA_INICIAL: Factura = {
 
   // Datos Numéricos
   aseguradora: 0,
+  clientId: 0,
   importe: 0,
   tipoIva: 21, // El valor que más uses por defecto
   importeIva: 0,
@@ -22,8 +23,8 @@ export const FACTURA_INICIAL: Factura = {
   modificadoPor: 0,
 
   // Campos de la Vista
-  nombreUsuario: '',
-  nombreEstado: ''
+  userName: '',
+  statusName: ''
 };
 
 export const TIPOS_IVA_DEFAULT: IvaItem[] = [

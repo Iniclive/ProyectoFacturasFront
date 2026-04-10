@@ -15,15 +15,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { mapearAFacturaCreate, mapearAFacturaUpdate } from '../../../core/mappers/factura.mapper';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
-import { map, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs';
 import { ListadoLineasComponent } from '../../lineas-factura/listado-lineas/listado-lineas.component';
 import { FormErrorComponent } from '../../../shared/form-error.component/form-error.component';
 import { Factura } from '../../../core/models/factura.model';
 import { FacturaStateService } from '../../../core/services/facturas-state.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { DisabledTooltipDirective } from '../../../core/directives/disabled-tooltip.directive';
-import { LoadingComponent } from "../../../shared/loading-component/loading-component";
+import { LoadingComponent } from '../../../shared/loading-component/loading-component';
 import { LoadingService } from '../../../core/services/loading.service';
+import { ClientsService } from '../../../core/services/clients.service';
+import { Insurance } from '../../../core/models/catalogos.model';
+import { Client } from '../../../core/models/client.models';
 
 @Component({
   standalone: true,
@@ -43,14 +46,15 @@ import { LoadingService } from '../../../core/services/loading.service';
     FormErrorComponent,
     BotonPropioComponent,
     DisabledTooltipDirective,
-    LoadingComponent
-],
+    LoadingComponent,
+  ],
   templateUrl: './detalle-factura.component.html',
   styleUrl: './detalle-factura.component.css',
 })
 export class DetalleFacturaComponent implements OnInit {
   private readonly facturasService = inject(FacturasService);
   private readonly insuranceService = inject(InsuranceService);
+  private readonly clientsService = inject(ClientsService);
   private readonly facturaState = inject(FacturaStateService);
   private readonly loadingService = inject(LoadingService);
   private readonly router = inject(Router);
@@ -60,11 +64,19 @@ export class DetalleFacturaComponent implements OnInit {
   // Señales de UI
   tiposIva = signal(TIPOS_IVA_DEFAULT);
   insurances = this.insuranceService.insurances;
+  filteredInsurances = this.insuranceService.filteredInsurancesList;
+  clients = this.clientsService.clients;
   factura = this.facturaState.currentFactura;
   private toastService = inject(ToastService);
   estaGuardando = signal(false);
   formEnviado = signal(false);
   facturaActualizada = signal(false);
+
+  searchInsuranceQuery = signal('');
+  isSearchingInsurances = signal(false);
+  isOpenInsuranceCombobox = signal(false);
+  selectedInsurance = signal<Insurance | null>(null);
+  isSelectionInsurance = false; // Bandera para distinguir entre escritura y selección en el input de aseguradora
 
   //aseguradoraTocada = signal(false);
   textoBoton = computed(() =>
@@ -77,44 +89,84 @@ export class DetalleFacturaComponent implements OnInit {
     { initialValue: 'nueva' as string },
   );
 
+  insuranceSearch = toObservable(this.searchInsuranceQuery).pipe(
+    filter((query) => {
+      if (this.isSelectionInsurance) {
+        this.isSelectionInsurance = false;
+        return false;
+      }
+      return query.length >= 3;
+    }),
+    debounceTime(300),
+    distinctUntilChanged(),
+    tap(() => {
+      this.isSearchingInsurances.set(true);
+      this.isOpenInsuranceCombobox.set(true);
+    }),
+    switchMap((query) => this.insuranceService.loadFilteredInsurances(query)),
+    tap(() => this.isSearchingInsurances.set(false)),
+    takeUntilDestroyed(this.destroyRef),
+  );
+
   // Computeds derivados
   isSaved = computed(() => this.idRuta() !== 'nueva');
 
   aseguradoraValida = computed(() => {
     const id = this.factura().aseguradora;
+    return (
+      id !== null && id !== 0 && this.searchInsuranceQuery() === this.selectedInsurance()?.name
+    );
+  });
+
+  validClientSelected = computed(() => {
+    const id = this.factura().clientId;
     return id !== null && id !== 0;
   });
 
   numeroFacturaValido = computed(() => {
-  const num = this.factura().numeroFactura;
-  return !!num && num.toString().trim().length > 0;
-});
+    const num = this.factura().numeroFactura;
+    return !!num && num.toString().trim().length > 0;
+  });
 
   mostrarErrorAseguradora = computed(() => {
-    return !this.aseguradoraValida() && (this.formEnviado());
+    return !this.aseguradoraValida() && this.formEnviado();
   });
   mostrarErrorNumeroFactura = computed(() => {
-    return !this.numeroFacturaValido() && (this.formEnviado());
+    return !this.numeroFacturaValido() && this.formEnviado();
   });
 
-  formularioEsValido = computed(() => this.aseguradoraValida() && this.numeroFacturaValido());
+  showErrorClient = computed(() => {
+    return !this.validClientSelected() && this.formEnviado();
+  });
+
+  formularioEsValido = computed(
+    () => this.aseguradoraValida() && this.numeroFacturaValido() && this.validClientSelected(),
+  );
 
   constructor() {
     toObservable(this.idRuta)
       .pipe(
         tap(() => {
-        this.loadingService.show();
-        this.formEnviado.set(false); // reset del estado del form también
-      }),
-      switchMap((id) => this.facturasService.cargarFacturaId(id)),
-      tap(() => this.loadingService.hide()),
-      takeUntilDestroyed(this.destroyRef),
+          this.loadingService.show();
+          this.formEnviado.set(false); // reset del estado del form también
+        }),
+        switchMap((id) => this.facturasService.cargarFacturaId(id)),
+        tap(() => {
+          this.loadingService.hide();
+          if (this.isSaved()) {
+            this.searchInsuranceQuery.set(this.factura().insuranceName || '');
+            this.selectedInsurance.set({idInsurance: this.factura().aseguradora, name: this.factura().insuranceName ?? ''});
+           
+          }
+        }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
+    this.insuranceSearch.subscribe();
   }
 
   ngOnInit(): void {
-    this.insuranceService.cargarInsurances();
+    this.clientsService.loadClients().subscribe(); // Cargamos todos los clientes al inicio para tenerlos disponibles en el filtro
   }
 
   guardarCabecera() {
@@ -126,12 +178,15 @@ export class DetalleFacturaComponent implements OnInit {
           next: () => {
             this.estaGuardando.set(false);
             this.router.navigate(['/facturas', this.factura().idFactura], { replaceUrl: true });
-            this.toastService.mostrar({texto: 'Se ha creado la factura correctamente', tipoToast: 'submit'})
+            this.toastService.mostrar({
+              texto: 'Se ha creado la factura correctamente',
+              tipoToast: 'submit',
+            });
             console.log('Cabecera guardada, ya puedes añadir líneas.');
           },
           error: () => {
             this.estaGuardando.set(false);
-           this.toastService.mostrar({texto: 'Error al crear la factura', tipoToast: 'delete'});
+            this.toastService.mostrar({ texto: 'Error al crear la factura', tipoToast: 'delete' });
           },
         });
       } else {
@@ -141,11 +196,17 @@ export class DetalleFacturaComponent implements OnInit {
             this.estaGuardando.set(false);
             //this.toastService.showSuccess('Se ha actualizado la factura correctamente');
             console.log('Se ha actualizado la factura');
-            this.toastService.mostrar({texto: 'Se ha actualizado la factura correctamente', tipoToast: 'submit'})
+            this.toastService.mostrar({
+              texto: 'Se ha actualizado la factura correctamente',
+              tipoToast: 'submit',
+            });
           },
           error: () => {
-          this.estaGuardando.set(false);
-           this.toastService.mostrar({texto: 'Error al actualizar la factura', tipoToast: 'delete'});
+            this.estaGuardando.set(false);
+            this.toastService.mostrar({
+              texto: 'Error al actualizar la factura',
+              tipoToast: 'delete',
+            });
           },
         });
       }
@@ -159,11 +220,10 @@ export class DetalleFacturaComponent implements OnInit {
   }
 
   onFechaChange(fecha: Date | null) {
-    if (fecha){
+    if (fecha) {
       this.actualizarFactura({ fechaFactura: fecha.toISOString() });
       this.facturaActualizada.set(true);
     }
-
   }
 
   actualizarFactura(cambios: Partial<Factura>) {
@@ -177,13 +237,32 @@ export class DetalleFacturaComponent implements OnInit {
   }
 
   tooltipGuardar = computed(() => {
-  if (this.estaGuardando()) return ['Guardando, espera un momento...'];
+    if (this.estaGuardando()) return ['Guardando, espera un momento...'];
 
-  const errores: string[] = [];
-  if (!this.numeroFacturaValido())                    errores.push('Introduce un número de factura');
-  if (!this.facturaActualizada() && this.isSaved())   errores.push('No hay cambios que guardar');
-  if (!this.aseguradoraValida())                      errores.push('Selecciona una aseguradora');
+    const errores: string[] = [];
+    if (!this.numeroFacturaValido()) errores.push('Introduce un número de factura');
+    if (!this.facturaActualizada() && this.isSaved()) errores.push('No hay cambios que guardar');
+    if (!this.aseguradoraValida()) errores.push('Selecciona una aseguradora');
+    if (!this.validClientSelected()) errores.push('Selecciona un cliente');
 
-  return errores;
-});
+    return errores;
+  });
+
+  onSearchInputInsurance(event: Event) {
+    const valor = (event.target as HTMLInputElement).value;
+    this.searchInsuranceQuery.set(valor);
+    if (valor.length >= 3) {
+      this.isOpenInsuranceCombobox.set(true); // Solo mostramos si hay longitud suficiente
+    } else {
+      this.isOpenInsuranceCombobox.set(false);
+    }
+  }
+
+  onSelectedInsurance(insurance: Insurance) {
+    this.isSelectionInsurance = true; // ¡Activa la bandera para bloquear la API!
+    this.selectedInsurance.set(insurance);
+    this.searchInsuranceQuery.set(insurance.name); // Actualiza el input visualmente
+    this.actualizarFactura({ aseguradora: insurance.idInsurance });
+    this.isOpenInsuranceCombobox.set(false); // Cierra el desplegable
+  }
 }

@@ -82,7 +82,7 @@ facturasFiltradas = computed(() => {
   const aseguradora = this.searchAseguradora().toLowerCase().trim();
   if (aseguradora) {
     resultado = resultado.filter(f =>
-      f.nombreAseguradora?.toLowerCase().includes(aseguradora)
+      f.insuranceName?.toLowerCase().includes(aseguradora)
     );
   }
 
