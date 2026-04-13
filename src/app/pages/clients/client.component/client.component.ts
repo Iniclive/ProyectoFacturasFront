@@ -40,7 +40,7 @@ export class ClientComponent {
 
   showClientDetails(id: string) {
     const dialogRef = this.dialog.open(ClientDetailsComponent, {
-      width: '520px',
+      width: '750px',
       data: {
         clientId: id
       }
@@ -50,7 +50,7 @@ export class ClientComponent {
 
   createClient() {
     const dialogRef = this.dialog.open(ClientDetailsComponent, {
-      width: '520px',
+      width: '750px',
       data: {
         clientId: null
       }

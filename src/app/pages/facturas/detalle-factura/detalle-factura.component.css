@@ -294,3 +294,18 @@
   color: #7f8c8d;
   font-size: 14px;
 }
+
+.crear-cliente-link {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: #4f46e5;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.crear-cliente-link:hover {
+  color: #3730a3;
+  cursor: pointer;
+}

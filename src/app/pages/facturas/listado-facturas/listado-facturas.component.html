@@ -43,25 +43,25 @@
                 }
               </div>
             </div>
-
             <div class="filtro-campo">
               <label class="filtro-label">
-                <mat-icon>business</mat-icon>
-                Aseguradora
+                <mat-icon>person</mat-icon>
+                Cliente
               </label>
               <div class="input-wrapper">
                 <input
                   class="filtro-input"
                   type="text"
-                  placeholder="Nombre aseguradora..."
-                  [value]="searchAseguradora()"
-                  (input)="searchAseguradora.set($any($event.target).value)"
+                  placeholder="Ej: 1234"
+                  [value]="searchClient()"
+                  (input)="searchClient.set($any($event.target).value)"
                 />
-                @if (searchAseguradora()) {
-                  <mat-icon class="clear-icon" (click)="searchAseguradora.set('')">close</mat-icon>
+                @if (searchClient()) {
+                  <mat-icon class="clear-icon" (click)="searchClient.set('')">close</mat-icon>
                 }
               </div>
             </div>
+
 
             <div class="filtro-campo filtro-importe">
               <label class="filtro-label">
@@ -87,6 +87,42 @@
                   [value]="importeValor() ?? ''"
                   (input)="importeValor.set(+$any($event.target).value || null)"
                 />
+              </div>
+            </div>
+               <div class="filtro-campo">
+              <label class="filtro-label">
+                <mat-icon>business</mat-icon>
+                Aseguradora
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="filtro-input"
+                  type="text"
+                  placeholder="Nombre aseguradora..."
+                  [value]="searchAseguradora()"
+                  (input)="searchAseguradora.set($any($event.target).value)"
+                />
+                @if (searchAseguradora()) {
+                  <mat-icon class="clear-icon" (click)="searchAseguradora.set('')">close</mat-icon>
+                }
+              </div>
+            </div>
+            <div class="filtro-campo filtro-importe">
+              <label class="filtro-label">
+                <mat-icon>receipt_long</mat-icon>
+                Estado
+              </label>
+              <div class="importe-wrapper">
+                <select
+                  class="filtro-select"
+                  [value]="searchStatus()"
+                  (change)="searchStatus.set($any($event.target).value)"
+                >
+                <option value="">— Sin filtro —</option>
+                @for (status of statusOptions(); track status.value) {
+                  <option [value]="status.value">{{ status.statusName }}</option>
+                }
+                </select>
               </div>
             </div>
           </div>
@@ -115,7 +151,9 @@
         <thead>
           <tr>
             <th>Nº Factura</th>
+            <th>Cliente</th>
             <th>Aseguradora</th>
+            <th>Estado</th>
             <th class="text-right">Importe</th>
             <th class="text-right">IVA</th>
             <th class="text-right">Total</th>
@@ -126,7 +164,9 @@
           @for (factura of facturasFiltradas(); track factura.idFactura) {
             <tr>
               <td class="bold">{{ factura.numeroFactura }}</td>
+              <td>{{ factura.clientLegalName }}</td>
               <td>{{ factura.insuranceName }}</td>
+              <td>{{ factura.statusName }}</td>
               <td class="text-right">
                 {{ factura.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
               </td>
@@ -134,9 +174,10 @@
               <td class="text-right bold total-cell">
                 {{ factura.importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
               </td>
+
               <td class="text-center actions-cell">
                 <app-boton-propio
-                  [texto]="'Editar'"
+                  [texto]="isEditable(factura) ? ' Editar ' : 'Consultar'"
                   (pulsado)="editarFactura(factura.idFactura.toString())"
                 ></app-boton-propio>
                 <app-boton-propio
@@ -152,7 +193,7 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="6" class="empty-state">
+              <td colspan="8" class="empty-state">
                 <mat-icon>inbox</mat-icon>
                 <p>No hay facturas registradas en este momento.</p>
               </td>

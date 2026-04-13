@@ -4,7 +4,7 @@
       <header class="factura-header">
         <h1 class="main-title">
           <mat-icon>receipt_long</mat-icon>
-          {{ isSaved() ? 'Editar Factura: ' + factura().numeroFactura : 'Crear Factura' }}
+          {{ isSaved() ? 'Factura: ' + factura().numeroFactura : 'Crear Factura' }}
         </h1>
       </header>
 
@@ -35,6 +35,7 @@
                 (ngModelChange)="actualizarFactura({ numeroFactura: $event })"
                 class="modern-input"
                 required
+                disabled="{{ isNotEditable() }}"
               />
               <app-form-error
                 [mostrar]="mostrarErrorNumeroFactura()"
@@ -53,6 +54,7 @@
                   [ngModel]="factura().fechaFactura"
                   (dateChange)="onFechaChange($event.value)"
                   required
+                  disabled="{{ isNotEditable() }}"
                 />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
@@ -82,6 +84,8 @@
                   (input)="onSearchInputInsurance($event)"
                   class="modern-input input-with-icon"
                   autocomplete="off"
+                  required
+                  [disabled]="isNotEditable()"
                 />
 
                 @if (isSearchingInsurances()) {
@@ -126,6 +130,7 @@
                 (ngModelChange)="actualizarFacturaIva({ tipoIva: $event })"
                 class="modern-select"
                 required
+                disabled="{{ isNotEditable() }}"
               >
                 <option [value]="null" disabled>Seleccione IVA</option>
                 @for (iva of tiposIva(); track iva.valor) {
@@ -137,6 +142,11 @@
           <div class="row-group">
             <div class="campo">
               <label for="cliente">Cliente</label>
+              @if (!isClientesCreated()) {
+                <span class="crear-cliente-link" (click)="navigateToClients()">
+                  + Crear nuevo cliente
+                </span>
+              }
               <select
                 id="client"
                 name="clientId"
@@ -144,12 +154,14 @@
                 (ngModelChange)="actualizarFactura({ clientId: $event })"
                 class="modern-select"
                 required
+                disabled="{{ isNotEditable() }}"
               >
                 <option [value]="0" disabled>Seleccione cliente</option>
                 @for (client of clients(); track client.clientId) {
                   <option [value]="client.clientId">{{ client.legalName }}</option>
                 }
               </select>
+
               <app-form-error [mostrar]="showErrorClient()" mensaje="Debe seleccionar un cliente" />
             </div>
           </div>
@@ -170,30 +182,80 @@
         </div>
 
         <footer class="form-actions">
-          <app-boton-propio
-            appConfirm
-            [enabled]="facturaActualizada()"
-            [message]="'¿Quieres salir y descartar los cambios no guardados?'"
-            [action]="'custom'"
-            [title]="''"
-            (confirmed)="cancelar()"
-            [texto]="'Cancelar'"
-            [tipo]="'button'"
-            [variante]="'danger'"
-          ></app-boton-propio>
-          <app-boton-propio
-            [texto]="textoBoton()"
-            [color]="'#27ae60'"
-            [tipo]="'submit'"
-            [disabled]="estaGuardando() || !facturaActualizada() || !formularioEsValido()"
-            [disabledTooltip]="tooltipGuardar()"
-          >
-          </app-boton-propio>
+          @if (isAprovedState()) {
+            <span class="approved-label"><mat-icon>check_circle</mat-icon> Factura Aprobada</span>
+          }
+          @if (!isAprovedState()) {
+            <app-boton-propio
+              appConfirm
+              [enabled]="facturaActualizada() && !isNotEditable()"
+              [message]="'¿Quieres salir y descartar los cambios no guardados?'"
+              [action]="'custom'"
+              [title]="''"
+              (confirmed)="cancelar()"
+              [texto]="'Volver'"
+              [tipo]="'button'"
+              [variante]="'danger'"
+            ></app-boton-propio>
+            @if (!isNotEditable()) {
+              <app-boton-propio
+                [texto]="textoBoton()"
+                [color]="'#27ae60'"
+                [tipo]="'submit'"
+                [disabled]="estaGuardando() || !formularioEsValido()"
+                [disabledTooltip]="tooltipGuardar()"
+              >
+              </app-boton-propio>
+            }
+            @if (isSaved() && !isNotEditable()) {
+              <app-boton-propio
+                appConfirm
+                [message]="'¿Quieres enviar la factura a validación?'"
+                [action]="'custom'"
+                [texto]="'Enviar a Validar'"
+                (confirmed)="sendToValidate()"
+                [variante]="'primary'"
+                [tipo]="'button'"
+                [disabled]="estaGuardando() || !hasValidAmount() || !formularioEsValido()"
+                [disabledTooltip]="tooltipSendToValidate()"
+              >
+              </app-boton-propio>
+            }
+            @if (isSaved() && isPendingState()) {
+              <app-boton-propio
+                appConfirm
+                [message]="'¿Quieres cancelar la validación de la factura?'"
+                [action]="'custom'"
+                [texto]="'Cancelar Validación'"
+                (confirmed)="sendToCancelValidate()"
+                [variante]="'danger'"
+                [tipo]="'button'"
+                [disabled]="estaGuardando()"
+                [disabledTooltip]="'Guardando cambios'"
+              >
+              </app-boton-propio>
+              <app-boton-propio
+                appConfirm
+                [message]="'¿Quieres aprobar la factura?'"
+                [action]="'custom'"
+                [texto]="'Aprobar Factura'"
+                (confirmed)="sendToApprove()"
+                [variante]="'success'"
+                [tipo]="'button'"
+                [disabled]="estaGuardando()"
+                [disabledTooltip]="'Guardando cambios'"
+              >
+              </app-boton-propio>
+            }
+          }
         </footer>
       </form>
 
       @if (isSaved()) {
-        <app-listado-lineas [idFactura]="+idRuta()"></app-listado-lineas>
+        <app-listado-lineas
+          [idFactura]="+idRuta()"
+          [isEditable]="!isNotEditable()"
+        ></app-listado-lineas>
       }
     </div>
   </app-loading-component>

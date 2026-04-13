@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, DestroyRef } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FacturasService } from '../../../core/services/facturas.service';
-import { TIPOS_IVA_DEFAULT } from '../../../core/constants/factura.constants';
+import { INVOICE_STATUS, TIPOS_IVA_DEFAULT } from '../../../core/constants/factura.constants';
 import { FormsModule } from '@angular/forms';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -75,6 +75,19 @@ export class DetalleFacturaComponent implements OnInit {
   searchInsuranceQuery = signal('');
   isSearchingInsurances = signal(false);
   isOpenInsuranceCombobox = signal(false);
+  isClientesCreated = computed(() => this.clients().length > 0);
+
+  isCreationState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'EnCreacion')?.value);
+  isPendingState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'PdteAprobacion')?.value);
+  isAprovedState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'AprobadaCerrada')?.value);
+
+  isNotEditable = computed(() => this.isPendingState() || this.isAprovedState());
+
+  hasValidAmount = computed(() => {
+    const factura = this.factura();
+    return factura && factura.importe !== null && factura.importe > 0;
+  });
+
   selectedInsurance = signal<Insurance | null>(null);
   isSelectionInsurance = false; // Bandera para distinguir entre escritura y selección en el input de aseguradora
 
@@ -153,11 +166,14 @@ export class DetalleFacturaComponent implements OnInit {
         switchMap((id) => this.facturasService.cargarFacturaId(id)),
         tap(() => {
           this.loadingService.hide();
-          if (this.isSaved()) {
-            this.searchInsuranceQuery.set(this.factura().insuranceName || '');
-            this.selectedInsurance.set({idInsurance: this.factura().aseguradora, name: this.factura().insuranceName ?? ''});
-           
-          }
+          this.onSelectedInsurance(
+            this.factura().aseguradora
+              ? {
+                  idInsurance: this.factura().aseguradora,
+                  name: this.factura().insuranceName ?? '',
+                }
+              : null,
+          );
         }),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -248,6 +264,17 @@ export class DetalleFacturaComponent implements OnInit {
     return errores;
   });
 
+  tooltipSendToValidate = computed(() => {
+    if (this.estaGuardando()) return ['Guardando, espera un momento...'];
+    const errores: string[] = [];
+    if (!this.numeroFacturaValido()) errores.push('Introduce un número de factura');
+    if (!this.aseguradoraValida()) errores.push('Selecciona una aseguradora');
+    if (!this.validClientSelected()) errores.push('Selecciona un cliente');
+    if (!this.hasValidAmount())
+      errores.push('Es necesario tener un importe válido para enviar a validación');
+    return errores;
+  });
+
   onSearchInputInsurance(event: Event) {
     const valor = (event.target as HTMLInputElement).value;
     this.searchInsuranceQuery.set(valor);
@@ -258,11 +285,45 @@ export class DetalleFacturaComponent implements OnInit {
     }
   }
 
-  onSelectedInsurance(insurance: Insurance) {
+  onSelectedInsurance(insurance: Insurance | null) {
     this.isSelectionInsurance = true; // ¡Activa la bandera para bloquear la API!
     this.selectedInsurance.set(insurance);
-    this.searchInsuranceQuery.set(insurance.name); // Actualiza el input visualmente
-    this.actualizarFactura({ aseguradora: insurance.idInsurance });
+    this.searchInsuranceQuery.set(insurance?.name || ''); // Actualiza el input visualmente
+    this.actualizarFactura({ aseguradora: insurance?.idInsurance });
     this.isOpenInsuranceCombobox.set(false); // Cierra el desplegable
+  }
+
+  sendToValidate() {
+    if (this.formularioEsValido() && this.hasValidAmount()) {
+      this.estaGuardando.set(true);
+      this.facturasService.sendToValidate(this.factura().idFactura!).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+        },
+      });
+    }
+  }
+  sendToCancelValidate() {
+    if (this.formularioEsValido() && this.hasValidAmount()) {
+      this.estaGuardando.set(true);
+      this.facturasService.sendToCancelValidate(this.factura().idFactura!).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+        },
+      });
+    }
+  }
+  sendToApprove() {
+    if (this.isPendingState()) {
+      this.estaGuardando.set(true);
+      this.facturasService.sendToApprove(this.factura().idFactura!).subscribe({
+        next: () => {
+          this.estaGuardando.set(false);
+        },
+      });
+    }
+  }
+  navigateToClients(){
+    this.router.navigate(['/clients']);
   }
 }

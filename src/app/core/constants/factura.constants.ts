@@ -1,4 +1,4 @@
-import { IvaItem } from '../models/catalogos.model';
+import { InvoiceStatus, IvaItem } from '../models/catalogos.model';
 import { Factura } from '../models/factura.model';
 
 export const FACTURA_INICIAL: Factura = {
@@ -23,6 +23,8 @@ export const FACTURA_INICIAL: Factura = {
   modificadoPor: 0,
 
   // Campos de la Vista
+  insuranceName: '',
+  clientLegalName: '',
   userName: '',
   statusName: ''
 };
@@ -31,4 +33,10 @@ export const TIPOS_IVA_DEFAULT: IvaItem[] = [
   { valor: 5, etiqueta: '5%' },
   { valor: 16, etiqueta: '16%' },
   { valor: 21, etiqueta: '21%' }
+];
+
+export const INVOICE_STATUS: InvoiceStatus[] = [
+  { value: 1, statusName: 'EnCreacion' },
+  { value: 2, statusName: 'PdteAprobacion'},
+  { value: 3, statusName: 'AprobadaCerrada'}
 ];

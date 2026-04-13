@@ -4,11 +4,13 @@
       <mat-icon>receipt_long</mat-icon>
       LÍNEAS DE FACTURA
     </h2>
+    @if(isEditable()){
     <app-boton-propio
       [texto]="'Nueva Línea'"
       [color]="'#27ae60'"
       (pulsado)="abrirDialogLinea()">
     </app-boton-propio>
+    }
   </header>
 
   <div class="table-responsive">
@@ -32,6 +34,8 @@
               {{ linea.importeTotal | currency: 'EUR' }}
             </td>
             <td class="actions-cell">
+              @if(isEditable())
+              {
               <app-boton-propio
                 [texto]="'Editar'"
                 (pulsado)="abrirDialogLinea(linea.idLineaFactura)"
@@ -44,7 +48,9 @@
                 [texto]="'Borrar'"
                 [variante]="'danger'"
               ></app-boton-propio>
+              }
             </td>
+
           </tr>
         } @empty {
           <tr>

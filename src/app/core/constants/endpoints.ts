@@ -6,6 +6,9 @@ export const ENDPOINTS = {
   FACTURAS_SIMPLE: `${API_URL}/api/FacturaSimple`,
   FACTURAS: `${API_URL}/api/Facturas`,
   FACTURA_POR_ID: (id: string) => `${API_URL}/api/Facturas/${id}`,
+  FACTURA_SEND_TO_VALIDATE: (id: string) => `${API_URL}/api/Facturas/${id}/sendToValidate`,
+  FACTURA_SEND_TO_APPROVE: (id: string) => `${API_URL}/api/Facturas/${id}/sendToApprove`,
+  FACTURA_SEND_TO_CANCEL_VALIDATE: (id: string) => `${API_URL}/api/Facturas/${id}/sendToCancelValidate`,
   INSURANCES: `${API_URL}/api/Insurance`,
   INSURANCES_FILTERED: (searchString: string) => `${API_URL}/api/Insurance/${searchString}`,
   LINEAS: `${API_URL}/api/LineasFactura`,
@@ -21,5 +24,5 @@ export const ENDPOINTS = {
   USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
   CLIENTS: `${API_URL}/api/Clients`,
   CLIENTS_ID: (id: string) => `${API_URL}/api/Clients/${id}`,
-  
+
 };

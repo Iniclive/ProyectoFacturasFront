@@ -311,6 +311,7 @@
   background-color: #f5f5f5;
 }
 
+
 /* Responsividad para móviles */
 @media (max-width: 768px) {
   .factura-card {

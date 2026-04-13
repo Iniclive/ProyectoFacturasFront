@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { ToastService } from '../../../core/services/toast.service';
+import { Factura } from '../../../core/models/factura.model';
+import { INVOICE_STATUS } from '../../../core/constants/factura.constants';
 
 
 @Component({
@@ -26,9 +28,15 @@ export class ListadoFacturasComponent {
   mostrarFiltros = signal(false);
   searchNumero = signal('');
   searchAseguradora = signal('');
+  searchClient = signal('');
+  searchStatus = signal('');
   importeOperador = signal<'mayor' | 'menor' | ''>('');
   importeValor = signal<number | null>(null);
+  statusOptions = signal(INVOICE_STATUS);
 
+  isEditable(factura: Factura) {
+    return factura.status != 3; // Solo se pueden editar las facturas que no están aprobadas
+  }
 
 
   ngOnInit() {
@@ -86,6 +94,20 @@ facturasFiltradas = computed(() => {
     );
   }
 
+  const client = this.searchClient().toLowerCase().trim();
+  if (client) {
+    resultado = resultado.filter(f =>
+      f.clientLegalName?.toLowerCase().includes(client)
+    );
+  }
+
+  const status = this.searchStatus().toLowerCase().trim();
+  if (status) {
+    resultado = resultado.filter(f =>
+      f.status?.toString().toLowerCase().includes(status)
+    );
+  }
+
   const operador = this.importeOperador();
   const valor = this.importeValor();
   if (operador && valor !== null) {
@@ -101,13 +123,17 @@ facturasFiltradas = computed(() => {
 
 hayFiltrosActivos = computed(() =>
   !!this.searchNumero() ||
+  !!this.searchClient() ||
   !!this.searchAseguradora() ||
+  !!this.searchStatus() ||
   (!!this.importeOperador() && this.importeValor() !== null)
 );
 
 limpiarFiltros() {
   this.searchNumero.set('');
   this.searchAseguradora.set('');
+  this.searchClient.set('');
+  this.searchStatus.set('');
   this.importeOperador.set('');
   this.importeValor.set(null);
 }

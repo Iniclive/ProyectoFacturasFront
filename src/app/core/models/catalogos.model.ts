@@ -13,3 +13,8 @@ export interface Material{
   idMaterial: number;
   name: string;
 }
+
+export interface InvoiceStatus {
+  value: number;
+  statusName: string;
+}

@@ -24,6 +24,7 @@ export class ListadoLineasComponent {
   private toastService = inject(ToastService);
 
   idFactura = input.required<number>();
+  isEditable = input<boolean>(true);
 
   lineas = this.lineasService.lineas;
   error = signal('');

@@ -22,6 +22,7 @@ export interface Factura {
   modificadoPor: number;
 
   // Campos de la Vista (JOINs)
+  clientLegalName: string | null;
   userName: string | null;
   statusName: string | null;
   insuranceName?: string | null; // Para mostrar el nombre en la lista simple

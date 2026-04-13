@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { BotonPropioComponent } from "../boton-propio/boton-propio.component";
 import { ConfirmDirective } from '../../core/directives/app-confirm.directive';
 
 @Component({
   selector: 'app-encabezado',
-  imports: [MatIconModule, RouterModule, BotonPropioComponent,ConfirmDirective],
+  imports: [MatIconModule, RouterModule, BotonPropioComponent,ConfirmDirective,RouterLink],
   templateUrl: './encabezado.html',
   standalone: true,
   styleUrl: './encabezado.css',

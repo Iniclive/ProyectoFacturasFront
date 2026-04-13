@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of,  tap, throwError } from 'rxjs';
+import { catchError, of, tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
 import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate } from '../models/factura.model';
 import { FACTURA_INICIAL } from '../constants/factura.constants';
@@ -67,18 +67,50 @@ export class FacturasService {
 
   eliminarFactura(idFac: string) {
     const facturasPrevias = [...this.listaFacturasCompleta()];
-    this.listaFacturasCompleta.update((lista) => lista.filter((f) => String(f.idFactura) !== String(idFac)));
+    this.listaFacturasCompleta.update((lista) =>
+      lista.filter((f) => String(f.idFactura) !== String(idFac)),
+    );
 
-    return this.httpClient
-      .delete(ENDPOINTS.FACTURA_POR_ID(idFac))
-      .pipe(
-        catchError((err) => {
-          this.listaFacturasCompleta.set(facturasPrevias);
-          console.log(err);
-          return throwError(() => err);
-        }),
-      );
+    return this.httpClient.delete(ENDPOINTS.FACTURA_POR_ID(idFac)).pipe(
+      catchError((err) => {
+        this.listaFacturasCompleta.set(facturasPrevias);
+        console.log(err);
+        return throwError(() => err);
+      }),
+    );
+  }
 
+  sendToValidate(idFac: string) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE(idFac), {}).pipe(
+      tap((updatedInvoice) => {
+        this.estadoFactura.setFactura(updatedInvoice);
+      }),
+      catchError((err) => {
+        console.log(err);
+        return throwError(() => err);
+      }),
+    );
+  }
+  sendToCancelValidate(idFac: string) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE(idFac), {}).pipe(
+      tap((updatedInvoice) => {
+        this.estadoFactura.setFactura(updatedInvoice);
+      }),
+      catchError((err) => {
+        console.log(err);
+        return throwError(() => err);
+      }),
+    );
+  }
+  sendToApprove(idFac: string) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE(idFac), {}).pipe(
+      tap((updatedInvoice) => {
+        this.estadoFactura.setFactura(updatedInvoice);
+      }),
+      catchError((err) => {
+        console.log(err);
+        return throwError(() => err);
+      }),
+    );
   }
 }
-
