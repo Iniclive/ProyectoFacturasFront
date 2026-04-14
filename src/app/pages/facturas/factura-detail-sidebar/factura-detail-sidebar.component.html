@@ -1,0 +1,114 @@
+<div class="sidebar-container">
+  <header class="sidebar-header">
+    <div class="header-left">
+      <mat-icon>receipt_long</mat-icon>
+      <div>
+        <h2 class="sidebar-title">Factura #{{ factura()?.numeroFactura }}</h2>
+        <span class="status-badge" [class]="'status-' + factura()?.status">
+          {{ factura()?.statusName }}
+        </span>
+      </div>
+    </div>
+    <button class="close-btn" (click)="cerrar()" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  @if (factura()) {
+    <div class="sidebar-body">
+
+      <section class="detail-section">
+        <h3 class="section-title">
+          <mat-icon>info</mat-icon>
+          Información de la factura
+        </h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Usuario</span>
+            <span class="detail-value">{{ factura()?.userName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Fecha de Creación</span>
+            <span class="detail-value">{{ factura()?.creado | date: 'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Fecha Ultima Modificación</span>
+            <span class="detail-value">{{ factura()?.modificado | date: 'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <h3 class="section-title">
+          <mat-icon>person</mat-icon>
+          Cliente
+        </h3>
+         <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">CIF</span>
+            <span class="detail-value">{{ factura()?.clientCif }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Nombre Legal</span>
+            <span class="detail-value">{{ factura()?.clientLegalName }}</span>
+          </div>
+        </div>
+      </section>
+
+      @if (factura()?.insuranceName) {
+        <section class="detail-section">
+          <h3 class="section-title">
+            <mat-icon>business</mat-icon>
+            Aseguradora
+          </h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Nombre</span>
+              <span class="detail-value">{{ factura()?.insuranceName }}</span>
+            </div>
+          </div>
+        </section>
+      }
+
+      <section class="detail-section">
+        <h3 class="section-title">
+          <mat-icon>euro</mat-icon>
+          Importes
+        </h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Base imponible</span>
+            <span class="detail-value">
+              {{ factura()?.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">IVA</span>
+            <span class="detail-value">{{ factura()?.tipoIva }}%</span>
+          </div>
+          <div class="detail-item detail-item--highlight">
+            <span class="detail-label">Total</span>
+            <span class="detail-value total">
+              {{ factura()?.importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="sidebar-footer">
+      <button class="btn-secondary" (click)="cerrar()">Cerrar</button>
+      <button class="btn-primary" (click)="irAEdicion()">
+        <mat-icon>{{ isEditable() ? 'edit' : 'visibility' }}</mat-icon>
+        {{ isEditable() ? 'Editar factura' : 'Consultar factura' }}
+      </button>
+    </footer>
+
+  } @else {
+    <div class="loading">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>Cargando...</p>
+    </div>
+  }
+</div>

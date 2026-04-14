@@ -9,11 +9,12 @@ import { ConfirmDirective } from '../../../core/directives/app-confirm.directive
 import { ToastService } from '../../../core/services/toast.service';
 import { Factura } from '../../../core/models/factura.model';
 import { INVOICE_STATUS } from '../../../core/constants/factura.constants';
+import { FacturaDetailSidebarComponent } from '../factura-detail-sidebar/factura-detail-sidebar';
 
 
 @Component({
   selector: 'app-listado-facturas',
-  imports: [CurrencyPipe, BotonPropioComponent, MatIconModule,ConfirmDirective],
+  imports: [CurrencyPipe, BotonPropioComponent, MatIconModule,ConfirmDirective,FacturaDetailSidebarComponent],
   templateUrl: './listado-facturas.component.html',
   styleUrl: './listado-facturas.component.css',
   standalone: true,
@@ -33,6 +34,8 @@ export class ListadoFacturasComponent {
   importeOperador = signal<'mayor' | 'menor' | ''>('');
   importeValor = signal<number | null>(null);
   statusOptions = signal(INVOICE_STATUS);
+  sidebarOpen = signal(false);
+  selectedFacturaId = signal<string | null>(null);
 
   isEditable(factura: Factura) {
     return factura.status != 3; // Solo se pueden editar las facturas que no están aprobadas
@@ -136,6 +139,15 @@ limpiarFiltros() {
   this.searchStatus.set('');
   this.importeOperador.set('');
   this.importeValor.set(null);
+}
+abrirDetalle(id: string) {
+  this.selectedFacturaId.set(id);
+  this.sidebarOpen.set(true);
+}
+
+cerrarSidebar() {
+  this.sidebarOpen.set(false);
+  this.selectedFacturaId.set(null);
 }
 
 }

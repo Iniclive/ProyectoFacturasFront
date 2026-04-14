@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [class.sidebar-open]="sidebarOpen()">
   <div class="factura-card">
     <header class="list-header">
       <div class="header-top">
@@ -8,164 +8,48 @@
         </h1>
 
         <div class="header-actions">
-          <button class="btn-toggle-filtros" (click)="showFilters.set(!showFilters())">
-            <mat-icon>filter_list</mat-icon>
-            {{ showFilters() ? 'Ocultar filtros' : 'Mostrar filtros' }}
-          </button>
-
           <app-boton-propio
             [texto]="'Nuevo Usuario'"
             [variante]="'success'"
             (pulsado)="showUserDetails()"
-          >
-          </app-boton-propio>
+          />
         </div>
       </div>
-
-      @if (showFilters()) {
-        <div class="filtros-panel">
-          <div class="filtros-grid">
-            <div class="filtro-campo">
-              <label class="filtro-label">
-                <mat-icon>tag</mat-icon>
-                ID Usuario
-              </label>
-              <div class="input-wrapper">
-                <input
-                  class="filtro-input"
-                  type="text"
-                  placeholder="Ej: 1234"
-                  [value]="searchId()"
-                  (input)="searchId.set($any($event.target).value)"
-                />
-                @if (searchId()) {
-                  <mat-icon class="clear-icon" (click)="searchId.set('')">close</mat-icon>
-                }
-              </div>
-            </div>
-
-            <div class="filtro-campo">
-              <label class="filtro-label">
-                <mat-icon>person</mat-icon>
-                Nombre
-              </label>
-              <div class="input-wrapper">
-                <input
-                  class="filtro-input"
-                  type="text"
-                  placeholder="Nombre usuario..."
-                  [value]="searchName()"
-                  (input)="searchName.set($any($event.target).value)"
-                />
-                @if (searchName()) {
-                  <mat-icon class="clear-icon" (click)="searchName.set('')">close</mat-icon>
-                }
-              </div>
-            </div>
-
-            <div class="filtro-campo">
-              <label class="filtro-label">
-                <mat-icon>email</mat-icon>
-                Email
-              </label>
-              <div class="input-wrapper">
-                <input
-                  class="filtro-input"
-                  type="text"
-                  placeholder="Email usuario..."
-                  [value]="searchEmail()"
-                  (input)="searchEmail.set($any($event.target).value)"
-                />
-                @if (searchEmail()) {
-                  <mat-icon class="clear-icon" (click)="searchEmail.set('')">close</mat-icon>
-                }
-              </div>
-            </div>
-
-            <div class="filtro-campo">
-              <label class="filtro-label">
-                <mat-icon>admin_panel_settings</mat-icon>
-                Rol
-              </label>
-              <div class="input-wrapper">
-                <input
-                  class="filtro-input"
-                  type="text"
-                  placeholder="Rol usuario..."
-                  [value]="searchRole()"
-                  (input)="searchRole.set($any($event.target).value)"
-                />
-                @if (searchRole()) {
-                  <mat-icon class="clear-icon" (click)="searchRole.set('')">close</mat-icon>
-                }
-              </div>
-            </div>
-          </div>
-          <div class="filtros-footer">
-            <span class="resultados-count">
-              {{ filteredUsers().length }} resultado{{ filteredUsers().length !== 1 ? 's' : '' }}
-
-              @if (activeFilters()) {
-                <span class="de-total">de {{ users().length }}</span>
-              }
-            </span>
-
-            @if (activeFilters()) {
-              <button class="btn-limpiar" (click)="resetFilters()">
-                <mat-icon>filter_alt_off</mat-icon>
-                Limpiar filtros
-              </button>
-            }
-          </div>
-        </div>
-      }
     </header>
 
-    <div class="table-responsive">
-      <table class="modern-table">
-        <thead>
-          <tr>
-            <th>ID Usuario</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of filteredUsers(); track user.idUser) {
-            <tr>
-              <td class="bold">{{ user.idUser }}</td>
-              <td>{{ user.name }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.role }}</td>
-              <td class="text-center actions-cell">
-                <app-boton-propio
-                  [texto]="'Editar'"
-                  (pulsado)="showUserDetails(user.idUser)"
-                ></app-boton-propio>
-
-                <app-boton-propio
-                  appConfirm
-                  action="delete"
-                  [message]="'¿Estás seguro de que deseas eliminar el usuario?'"
-                  (confirmed)="deleteUser(user.idUser)"
-                  [texto]="'Borrar'"
-                  [variante]="'danger'"
-                >
-                </app-boton-propio>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="6" class="empty-state">
-                <mat-icon>inbox</mat-icon>
-                <p>No hay usuarios registrados en este momento.</p>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-data-table
+      [data]="users()"
+      [columns]="columns"
+      [filters]="filters"
+      [rowClickable]="true"
+      (rowDblClick)="abrirDetalle($event)"
+      emptyMessage="No hay usuarios registrados en este momento."
+    >
+      <ng-template #actions let-user>
+        <app-boton-propio
+          [texto]="'Editar'"
+          (pulsado)="showUserDetails(user.idUser)"
+        />
+        <app-boton-propio
+          appConfirm
+          action="delete"
+          [message]="'¿Estás seguro de que deseas eliminar el usuario?'"
+          (confirmed)="deleteUser(user.idUser)"
+          [texto]="'Borrar'"
+          [variante]="'danger'"
+        />
+      </ng-template>
+    </app-data-table>
   </div>
+
+  <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    @if (sidebarOpen()) {
+      <app-user-detail-sidebar
+        [userId]="selectedUserId()"
+        (onClose)="cerrarSidebar()"
+        (onEdit)="editarDesdeSidebar($event)"
+      />
+    }
+  </aside>
 </div>

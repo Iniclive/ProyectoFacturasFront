@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [class.sidebar-open]="sidebarOpen()">
   <div class="factura-card">
     <header class="list-header">
       <div class="header-top">
@@ -162,7 +162,7 @@
         </thead>
         <tbody>
           @for (factura of facturasFiltradas(); track factura.idFactura) {
-            <tr>
+            <tr  (dblclick)="abrirDetalle(factura.idFactura.toString())" class="clickable-row">
               <td class="bold">{{ factura.numeroFactura }}</td>
               <td>{{ factura.clientLegalName }}</td>
               <td>{{ factura.insuranceName }}</td>
@@ -203,4 +203,13 @@
       </table>
     </div>
   </div>
+  <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    @if (sidebarOpen()) {
+      <app-factura-detail-sidebar
+        [facturaId]="selectedFacturaId()"
+        (onClose)="cerrarSidebar()"
+      />
+    }
+  </aside>
 </div>

@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [class.sidebar-open]="sidebarOpen()">
   <div class="factura-card">
     <header class="list-header">
       <div class="header-top">
@@ -134,7 +134,8 @@
         </thead>
         <tbody>
           @for (client of filteredClients(); track client.clientId) {
-            <tr>
+            <tr (dblclick)="showClientDetails(client.clientId)"
+            class="clickable-row">
               <td class="bold">{{ client.cif }}</td>
               <td>{{ client.legalName }}</td>
               <td>{{ client.commercialName }}</td>
@@ -167,5 +168,17 @@
       </table>
     </div>
   </div>
+  <!-- Overlay -->
+  <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    @if (sidebarOpen()) {
+      <app-client-details
+        [clientId]="selectedClientId()"
+        (onClose)="cerrarSidebar()"
+      />
+    }
+  </aside>
 </div>
 

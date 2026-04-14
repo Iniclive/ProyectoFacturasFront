@@ -1,0 +1,60 @@
+<div class="sidebar-container">
+  <header class="sidebar-header">
+    <div class="header-left">
+      <mat-icon>person</mat-icon>
+      <div>
+        <h2 class="sidebar-title">{{ user()?.name || 'Usuario' }}</h2>
+        @if (user()?.role) {
+          <span class="role-badge" [class]="'role-' + user()?.role">
+            {{ user()?.role }}
+          </span>
+        }
+      </div>
+    </div>
+    <button class="close-btn" (click)="cerrar()" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  @if (user(); as u) {
+    <div class="sidebar-body">
+      <section class="detail-section">
+        <h3 class="section-title">
+          <mat-icon>badge</mat-icon>
+          Información del usuario
+        </h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">ID Usuario</span>
+            <span class="detail-value">{{ u.idUser }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Nombre</span>
+            <span class="detail-value">{{ u.name }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ u.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Rol</span>
+            <span class="detail-value">{{ u.role }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="sidebar-footer">
+      <button class="btn-secondary" (click)="cerrar()">Cerrar</button>
+      <button class="btn-primary" (click)="editar()">
+        <mat-icon>edit</mat-icon>
+        Editar usuario
+      </button>
+    </footer>
+  } @else {
+    <div class="loading">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>Cargando...</p>
+    </div>
+  }
+</div>

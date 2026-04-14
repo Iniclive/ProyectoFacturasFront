@@ -1,38 +1,62 @@
-import { CurrencyPipe } from '@angular/common';
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { FacturasService } from '../../../core/services/facturas.service';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
-import { Router } from '@angular/router';
-import { MatIconModule, MatIcon } from '@angular/material/icon';
-import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
-import { ToastService } from '../../../core/services/toast.service';
-import { UsersService } from '../../../core/services/users.service';
+import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
+
+import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
+import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
+import { UsersService } from '../../../core/services/users.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { UserDetailsComponent } from '../user-details.component/user-details.component';
 import { User } from '../../../core/models/user.models';
+import { DataTableComponent } from '../../../shared/data-table/data-table.component';
+import { ColumnDef, FilterDef } from '../../../shared/data-table/data-table.types';
+import { UserDetailSidebarComponent } from '../user-detail-sidebar/user-detail-sidebar';
 
 @Component({
   selector: 'app-users.component',
-  imports: [MatIcon, BotonPropioComponent,ConfirmDirective],
+  imports: [
+    MatIcon,
+    BotonPropioComponent,
+    ConfirmDirective,
+    DataTableComponent,
+    UserDetailSidebarComponent,
+  ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersComponent {
-
-  usersService = inject(UsersService);
-  private readonly router = inject(Router);
-  users = this.usersService.users;
-  user = this.usersService.selectedUser;
-  error = signal('');
+  private readonly usersService = inject(UsersService);
   private readonly dialog = inject(MatDialog);
-  private destroyRef = inject(DestroyRef);
-  private toastService = inject(ToastService);
-  showFilters = signal(false);
-  searchId = signal('');
-  searchEmail = signal('');
-  searchName = signal('');
-  searchRole = signal('');
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
+
+  readonly users = this.usersService.users;
+  readonly error = signal('');
+
+  readonly sidebarOpen = signal(false);
+  readonly selectedUserId = signal<string | null>(null);
+
+  readonly columns: ColumnDef<User>[] = [
+    { key: 'idUser', label: 'ID Usuario', sortable: true, cssClass: 'bold' },
+    { key: 'name', label: 'Nombre', sortable: true },
+    { key: 'email', label: 'Email', sortable: true },
+    { key: 'role', label: 'Rol', sortable: true },
+  ];
+
+  readonly filters: FilterDef[] = [
+    { kind: 'text', key: 'idUser', label: 'ID Usuario', icon: 'tag', placeholder: 'Ej: 1234' },
+    { kind: 'text', key: 'name', label: 'Nombre', icon: 'person', placeholder: 'Nombre usuario...' },
+    { kind: 'text', key: 'email', label: 'Email', icon: 'email', placeholder: 'Email usuario...' },
+    {
+      kind: 'text',
+      key: 'role',
+      label: 'Rol',
+      icon: 'admin_panel_settings',
+      placeholder: 'Rol usuario...',
+    },
+  ];
 
   ngOnInit() {
     this.loadUsers();
@@ -43,7 +67,7 @@ export class UsersComponent {
   }
 
   showUserDetails(id?: string) {
-    const dialogRef = this.dialog.open(UserDetailsComponent, {
+    this.dialog.open(UserDetailsComponent, {
       width: '520px',
       data: {
         id: id ?? null,
@@ -52,7 +76,6 @@ export class UsersComponent {
         role: id ? this.users().find((u) => u.idUser === id)?.role : 'user',
       } as unknown as User,
     });
-    dialogRef.afterClosed().subscribe((resultado) => {});
   }
 
   deleteUser(id: string) {
@@ -70,35 +93,17 @@ export class UsersComponent {
     });
   }
 
-  filteredUsers = computed(() => {
-    let result = this.users();
-    const id = this.searchId().toLowerCase().trim();
-    if (id) {
-      result = result.filter((u) => u.idUser?.toString().toLowerCase().includes(id));
-    }
-    const mail = this.searchEmail().toLowerCase().trim();
-    if (mail) {
-      result = result.filter((u) => u.email?.toLowerCase().includes(mail));
-    }
-    const name = this.searchName().toLowerCase().trim();
-    if (name) {
-      result = result.filter((u) => u.name?.toLowerCase().includes(name));
-    }
+  abrirDetalle(user: User): void {
+    this.selectedUserId.set(user.idUser);
+    this.sidebarOpen.set(true);
+  }
 
-    const role = this.searchRole().toLowerCase().trim();
-    if (role) {
-      result = result.filter((u) => u.role?.toLowerCase().includes(role));
-    }
+  cerrarSidebar(): void {
+    this.sidebarOpen.set(false);
+  }
 
-    return result;
-  });
-
-  activeFilters = computed(() => !!this.searchName() || !!this.searchEmail() || !!this.searchRole());
-
-  resetFilters() {
-    this.searchId.set('');
-    this.searchEmail.set('');
-    this.searchName.set('');
-    this.searchRole.set('');
+  editarDesdeSidebar(id: string): void {
+    this.sidebarOpen.set(false);
+    this.showUserDetails(id);
   }
 }

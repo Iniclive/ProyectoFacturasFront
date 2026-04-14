@@ -23,6 +23,7 @@ export const FACTURA_INICIAL: Factura = {
   modificadoPor: 0,
 
   // Campos de la Vista
+  clientCif: '',
   insuranceName: '',
   clientLegalName: '',
   userName: '',
