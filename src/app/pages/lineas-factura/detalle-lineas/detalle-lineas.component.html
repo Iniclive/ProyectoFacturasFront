@@ -1,84 +1,145 @@
-<div class="dialog-container">
-  <header class="dialog-header">
-    <h2 class="dialog-title">
-      <mat-icon>receipt_long</mat-icon>
-      {{ data.idLinea ? 'Editar Línea' : 'Nueva Línea' }}
-    </h2>
+<div class="sidebar-container">
+  <header class="sidebar-header">
+    <div class="header-left">
+      <div>
+        <h2 class="sidebar-title">
+          {{ isEditing() ? 'Editar Línea de Factura' : 'Nueva Línea de Factura' }}
+        </h2>
+      </div>
+    </div>
+    <button class="close-btn" (click)="cancelar()" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
   </header>
 
-  <div class="form-grid">
+  <div class="sidebar-body">
+    <section class="detail-section">
+      <h3 class="section-title">
+        <mat-icon>inventory_2</mat-icon>
+        Producto o Servicio
+      </h3>
+      <div class="detail-grid">
+        <div class="campo campo-full">
 
-    <!-- Material -->
-    <div class="campo">
-      <label>Material</label>
-      <select
-        class="modern-select"
-        [class.input-error]="mostrarErrorMaterial()"
-        [ngModel]="linea().idMaterial"
-        (ngModelChange)="actualizarMaterial($event)">
-        <option [value]="0" disabled>Selecciona un material</option>
-        @for (material of materials(); track material.idMaterial) {
-          <option [value]="material.idMaterial">{{ material.name }}</option>
-        }
-      </select>
-      <app-form-error [mostrar]="mostrarErrorMaterial()" mensaje="Selecciona un material" />
-    </div>
+          <label class="detail-label" for="linea-material">Producto o Servicio</label>
+          <div class="autocomplete-wrapper">
+            @if (selectedMaterial() === null || searchMaterialQuery().length < 3) {
+              <mat-icon class="search-icon">search</mat-icon>
+            }
+            @if (materialValido() && selectedMaterial() !== null) {
+              <mat-icon class="search-icon">check</mat-icon>
+            }
+            @if (!materialValido() && searchMaterialQuery().length >= 3) {
+              <mat-icon class="search-icon">error</mat-icon>
+            }
+            <input
+              id="linea-material"
+              type="text"
+              placeholder="Escriba para buscar (mín. 3 letras)..."
+              [value]="searchMaterialQuery()"
+              (input)="onSearchInputMaterial($event)"
+              class="modern-input input-with-icon"
+              [class.input-error]="mostrarErrorMaterial()"
+              autocomplete="off"
+            />
 
-    <!-- Cantidad -->
-    <div class="campo">
-      <label>Cantidad</label>
-      <input
-        class="modern-input"
-        [class.input-error]="mostrarErrorCantidad()"
-        type="number"
-        min="1"
-        [ngModel]="linea().cantidad"
-        (ngModelChange)="actualizarCantidad($event)"
-        placeholder="0"
-      />
-      <app-form-error [mostrar]="mostrarErrorCantidad()" mensaje="La cantidad tiene que ser mayor que 0" />
-    </div>
+            @if (isOpenMaterialCombobox() && searchMaterialQuery().length >= 3) {
+              <div class="popup-results">
+                @if (filteredMaterials().length === 0) {
+                  <div class="no-results">No se han encontrado resultados</div>
+                }
+                <div class="options-list">
+                  @for (material of filteredMaterials(); track material.idMaterial) {
+                    <div class="option-item" (click)="onSelectedMaterial(material)">
+                      <span class="option-label">{{ material.name }}</span>
+                      @if (
+                        selectedMaterial()?.idMaterial === material.idMaterial && materialValido()
+                      ) {
+                        <mat-icon class="check-icon">check</mat-icon>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          <app-form-error
+            [mostrar]="mostrarErrorMaterial()"
+            mensaje="El concepto es obligatorio y debe tener al menos 3 caracteres"
+          />
+        </div>
+      </div>
+    </section>
 
-    <!-- Importe -->
-    <div class="campo">
-      <label>Importe (€)</label>
-      <input
-        class="modern-input"
-        [class.input-error]="mostrarErrorImporte()"
-        type="number"
-        min="0"
-        step="0.01"
-        [ngModel]="linea().importe"
-        (ngModelChange)="actualizarImporte($event)"
-        placeholder="0.00"
-      />
-      <app-form-error [mostrar]="mostrarErrorImporte()" mensaje="El importe tiene que ser mayor que 0" />
-    </div>
+    <section class="detail-section">
+      <h3 class="section-title">
+        <mat-icon>calculate</mat-icon>
+        Cantidad e importe
+      </h3>
+      <div class="detail-grid">
+        <div class="campo">
+          <label class="detail-label" for="linea-cantidad">Cantidad</label>
+          <input
+            id="linea-cantidad"
+            class="modern-input"
+            [class.input-error]="mostrarErrorCantidad()"
+            type="number"
+            min="1"
+            [value]="linea().cantidad"
+            (input)="onCantidadInput($event)"
+            placeholder="0"
+          />
+          <app-form-error
+            [mostrar]="mostrarErrorCantidad()"
+            mensaje="La cantidad tiene que ser mayor que 0"
+          />
+        </div>
 
-    <!-- Importe Total (readonly) -->
-    <div class="campo">
-      <label>Importe Total (€)</label>
-      <input
-        class="modern-input readonly-input"
-        type="number"
-        [ngModel]="importeTotalCalculado()"
-        readonly
-        placeholder="0.00"
-      />
-    </div>
-
+        <div class="campo">
+          <label class="detail-label" for="linea-importe">Importe (€)</label>
+          <input
+            id="linea-importe"
+            class="modern-input"
+            [class.input-error]="mostrarErrorImporte()"
+            type="number"
+            min="0"
+            step="0.01"
+            [value]="linea().importe"
+            (input)="onImporteInput($event)"
+            placeholder="0.00"
+          />
+          <app-form-error
+            [mostrar]="mostrarErrorImporte()"
+            mensaje="El importe tiene que ser mayor que 0"
+          />
+        </div>
+      </div>
+    </section>
+    <section class="detail-section">
+      <h3 class="section-title">
+        <mat-icon>euro</mat-icon>
+        Importe total
+      </h3>
+        <div class="campo">
+          <label class="detail-label" for="linea-total">Importe Total (€)</label>
+          <input
+            id="linea-total"
+            class="modern-input readonly-input"
+            type="number"
+            [value]="importeTotalCalculado()"
+            readonly
+            placeholder="0.00"
+          />
+        </div>
+    </section>
   </div>
 
-  <div class="dialog-actions">
+  <footer class="sidebar-footer">
+    <app-boton-propio [texto]="'Cancelar'" [variante]="'danger'" (pulsado)="cancelar()" />
     <app-boton-propio
-      [texto]="'Cancelar'"
-      [variante]="'danger'"
-      (pulsado)="cancelar()">
-    </app-boton-propio>
-    <app-boton-propio
-      [texto]="estaGuardando() ? 'Guardando...' : 'Guardar Línea'"
+      [texto]="estaGuardando() ? 'Guardando...' : isEditing() ? 'Guardar Cambios' : 'Crear Línea'"
       [color]="'#27ae60'"
-      (pulsado)="guardar()">
-    </app-boton-propio>
-  </div>
+      (pulsado)="guardar()"
+    />
+  </footer>
 </div>

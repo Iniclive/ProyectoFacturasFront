@@ -24,8 +24,16 @@
           routerLinkActive="active-link"
           class="nav-link"
           >
-          <mat-icon>work_outline</mat-icon>
+          <mat-icon>group</mat-icon>
           Clientes
+        </a>
+         <a
+          routerLink="/products"
+          routerLinkActive="active-link"
+          class="nav-link"
+          >
+          <mat-icon>work_outline</mat-icon>
+          Productos
         </a>
         @if(currentUser()?.role === 'admin'){
           <a

@@ -1,0 +1,78 @@
+<div class="sidebar-container">
+  <header class="sidebar-header">
+    <div class="header-left">
+      <mat-icon>manage_accounts</mat-icon>
+      <div>
+        <h2 class="sidebar-title">
+          {{ isEditing() ? (currentMaterial()?.name || 'Material') : 'Nuevo Material' }}
+        </h2>
+      </div>
+    </div>
+    <button class="close-btn" (click)="cancelar()" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="sidebar-body">
+    <section class="detail-section">
+      <h3 class="section-title">
+        <mat-icon>badge</mat-icon>
+        Nombre del Producto/Servicio
+      </h3>
+      <div class="detail-grid">
+        <div class="campo">
+          <label class="detail-label" for="material-name">Producto/Servicio</label>
+          <input
+            id="material-name"
+            class="modern-input"
+            [class.input-error]="showNameError()"
+            type="text"
+            [value]="currentMaterial()?.name"
+            (input)="updateField({ name: $any($event.target).value })"
+            placeholder="Ej: B1324657"
+            [disabled]="isEditing()"
+          />
+          <app-form-error [mostrar]="showNameError()" [mensaje]="nameError()" />
+        </div>
+      </div>
+    </section>
+    <section class="detail-section">
+      <h3 class="section-title">
+        <mat-icon>euro</mat-icon>
+        Precio por Defecto
+      </h3>
+      <div class="detail-grid">
+        <div class="campo">
+          <label class="detail-label" for="material-defaultPrice">Precio</label>
+          <input
+            id="material-defaultPrice"
+            class="modern-input"
+            [class.input-error]="showDefaultPriceError()"
+            type="text"
+            [value]="currentMaterial()?.defaultPrice"
+            (input)="updateField({ defaultPrice: ($any($event.target).value) || 0 })"
+            placeholder="Ej: 10.00"
+          />
+          <app-form-error [mostrar]="showDefaultPriceError()" [mensaje]="defaultPriceError()" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="sidebar-footer">
+    <app-boton-propio
+      [texto]="'Cancelar'"
+      [variante]="'danger'"
+      (pulsado)="cancelar()"
+    />
+    <app-boton-propio
+      appConfirm
+      action="save"
+      [message]="isEditing() ? 'Deseas actualizar el producto/servicio?' : 'Deseas crear un nuevo producto/servicio?'"
+      (confirmed)="saveMaterial()"
+      [texto]="isSaving() ? 'Guardando...' : isEditing() ? 'Guardar Cambios' : 'Crear Producto/Servicio'"
+      [color]="'#27ae60'"
+      [tipo]="'submit'"
+    />
+  </footer>
+</div>

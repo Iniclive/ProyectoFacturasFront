@@ -1,33 +1,41 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, DestroyRef, inject, input, signal } from '@angular/core';
-import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
-import { MatDialogModule } from '@angular/material/dialog';
+
+import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
+import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
-import { DetalleLineaComponent, DetalleLineaDialogData } from '../detalle-lineas/detalle-lineas.component';
 import { ToastService } from '../../../core/services/toast.service';
+import { DetalleLineaComponent } from '../detalle-lineas/detalle-lineas.component';
 
 @Component({
   selector: 'app-listado-lineas',
-  imports: [CurrencyPipe, BotonPropioComponent, MatIconModule, MatDialogModule, ConfirmDirective],
+  imports: [
+    CurrencyPipe,
+    BotonPropioComponent,
+    MatIconModule,
+    ConfirmDirective,
+    DetalleLineaComponent,
+  ],
   templateUrl: './listado-lineas.component.html',
   styleUrl: './listado-lineas.component.css',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListadoLineasComponent {
   private readonly lineasService = inject(LineasFacturaService);
-  private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
-  private toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
 
-  idFactura = input.required<number>();
-  isEditable = input<boolean>(true);
+  readonly idFactura = input.required<number>();
+  readonly isEditable = input<boolean>(true);
 
-  lineas = this.lineasService.lineas;
-  error = signal('');
+  readonly lineas = this.lineasService.lineas;
+  readonly error = signal('');
+
+  readonly sidebarOpen = signal(false);
+  readonly selectedLineaId = signal<number | null>(null);
 
   ngOnInit() {
     this.cargarLineas();
@@ -43,28 +51,28 @@ export class ListadoLineasComponent {
       });
   }
 
-  abrirDialogLinea(id?: number) {
-    const dialogRef = this.dialog.open(DetalleLineaComponent, {
-    width: '520px',
-    data: {
-      idLinea: id ?? null,
-      idFactura: this.idFactura()
-    } as DetalleLineaDialogData
-  });
+  abrirSidebarLinea(id?: number) {
+    this.selectedLineaId.set(id ?? null);
+    this.sidebarOpen.set(true);
+  }
 
-  dialogRef.afterClosed().subscribe(resultado => {
-    if (resultado) this.cargarLineas();
-  });
-    console.log(id ? `Editando línea: ${id}` : 'Nueva línea');
+  cerrarSidebar() {
+    this.sidebarOpen.set(false);
+    this.selectedLineaId.set(null);
+  }
+
+  onLineaGuardada() {
+    this.cerrarSidebar();
+    this.cargarLineas();
   }
 
   borrarLinea(id?: number) {
-    console.log('Intentando borrar la línea con id ' + id);
     this.lineasService.eliminarLinea(id).subscribe({
-      next: () => this.toastService.mostrar({
-            texto: 'Se ha eliminado la linea correctamente',
-            tipoToast: 'submit',
-          }),
+      next: () =>
+        this.toastService.mostrar({
+          texto: 'Se ha eliminado la linea correctamente',
+          tipoToast: 'submit',
+        }),
       error: (err) => console.error(err),
     });
   }

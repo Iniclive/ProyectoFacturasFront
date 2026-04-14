@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [class.sidebar-open]="sidebarClientOpen()">
   <app-loading-component>
     <div class="factura-card">
       <header class="factura-header">
@@ -141,12 +141,14 @@
           </div>
           <div class="row-group">
             <div class="campo">
-              <label for="cliente">Cliente</label>
-              @if (!isClientesCreated()) {
-                <span class="crear-cliente-link" (click)="navigateToClients()">
-                  + Crear nuevo cliente
-                </span>
-              }
+              <div class="campo-label-row">
+                <label for="cliente">Cliente</label>
+                @if (!isNotEditable()) {
+                  <span class="crear-cliente-link" (click)="createNewClient()">
+                    + Crear nuevo cliente
+                  </span>
+                }
+              </div>
               <select
                 id="client"
                 name="clientId"
@@ -259,4 +261,13 @@
       }
     </div>
   </app-loading-component>
+  <!-- Overlay -->
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="sidebarClientOpen()">
+    @if (sidebarClientOpen()) {
+      <app-client-details (onClose)="closeSidebar()" />
+    }
+  </aside>
 </div>

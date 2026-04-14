@@ -27,6 +27,7 @@ import { LoadingService } from '../../../core/services/loading.service';
 import { ClientsService } from '../../../core/services/clients.service';
 import { Insurance } from '../../../core/models/catalogos.model';
 import { Client } from '../../../core/models/client.models';
+import { ClientDetailsComponent } from '../../clients/client-details.component/client-details.component';
 
 @Component({
   standalone: true,
@@ -47,6 +48,7 @@ import { Client } from '../../../core/models/client.models';
     BotonPropioComponent,
     DisabledTooltipDirective,
     LoadingComponent,
+    ClientDetailsComponent,
   ],
   templateUrl: './detalle-factura.component.html',
   styleUrl: './detalle-factura.component.css',
@@ -75,7 +77,7 @@ export class DetalleFacturaComponent implements OnInit {
   searchInsuranceQuery = signal('');
   isSearchingInsurances = signal(false);
   isOpenInsuranceCombobox = signal(false);
-  isClientesCreated = computed(() => this.clients().length > 0);
+  sidebarClientOpen = signal(false);
 
   isCreationState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'EnCreacion')?.value);
   isPendingState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'PdteAprobacion')?.value);
@@ -323,7 +325,10 @@ export class DetalleFacturaComponent implements OnInit {
       });
     }
   }
-  navigateToClients(){
-    this.router.navigate(['/clients']);
+  createNewClient(){
+    this.sidebarClientOpen.set(true);
+  }
+  closeSidebar(){
+    this.sidebarClientOpen.set(false);
   }
 }

@@ -9,10 +9,6 @@ export interface IvaItem {
   etiqueta: string;
 }
 
-export interface Material{
-  idMaterial: number;
-  name: string;
-}
 
 export interface InvoiceStatus {
   value: number;

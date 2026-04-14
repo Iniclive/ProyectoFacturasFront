@@ -1,15 +1,15 @@
-<div class="lineas-container">
+<div class="lineas-container" [class.sidebar-open]="sidebarOpen()">
   <header class="list-header">
     <h2 class="section-title">
       <mat-icon>receipt_long</mat-icon>
       LÍNEAS DE FACTURA
     </h2>
-    @if(isEditable()){
-    <app-boton-propio
-      [texto]="'Nueva Línea'"
-      [color]="'#27ae60'"
-      (pulsado)="abrirDialogLinea()">
-    </app-boton-propio>
+    @if (isEditable()) {
+      <app-boton-propio
+        [texto]="'Nueva Línea'"
+        [color]="'#27ae60'"
+        (pulsado)="abrirSidebarLinea()"
+      />
     }
   </header>
 
@@ -34,23 +34,21 @@
               {{ linea.importeTotal | currency: 'EUR' }}
             </td>
             <td class="actions-cell">
-              @if(isEditable())
-              {
-              <app-boton-propio
-                [texto]="'Editar'"
-                (pulsado)="abrirDialogLinea(linea.idLineaFactura)"
-              ></app-boton-propio>
-              <app-boton-propio
-                appConfirm
-                action="delete"
-                [message]="'¿Estás seguro de que deseas eliminar la línea?'"
-                (confirmed)="borrarLinea(linea.idLineaFactura)"
-                [texto]="'Borrar'"
-                [variante]="'danger'"
-              ></app-boton-propio>
+              @if (isEditable()) {
+                <app-boton-propio
+                  [texto]="'Editar'"
+                  (pulsado)="abrirSidebarLinea(linea.idLineaFactura)"
+                />
+                <app-boton-propio
+                  appConfirm
+                  action="delete"
+                  [message]="'¿Estás seguro de que deseas eliminar la línea?'"
+                  (confirmed)="borrarLinea(linea.idLineaFactura)"
+                  [texto]="'Borrar'"
+                  [variante]="'danger'"
+                />
               }
             </td>
-
           </tr>
         } @empty {
           <tr>
@@ -63,4 +61,18 @@
       </tbody>
     </table>
   </div>
+
+  @if (sidebarOpen()) {
+    <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+  }
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    @if (sidebarOpen()) {
+      <app-detalle-linea
+        [idLinea]="selectedLineaId()"
+        [idFactura]="idFactura()"
+        (onClose)="cerrarSidebar()"
+        (onSaved)="onLineaGuardada()"
+      />
+    }
+  </aside>
 </div>

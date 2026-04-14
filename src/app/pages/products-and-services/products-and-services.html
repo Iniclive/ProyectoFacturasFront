@@ -1,0 +1,54 @@
+<div class="page-container" [class.sidebar-open]="sidebarOpen()">
+  <div class="factura-card">
+    <header class="list-header">
+      <div class="header-top">
+        <h1 class="main-title">
+          <mat-icon>format_list_bulleted</mat-icon>
+          LISTADO DE PRODUCTOS Y SERVICIOS
+        </h1>
+
+        <div class="header-actions">
+          <app-boton-propio
+            [texto]="'Nuevo PRODUCTO/SERVICIO'"
+            [variante]="'success'"
+            (pulsado)="createMaterial()"
+          />
+        </div>
+      </div>
+    </header>
+
+    <app-data-table
+      [data]="materials()"
+      [columns]="columns"
+      [filters]="filters"
+      [rowClickable]="true"
+      (rowDblClick)="showMaterialDetails($event)"
+      emptyMessage="No hay materiales registrados en este momento."
+    >
+      <ng-template #actions let-material>
+        <app-boton-propio
+          [texto]="'Editar'"
+          (pulsado)="showMaterialDetails(material.idMaterial)"
+        />
+        <app-boton-propio
+          appConfirm
+          action="delete"
+          [message]="'¿Estás seguro de que deseas eliminar el material?'"
+          (confirmed)="deleteMaterial(material.idMaterial)"
+          [texto]="'Borrar'"
+          [variante]="'danger'"
+        />
+      </ng-template>
+    </app-data-table>
+  </div>
+
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  <aside class="sidebar" [class.open]="sidebarOpen()">
+    @if (sidebarOpen()) {
+      <app-product-service-details
+        [materialId]="selectedMaterialId()"
+        (onClose)="closeSidebar()"
+      />
+    }
+  </aside>
+</div>
