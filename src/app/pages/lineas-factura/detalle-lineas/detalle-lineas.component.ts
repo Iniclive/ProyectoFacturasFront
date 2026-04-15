@@ -12,7 +12,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
-import { MaterialService } from '../../../core/services/materials.service';
+import { ProductsService } from '../../../core/services/products.service';
 import {
   mapearALineaFacturaCreate,
   mapearALineaFacturaUpdate,
@@ -21,8 +21,9 @@ import { FormErrorComponent } from '../../../shared/form-error.component/form-er
 import { ToastService } from '../../../core/services/toast.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
-import { Material } from '../../../core/models/material.models';
-
+import { Product } from '../../../core/models/product.models';
+import { LineaFactura } from '../../../core/models/linea-factura.model';
+import { LINEA_INICIAL } from '../../../core/constants/linea-factura.constants';
 
 @Component({
   selector: 'app-detalle-linea',
@@ -33,34 +34,44 @@ import { Material } from '../../../core/models/material.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetalleLineaComponent implements OnInit {
-  private readonly lineasService = inject(LineasFacturaService);
-  private readonly materialService = inject(MaterialService);
-  private readonly toastService = inject(ToastService);
-  private readonly destroyRef = inject(DestroyRef);
-
+  readonly onCreateProduct = output<void>();
+  readonly newProduct = input<Product | null>(null);
   readonly idLinea = input<number | null>(null);
   readonly idFactura = input.required<number>();
+
+  private readonly lineasService = inject(LineasFacturaService);
+  private readonly productService = inject(ProductsService);
+  private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
+  currentLine = signal<LineaFactura>(LINEA_INICIAL);
+  readonly originalLine = computed(() =>
+    this.isEditing()
+      ? (this.lineasService
+          .lineas()
+          .find((m) => String(m.idLineaFactura) === String(this.idLinea())) ?? LINEA_INICIAL)
+      : LINEA_INICIAL,
+  );
+
   readonly onClose = output<void>();
   readonly onSaved = output<void>();
-
-  readonly filteredMaterials = this.materialService.filteredMaterialsList;
-  readonly materials = this.materialService.materials;
-  readonly linea = this.lineasService.lineaSeleccionada;
-
-  readonly searchMaterialQuery = signal('');
+  readonly filteredProducts = this.productService.filteredProductsList;
+  readonly products = this.productService.products;
+  readonly searchProductQuery = signal('');
   readonly estaGuardando = signal(false);
   readonly formEnviado = signal(false);
-  readonly isOpenMaterialCombobox = signal(false);
-  readonly selectedMaterial = signal<Material | null>(null);
+  readonly isOpenProductCombobox = signal(false);
+  readonly selectedProduct = signal<Product | null>(null);
 
-  private isSelectionMaterial = false;
+  private isSelectionProduct = false;
 
   readonly isEditing = computed(() => this.idLinea() !== null);
 
-  readonly materialValido = computed(() => this.searchMaterialQuery().length >= 3);
-  readonly cantidadValida = computed(() => this.linea().cantidad > 0);
-  readonly importeValido = computed(() => this.linea().importe > 0);
-  readonly importeTotalCalculado = computed(() => this.linea().cantidad * this.linea().importe);
+  readonly materialValido = computed(() => this.searchProductQuery().length >= 3);
+  readonly cantidadValida = computed(() => this.currentLine().cantidad > 0);
+  readonly importeValido = computed(() => this.currentLine().importe > 0);
+  readonly importeTotalCalculado = computed(
+    () => this.currentLine().cantidad * this.currentLine().importe,
+  );
 
   readonly formularioEsValido = computed(
     () => this.materialValido() && this.cantidadValida() && this.importeValido(),
@@ -71,20 +82,29 @@ export class DetalleLineaComponent implements OnInit {
   readonly mostrarErrorCantidad = computed(() => !this.cantidadValida() && this.formEnviado());
 
   ngOnInit(): void {
-    this.materialService.cargarMateriales();
-    this.lineasService.cargarLineaId(this.idLinea() ? String(this.idLinea()) : 'nueva');
+    this.currentLine.set(this.originalLine());
+
+    if (this.newProduct()) {
+      this.isSelectionProduct = false;
+      this.onSelectedProduct(this.newProduct());
+      return;
+    }
+
+    if (this.isEditing()) {
+      const product = this.products().find((p) => p.productId === this.currentLine().productId);
+      if (product) {
+        this.isSelectionProduct = true;
+        this.selectedProduct.set(product);
+        this.searchProductQuery.set(product.name);
+      }
+    }
+  }
+  constructor() {
+    this.productSearch.subscribe();
   }
 
-  onCantidadInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    const value = raw === '' ? 0 : Number(raw);
-    this.lineasService.actualizarLineaSeleccionada({ cantidad: isNaN(value) ? 0 : value });
-  }
-
-  onImporteInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    const value = raw === '' ? 0 : Number(raw);
-    this.lineasService.actualizarLineaSeleccionada({ importe: isNaN(value) ? 0 : value });
+  updateField(changes: Partial<LineaFactura>) {
+    this.currentLine.update((c) => ({ ...c, ...changes }) as LineaFactura);
   }
 
   guardar(): void {
@@ -94,7 +114,7 @@ export class DetalleLineaComponent implements OnInit {
     this.estaGuardando.set(true);
 
     if (this.isEditing()) {
-      const lineaUpdate = mapearALineaFacturaUpdate(this.linea());
+      const lineaUpdate = mapearALineaFacturaUpdate(this.currentLine());
       this.lineasService.actualizarLinea(lineaUpdate).subscribe({
         next: () => {
           this.estaGuardando.set(false);
@@ -111,7 +131,7 @@ export class DetalleLineaComponent implements OnInit {
       });
     } else {
       const lineaCreate = {
-        ...mapearALineaFacturaCreate(this.linea()),
+        ...mapearALineaFacturaCreate(this.currentLine()),
         idFactura: this.idFactura(),
       };
       this.lineasService.guardarLinea(lineaCreate).subscribe({
@@ -131,18 +151,18 @@ export class DetalleLineaComponent implements OnInit {
     }
   }
 
-  readonly materialSearch = toObservable(this.searchMaterialQuery).pipe(
+  readonly productSearch = toObservable(this.searchProductQuery).pipe(
     filter((query) => {
-      if (this.isSelectionMaterial) {
-        this.isSelectionMaterial = false;
+      if (this.isSelectionProduct) {
+        this.isSelectionProduct = false;
         return false;
       }
       return query.length >= 3;
     }),
     debounceTime(300),
     distinctUntilChanged(),
-    tap(() => this.isOpenMaterialCombobox.set(true)),
-    switchMap((query) => this.materialService.loadFilteredMaterials(query)),
+    tap(() => this.isOpenProductCombobox.set(true)),
+    switchMap((query) => this.productService.loadFilteredProducts(query)),
     takeUntilDestroyed(this.destroyRef),
   );
 
@@ -152,15 +172,20 @@ export class DetalleLineaComponent implements OnInit {
 
   onSearchInputMaterial(event: Event): void {
     const valor = (event.target as HTMLInputElement).value;
-    this.searchMaterialQuery.set(valor);
-    this.isOpenMaterialCombobox.set(valor.length >= 3);
+    this.searchProductQuery.set(valor);
+    this.isOpenProductCombobox.set(valor.length >= 3);
   }
 
-  onSelectedMaterial(material: Material | null): void {
-    this.isSelectionMaterial = true;
-    this.selectedMaterial.set(material);
-    this.searchMaterialQuery.set(material?.name || '');
-    this.lineasService.actualizarLineaSeleccionada({ idMaterial: material?.idMaterial || 0 });
-    this.isOpenMaterialCombobox.set(false);
+  onSelectedProduct(product: Product | null): void {
+    this.isSelectionProduct = true;
+    this.selectedProduct.set(product);
+    this.searchProductQuery.set(product?.name || '');
+    this.updateField({ importe: product?.defaultPrice || 0 });
+    this.updateField({ productId: product?.productId || 0 });
+    this.isOpenProductCombobox.set(false);
+  }
+
+  createNewProduct(): void {
+    this.onCreateProduct.emit();
   }
 }

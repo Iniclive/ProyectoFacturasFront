@@ -230,6 +230,24 @@
   border-top: 2px solid #e2e8f0;
   flex-shrink: 0;
 }
+.crear-cliente-link {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: #4f46e5;
+  cursor: pointer;
+}
+.crear-cliente-link {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  margin-left: auto /* ligeramente más pequeño que el label para jerarquía visual */
+}
+.crear-cliente-link:hover {
+  color: #3730a3;
+  cursor: pointer;
+}
 
 @media (max-width: 600px) {
   .sidebar-header { padding: 20px 20px 16px; }

@@ -1,11 +1,12 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { MaterialService } from '../../../core/services/materials.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { Material } from '../../../core/models/material.models';
 import { MatIcon } from "@angular/material/icon";
 import { FormErrorComponent } from "../../../shared/form-error.component/form-error.component";
 import { BotonPropioComponent } from "../../../shared/boton-propio/boton-propio.component";
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
+import { ProductsService } from '../../../core/services/products.service';
+import { Product } from '../../../core/models/product.models';
+import { DEFAULT_PRODUCT } from '../../../core/constants/product.constants';
 
 @Component({
   selector: 'app-product-service-details',
@@ -14,30 +15,29 @@ import { ConfirmDirective } from '../../../core/directives/app-confirm.directive
   styleUrl: './product-service-details.css',
 })
 export class ProductServiceDetails {
-materialId = input<string | null>(null);
-onClose = output<void>();
+productId = input<string | null>(null);
+onClose = output<Product|null>();
 
-  private readonly materialsService = inject(MaterialService);
+  private readonly productsService = inject(ProductsService);
   private readonly toastService = inject(ToastService);
 
   isSaving = signal(false);
   formSent = signal(false);
 
-  readonly isEditing = computed(() => this.materialId() !== null);
-
-  currentMaterial = signal<Material | undefined>(undefined);
-
-  readonly originalMaterial = computed(() => this.materialsService.materials().find(m => String(m.idMaterial) === String(this.materialId())));
+  readonly isEditing = computed(() => this.productId() !== null);
+  currentProduct = signal<Product |undefined>(undefined);
+  readonly originalProduct = computed(() => this.isEditing() ? this.productsService.products().find(m => String(m.productId) === String(this.productId()))
+   : DEFAULT_PRODUCT);
 
   nameError = computed((): string => {
-    const trimmedName = this.currentMaterial()?.name.trim();
+    const trimmedName = this.currentProduct()?.name.trim();
     if (!trimmedName) return 'El nombre es obligatorio';
     if(!trimmedName.length || trimmedName.length < 3 ) return 'El nombre debe tener al menos 3 caracteres';
     return '';
   });
 
  defaultPriceError = computed((): string => {
-    const price = this.currentMaterial()?.defaultPrice;
+    const price = this.currentProduct()?.defaultPrice;
     if (price === null || price === undefined) {
     return 'El precio es obligatorio';
   }
@@ -53,46 +53,46 @@ onClose = output<void>();
   validatedForm = computed(() => !this.nameError() && !this.defaultPriceError());
 
   ngOnInit(): void {
-    this.currentMaterial.set(this.originalMaterial());
+    this.currentProduct.set(this.originalProduct());
   }
 
-  updateField(changes: Partial<Material>) {
-    this.currentMaterial.update((c) => ({ ...c, ...changes } as Material));
+  updateField(changes: Partial<Product>) {
+    this.currentProduct.update((c) => ({ ...c, ...changes } as Product));
   }
 
-  saveMaterial() {
+  saveProduct() {
     this.formSent.set(true);
     if (!this.validatedForm()) return;
     this.isSaving.set(true);
 
     if (this.isEditing()) {
-      this.materialsService.updateMaterial(this.currentMaterial() as Material).subscribe({
+      this.productsService.updateProduct(this.currentProduct() as Product).subscribe({
         next: () => {
           this.isSaving.set(false);
-          this.toastService.mostrar({ texto: 'Material actualizado correctamente', tipoToast: 'submit' });
-          this.onClose.emit();
+          this.toastService.mostrar({ texto: 'Producto actualizado correctamente', tipoToast: 'submit' });
+          this.onClose.emit(null);
         },
         error: () => {
           this.isSaving.set(false);
-          this.toastService.mostrar({ texto: 'Error al actualizar el material', tipoToast: 'delete' });
+          this.toastService.mostrar({ texto: 'Error al actualizar el producto', tipoToast: 'delete' });
         },
       });
     } else {
-      this.materialsService.createMaterial(this.currentMaterial() as Material).subscribe({
-        next: () => {
+      this.productsService.createProduct(this.currentProduct() as Product).subscribe({
+        next: (createdProduct) => {
           this.isSaving.set(false);
-          this.toastService.mostrar({ texto: 'Material creado correctamente', tipoToast: 'submit' });
-          this.onClose.emit();
+          this.toastService.mostrar({ texto: 'Producto creado correctamente', tipoToast: 'submit' });
+          this.onClose.emit(createdProduct);
         },
         error: () => {
           this.isSaving.set(false);
-          this.toastService.mostrar({ texto: 'Error al crear el material', tipoToast: 'delete' });
+          this.toastService.mostrar({ texto: 'Error al crear el producto', tipoToast: 'delete' });
         },
       });
     }
   }
 
   cancelar() {
-    this.onClose.emit();
+    this.onClose.emit(null);
   }
 }

@@ -3,7 +3,7 @@
     <div class="header-left">
       <div>
         <h2 class="sidebar-title">
-          {{ isEditing() ? 'Editar Línea de Factura' : 'Nueva Línea de Factura' }}
+          {{ isEditing() ? 'Editar Línea de Factura: ' + currentLine().productName : 'Nueva Línea de Factura' }}
         </h2>
       </div>
     </div>
@@ -20,40 +20,43 @@
       </h3>
       <div class="detail-grid">
         <div class="campo campo-full">
-
           <label class="detail-label" for="linea-material">Producto o Servicio</label>
+          @if(!isEditing()){
+          <span class="crear-cliente-link" (click)="createNewProduct()">
+          + Crear nuevo producto
+          </span>}
           <div class="autocomplete-wrapper">
-            @if (selectedMaterial() === null || searchMaterialQuery().length < 3) {
+            @if (selectedProduct() === null || searchProductQuery().length < 3) {
               <mat-icon class="search-icon">search</mat-icon>
             }
-            @if (materialValido() && selectedMaterial() !== null) {
+            @if (materialValido() && selectedProduct() !== null) {
               <mat-icon class="search-icon">check</mat-icon>
             }
-            @if (!materialValido() && searchMaterialQuery().length >= 3) {
+            @if (!materialValido() && searchProductQuery().length >= 3) {
               <mat-icon class="search-icon">error</mat-icon>
             }
             <input
               id="linea-material"
               type="text"
               placeholder="Escriba para buscar (mín. 3 letras)..."
-              [value]="searchMaterialQuery()"
+              [value]="searchProductQuery()"
               (input)="onSearchInputMaterial($event)"
               class="modern-input input-with-icon"
               [class.input-error]="mostrarErrorMaterial()"
               autocomplete="off"
             />
 
-            @if (isOpenMaterialCombobox() && searchMaterialQuery().length >= 3) {
+            @if (isOpenProductCombobox() && searchProductQuery().length >= 3) {
               <div class="popup-results">
-                @if (filteredMaterials().length === 0) {
+                @if (filteredProducts().length === 0) {
                   <div class="no-results">No se han encontrado resultados</div>
                 }
                 <div class="options-list">
-                  @for (material of filteredMaterials(); track material.idMaterial) {
-                    <div class="option-item" (click)="onSelectedMaterial(material)">
-                      <span class="option-label">{{ material.name }}</span>
+                  @for (product of filteredProducts(); track product.productId) {
+                    <div class="option-item" (click)="onSelectedProduct(product)">
+                      <span class="option-label">{{ product.name }}</span>
                       @if (
-                        selectedMaterial()?.idMaterial === material.idMaterial && materialValido()
+                        selectedProduct()?.productId === product.productId && materialValido()
                       ) {
                         <mat-icon class="check-icon">check</mat-icon>
                       }
@@ -85,8 +88,8 @@
             [class.input-error]="mostrarErrorCantidad()"
             type="number"
             min="1"
-            [value]="linea().cantidad"
-            (input)="onCantidadInput($event)"
+            [value]="currentLine().cantidad"
+            (input)="updateField({ cantidad: ($any($event.target).value) || 0 })"
             placeholder="0"
           />
           <app-form-error
@@ -104,8 +107,8 @@
             type="number"
             min="0"
             step="0.01"
-            [value]="linea().importe"
-            (input)="onImporteInput($event)"
+            [value]="currentLine().importe"
+            (input)="updateField({ importe: ($any($event.target).value) || 0 })"
             placeholder="0.00"
           />
           <app-form-error

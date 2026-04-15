@@ -2,80 +2,79 @@ import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "../../core/directives/app-confirm.directive";
 import { BotonPropioComponent } from "../../shared/boton-propio/boton-propio.component";
 import { DataTableComponent } from "../../shared/data-table/data-table.component";
-import { UserDetailSidebarComponent } from "../users/user-detail-sidebar/user-detail-sidebar";
 import { Component } from "@angular/core";
-import { MaterialService } from "../../core/services/materials.service";
-import { MatDialog } from "@angular/material/dialog";
-import { DestroyRef, inject, signal } from "@angular/core";
+import {ProductsService } from "../../core/services/products.service";
+import {inject, signal } from "@angular/core";
 import { ToastService } from "../../core/services/toast.service";
 import { ColumnDef, FilterDef } from "../../shared/data-table/data-table.types";
-import { Material } from "../../core/models/material.models";
+import {Product } from "../../core/models/product.models";
 import { ProductServiceDetails } from "./product-service-details/product-service-details";
-
+import { CurrencyPipe } from "@angular/common";
 
 
 @Component({
   selector: 'app-products-and-services',
   imports: [MatIcon,
-    BotonPropioComponent,
-    ConfirmDirective,
-    DataTableComponent,
-    ProductServiceDetails],
+  BotonPropioComponent,
+   ConfirmDirective,
+  DataTableComponent,
+  ProductServiceDetails,],
+  providers: [CurrencyPipe],
   templateUrl: './products-and-services.html',
   styleUrl: './products-and-services.css',
 })
 export class ProductsAndServices {
-private readonly materialService = inject(MaterialService);
-  private readonly dialog = inject(MatDialog);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly toastService = inject(ToastService);
+private readonly productsService = inject(ProductsService);
+private readonly toastService = inject(ToastService);
+private currencyPipe = inject(CurrencyPipe);
 
-  readonly materials = this.materialService.materials;
-  readonly error = signal('');
+readonly products = this.productsService.products;
+readonly error = signal('');
 
-  selectedMaterialId = signal<string | null>(null);
+selectedProductId = signal<string | null>(null);
 
   readonly sidebarOpen = signal(false);
 
-  readonly columns: ColumnDef<Material>[] = [
-    { key: 'nombre', label: 'Nombre', sortable: true },
-    { key: 'precio', label: 'Precio', sortable: true },
+  readonly columns: ColumnDef<Product>[] = [
+    { key: 'name', label: 'Nombre', sortable: true },
+    { key: 'description', label: 'Descripcion', sortable: false },
+    { key: 'defaultPrice', label: 'Precio', sortable: true, format: (row) => this.currencyPipe.transform(row.defaultPrice, 'EUR', 'symbol', '1.2-2') ?? ''},
   ];
 
   readonly filters: FilterDef[] = [
-    { kind: 'text', key: 'nombre', label: 'Nombre', icon: 'person', placeholder: 'Nombre material...' },
-    { kind: 'range', key: 'precio', label: 'Precio', icon: 'attach_money', placeholder: 'Precio material...' },
+    { kind: 'text', key: 'name', label: 'Nombre', icon: 'person', placeholder: 'Nombre poducto...' },
+    { kind: 'range', key: 'defaultPrice', label: 'Precio', icon: 'attach_money', placeholder: 'Precio producto...' },
   ];
 
   ngOnInit() {
-    this.materialService.cargarMateriales();
+    this.productsService.loadProducts();
   }
 
-  showMaterialDetails(material: Material) {
-    this.selectedMaterialId.set(material.idMaterial.toString());
+  showProductDetails(product: Product) {
+    this.selectedProductId.set(product.productId.toString());
     this.sidebarOpen.set(true);
   }
 
-  createMaterial() {
-    this.selectedMaterialId.set(null);
+  createProduct() {
+    this.selectedProductId.set(null);
     this.sidebarOpen.set(true);
   }
 
   closeSidebar() {
     this.sidebarOpen.set(false);
-    this.selectedMaterialId.set(null);
+    this.selectedProductId.set(null);
   }
 
-  deleteMaterial(id: string) {
-    this.materialService.deleteMaterial(id).subscribe({
+  deleteProduct(id: string) {
+    this.productsService.deleteProduct(id).subscribe({
       next: () =>
         this.toastService.mostrar({
-          texto: 'Se ha eliminado el material correctamente',
+          texto: 'Se ha eliminado el producto correctamente',
           tipoToast: 'submit',
         }),
       error: () =>
         this.toastService.mostrar({
-          texto: 'Error al eliminar el usuario',
+          texto: 'Error al eliminar el producto',
           tipoToast: 'delete',
         }),
     });

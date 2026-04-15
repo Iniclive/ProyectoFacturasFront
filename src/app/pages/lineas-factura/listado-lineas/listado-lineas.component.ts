@@ -8,6 +8,9 @@ import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { ToastService } from '../../../core/services/toast.service';
 import { DetalleLineaComponent } from '../detalle-lineas/detalle-lineas.component';
+import { ProductsService } from '../../../core/services/products.service';
+import { Product } from '../../../core/models/product.models';
+import { ProductServiceDetails } from "../../products-and-services/product-service-details/product-service-details";
 
 @Component({
   selector: 'app-listado-lineas',
@@ -17,7 +20,8 @@ import { DetalleLineaComponent } from '../detalle-lineas/detalle-lineas.componen
     MatIconModule,
     ConfirmDirective,
     DetalleLineaComponent,
-  ],
+    ProductServiceDetails
+],
   templateUrl: './listado-lineas.component.html',
   styleUrl: './listado-lineas.component.css',
   standalone: true,
@@ -27,10 +31,13 @@ export class ListadoLineasComponent {
   private readonly lineasService = inject(LineasFacturaService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly productsService = inject(ProductsService);
+  readonly newlyCreatedProduct = signal<Product | null>(null);
 
   readonly idFactura = input.required<number>();
   readonly isEditable = input<boolean>(true);
-
+  readonly sidebarProductOpen = signal(false);
+  readonly pendingLineaId = signal<number | null>(null);
   readonly lineas = this.lineasService.lineas;
   readonly error = signal('');
 
@@ -52,6 +59,7 @@ export class ListadoLineasComponent {
   }
 
   abrirSidebarLinea(id?: number) {
+    this.newlyCreatedProduct.set(null);
     this.selectedLineaId.set(id ?? null);
     this.sidebarOpen.set(true);
   }
@@ -76,4 +84,23 @@ export class ListadoLineasComponent {
       error: (err) => console.error(err),
     });
   }
+
+  abrirSidebarProducto(): void {
+  // Guarda el contexto de la línea que estaba abierta
+  this.pendingLineaId.set(this.selectedLineaId());
+  this.sidebarOpen.set(false);
+  this.sidebarProductOpen.set(true);
+}
+
+cerrarSidebarProducto(): void {
+  this.sidebarProductOpen.set(false);
+}
+
+onProductoGuardado(product: Product | null): void {
+this.newlyCreatedProduct.set(product)
+this.cerrarSidebarProducto();
+  this.selectedLineaId.set(this.pendingLineaId());
+  this.sidebarOpen.set(true);
+  this.pendingLineaId.set(null);
+}
 }

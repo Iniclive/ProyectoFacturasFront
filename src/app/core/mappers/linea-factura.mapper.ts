@@ -1,4 +1,4 @@
-import { FacturaLineasUpdateDto, LineaFactura, LineaFacturaBulkCreate, LineaFacturaBulkUpdate, LineaFacturaCreate, LineaFacturaTracked, LineaFacturaUpdate, LineaSimple } from '../models/linea-factura.model';
+import { LineaFactura, LineaFacturaCreate, LineaFacturaUpdate, LineaSimple } from '../models/linea-factura.model';
 
 
 export function mapearALineaSimple(l: LineaFactura): LineaSimple {
@@ -8,13 +8,13 @@ export function mapearALineaSimple(l: LineaFactura): LineaSimple {
     cantidad: l.cantidad || 0,
     importe: l.importe || 0,
     importeTotal: l.importeTotal || 0,
-    nombreMaterial: l.nombreMaterial || '',
+    productName: l.productName || '',
   };
 }
 export function mapearALineaFacturaCreate(l: LineaFactura): LineaFacturaCreate {
   return {
     idFactura: l.idFactura,
-    idMaterial: l.idMaterial,
+    productId: l.productId,
     importe: l.importe,
     cantidad: l.cantidad,
   } as LineaFacturaCreate;
@@ -24,15 +24,15 @@ export function mapearALineaFacturaUpdate(l: LineaFactura): LineaFacturaUpdate {
   return {
     idLineaFactura: l.idLineaFactura!,
     idFactura: l.idFactura,
-    idMaterial: l.idMaterial,
+    productId: l.productId,
     importe: l.importe,
     cantidad: l.cantidad,
   };
 }
-
+/*
 export function mapearALineaFacturaBulkCreate(linea: LineaFactura): LineaFacturaBulkCreate {
   return {
-    idMaterial: linea.idMaterial,
+    productId: linea.productId,
     idFactura: linea.idFactura,
     importe: linea.importe,
     cantidad: linea.cantidad,
@@ -64,4 +64,4 @@ export function mapearAFacturaLineasUpdateDto(
       .filter(l => l.estado === 'eliminada')
       .map(l => l.datos.idLineaFactura!),
   };
-}
+}*/

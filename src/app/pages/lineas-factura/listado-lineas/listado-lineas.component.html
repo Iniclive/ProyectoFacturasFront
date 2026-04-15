@@ -1,4 +1,4 @@
-<div class="lineas-container" [class.sidebar-open]="sidebarOpen()">
+<div class="lineas-container" [class.sidebar-open]="sidebarOpen() || sidebarProductOpen()">
   <header class="list-header">
     <h2 class="section-title">
       <mat-icon>receipt_long</mat-icon>
@@ -17,7 +17,7 @@
     <table class="modern-table">
       <thead>
         <tr>
-          <th>Material</th>
+          <th>Producto/Servicio</th>
           <th class="text-right">Cantidad</th>
           <th class="text-right">Importe</th>
           <th class="text-right">Total</th>
@@ -27,7 +27,7 @@
       <tbody>
         @for (linea of lineas(); track linea.idLineaFactura) {
           <tr>
-            <td class="bold">{{ linea.nombreMaterial }}</td>
+            <td class="bold">{{ linea.productName }}</td>
             <td class="text-right">{{ linea.cantidad }}</td>
             <td class="text-right amount">{{ linea.importe | currency: 'EUR' }}</td>
             <td class="text-right bold total-cell">
@@ -70,8 +70,21 @@
       <app-detalle-linea
         [idLinea]="selectedLineaId()"
         [idFactura]="idFactura()"
+        [newProduct]="newlyCreatedProduct()"
         (onClose)="cerrarSidebar()"
         (onSaved)="onLineaGuardada()"
+        (onCreateProduct)="abrirSidebarProducto()"
+      />
+    }
+  </aside>
+  @if (sidebarProductOpen()) {
+    <div class="sidebar-overlay" (click)="cerrarSidebarProducto()"></div>
+  }
+  <aside class="sidebar sidebar-producto" [class.open]="sidebarProductOpen()">
+    @if (sidebarProductOpen()) {
+      <app-product-service-details
+        [productId]="null"
+        (onClose)="onProductoGuardado($event)"
       />
     }
   </aside>

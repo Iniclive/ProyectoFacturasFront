@@ -2,18 +2,22 @@
 
 import { FacturaResumen } from "./factura.model";
 
+
 export interface LineaSimple {
   idLineaFactura?: number;
   idFactura: number;
   cantidad: number;
   importe: number;
   importeTotal: number;
-  nombreMaterial: string;
+  productName: string;
 }
-
+export interface LineaFacturaResponse {
+  linea: LineaFactura;
+  factura: FacturaResumen;
+}
 // DTO para crear una línea individual — back calcula importeTotal
 export interface LineaFacturaCreate {
-  idMaterial: number;
+  productId: number;
   idFactura: number;
   importe: number;
   cantidad: number;
@@ -28,7 +32,7 @@ export interface LineaFacturaUpdate extends LineaFacturaCreate {
 export interface LineaFactura {
   idLineaFactura?: number;
   idFactura: number;
-  idMaterial: number;
+  productId: number;
   importe: number;
   cantidad: number;
   importeTotal: number;
@@ -36,12 +40,12 @@ export interface LineaFactura {
   creadoPor: string;
   modificado: string;
   modificadoPor: string;
-  nombreMaterial: string;
+  productName: string;
 }
 
 // DTO para envío en bloque — front no envía importeTotal, back lo calcula por línea
-export interface LineaFacturaBulkCreate {
-  idMaterial: number;
+/*export interface LineaFacturaBulkCreate {
+  productId: number;
   idFactura: number;
   importe: number;
   cantidad: number;
@@ -69,7 +73,7 @@ export interface LineaFacturaTracked {
   estado: LineaEstado;
 }
 
-export interface LineaFacturaResponse {
+*/export interface LineaFacturaResponse {
   linea: LineaFactura;
   factura: FacturaResumen;
 }

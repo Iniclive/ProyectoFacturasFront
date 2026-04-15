@@ -9,32 +9,32 @@
 
         <div class="header-actions">
           <app-boton-propio
-            [texto]="'Nuevo PRODUCTO/SERVICIO'"
+            [texto]="'Nuevo Producto/Servicio'"
             [variante]="'success'"
-            (pulsado)="createMaterial()"
+            (pulsado)="createProduct()"
           />
         </div>
       </div>
     </header>
 
     <app-data-table
-      [data]="materials()"
+      [data]="products()"
       [columns]="columns"
       [filters]="filters"
       [rowClickable]="true"
-      (rowDblClick)="showMaterialDetails($event)"
-      emptyMessage="No hay materiales registrados en este momento."
+      (rowDblClick)="showProductDetails($event)"
+      emptyMessage="No hay productos registrados en este momento."
     >
-      <ng-template #actions let-material>
+      <ng-template #actions let-product>
         <app-boton-propio
           [texto]="'Editar'"
-          (pulsado)="showMaterialDetails(material.idMaterial)"
+          (pulsado)="showProductDetails(product)"
         />
         <app-boton-propio
           appConfirm
           action="delete"
-          [message]="'¿Estás seguro de que deseas eliminar el material?'"
-          (confirmed)="deleteMaterial(material.idMaterial)"
+          [message]="'¿Estás seguro de que deseas eliminar el producto?'"
+          (confirmed)="deleteProduct(product.productId)"
           [texto]="'Borrar'"
           [variante]="'danger'"
         />
@@ -46,7 +46,7 @@
   <aside class="sidebar" [class.open]="sidebarOpen()">
     @if (sidebarOpen()) {
       <app-product-service-details
-        [materialId]="selectedMaterialId()"
+        [productId]="selectedProductId()"
         (onClose)="closeSidebar()"
       />
     }

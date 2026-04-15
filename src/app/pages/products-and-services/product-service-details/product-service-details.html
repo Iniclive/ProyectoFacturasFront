@@ -4,7 +4,7 @@
       <mat-icon>manage_accounts</mat-icon>
       <div>
         <h2 class="sidebar-title">
-          {{ isEditing() ? (currentMaterial()?.name || 'Material') : 'Nuevo Material' }}
+          {{ isEditing() ? (currentProduct()?.name || 'Producto') : 'Nuevo Producto' }}
         </h2>
       </div>
     </div>
@@ -21,18 +21,35 @@
       </h3>
       <div class="detail-grid">
         <div class="campo">
-          <label class="detail-label" for="material-name">Producto/Servicio</label>
           <input
             id="material-name"
             class="modern-input"
             [class.input-error]="showNameError()"
             type="text"
-            [value]="currentMaterial()?.name"
+            [value]="currentProduct()?.name"
             (input)="updateField({ name: $any($event.target).value })"
-            placeholder="Ej: B1324657"
-            [disabled]="isEditing()"
+            placeholder="Ej: Bombilla A1"
           />
           <app-form-error [mostrar]="showNameError()" [mensaje]="nameError()" />
+        </div>
+      </div>
+    </section>
+    <section class="detail-section">
+      <h3 class="section-title">
+        <mat-icon>badge</mat-icon>
+        Descripcion
+      </h3>
+      <div class="detail-grid">
+        <div class="campo">
+          <input
+            id="product-description"
+            class="modern-input"
+            type="text"
+            [value]="currentProduct()?.description"
+            (input)="updateField({ description: $any($event.target).value })"
+            placeholder=""
+            maxlength="60"
+          />
         </div>
       </div>
     </section>
@@ -43,13 +60,12 @@
       </h3>
       <div class="detail-grid">
         <div class="campo">
-          <label class="detail-label" for="material-defaultPrice">Precio</label>
           <input
             id="material-defaultPrice"
             class="modern-input"
             [class.input-error]="showDefaultPriceError()"
-            type="text"
-            [value]="currentMaterial()?.defaultPrice"
+            type="number"
+            [value]="currentProduct()?.defaultPrice"
             (input)="updateField({ defaultPrice: ($any($event.target).value) || 0 })"
             placeholder="Ej: 10.00"
           />
@@ -69,7 +85,7 @@
       appConfirm
       action="save"
       [message]="isEditing() ? 'Deseas actualizar el producto/servicio?' : 'Deseas crear un nuevo producto/servicio?'"
-      (confirmed)="saveMaterial()"
+      (confirmed)="saveProduct()"
       [texto]="isSaving() ? 'Guardando...' : isEditing() ? 'Guardar Cambios' : 'Crear Producto/Servicio'"
       [color]="'#27ae60'"
       [tipo]="'submit'"
