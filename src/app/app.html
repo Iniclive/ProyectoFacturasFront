@@ -1,7 +1,10 @@
-<app-encabezado></app-encabezado>
+<app-encabezado />
+
 
 <main class="contenedor-principal">
-  <router-outlet></router-outlet>
+  <app-loading-component>
+    <router-outlet />
+  </app-loading-component>
 </main>
 
 <footer>

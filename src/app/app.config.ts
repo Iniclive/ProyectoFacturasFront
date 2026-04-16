@@ -15,6 +15,7 @@ import { credentialsInterceptor } from './interceptors/credentials.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { authErrorInterceptor } from './interceptors/authErrorInterceptor ';
+import { concurrencyErrorInterceptor } from './interceptors/concurrecyError.interceptor';
 registerLocaleData(localeEs);
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     ), //provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([credentialsInterceptor, authErrorInterceptor]),
+      withInterceptors([credentialsInterceptor, authErrorInterceptor, concurrencyErrorInterceptor]),
     ),
     provideAppInitializer(async () => {
       const authService = inject(AuthService);

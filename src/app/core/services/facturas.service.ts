@@ -65,13 +65,14 @@ export class FacturasService {
     );
   }
 
-  eliminarFactura(idFac: string) {
+  eliminarFactura(idFac: string,rowVersion: string) {
     const facturasPrevias = [...this.listaFacturasCompleta()];
     this.listaFacturasCompleta.update((lista) =>
       lista.filter((f) => String(f.idFactura) !== String(idFac)),
     );
-
-    return this.httpClient.delete(ENDPOINTS.FACTURA_POR_ID(idFac)).pipe(
+    return this.httpClient.delete(ENDPOINTS.FACTURA_POR_ID(idFac), {
+    headers: { 'If-Match': rowVersion} // Convertimos a string para la cabecera
+  }).pipe(
       catchError((err) => {
         this.listaFacturasCompleta.set(facturasPrevias);
         console.log(err);
@@ -80,8 +81,9 @@ export class FacturasService {
     );
   }
 
-  sendToValidate(idFac: string) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE(idFac), {}).pipe(
+  sendToValidate(idFac: string,rowVersion: string) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE(idFac),{
+    headers: { 'If-Match': rowVersion}}).pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
       }),
@@ -91,8 +93,10 @@ export class FacturasService {
       }),
     );
   }
-  sendToCancelValidate(idFac: string) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE(idFac), {}).pipe(
+  sendToCancelValidate(idFac: string,rowVersion: string) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE(idFac), {}, {
+      headers: { 'If-Match': rowVersion }
+    }).pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
       }),
@@ -102,8 +106,10 @@ export class FacturasService {
       }),
     );
   }
-  sendToApprove(idFac: string) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE(idFac), {}).pipe(
+  sendToApprove(idFac: string,rowVersion: string) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE(idFac), {}, {
+      headers: { 'If-Match': rowVersion }
+    }).pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
       }),

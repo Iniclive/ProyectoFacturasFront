@@ -4,7 +4,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { environment } from '@env/environment';
-import { ENDPOINTS } from '../core/constants/endpoints';
+
 
 const API_URL = environment.apiUrl;
 

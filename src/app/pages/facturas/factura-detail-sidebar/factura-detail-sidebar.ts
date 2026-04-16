@@ -3,7 +3,6 @@ import { MatIcon } from '@angular/material/icon';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { FacturasService } from '../../../core/services/facturas.service';
-import { Factura } from '../../../core/models/factura.model';
 import { INVOICE_STATUS } from '../../../core/constants/factura.constants';
 
 @Component({
@@ -13,6 +12,7 @@ import { INVOICE_STATUS } from '../../../core/constants/factura.constants';
   styleUrl: './factura-detail-sidebar.component.css',
 })
 export class FacturaDetailSidebarComponent {
+
   facturaId = input<string | null>(null);
   onClose = output<void>();
 

@@ -59,72 +59,58 @@ export class DetalleFacturaComponent implements OnInit {
   private readonly clientsService = inject(ClientsService);
   private readonly facturaState = inject(FacturaStateService);
   private readonly loadingService = inject(LoadingService);
+  private toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  // Señales de UI
-  tiposIva = signal(TIPOS_IVA_DEFAULT);
   insurances = this.insuranceService.insurances;
   filteredInsurances = this.insuranceService.filteredInsurancesList;
   clients = this.clientsService.clients;
   factura = this.facturaState.currentFactura;
-  private toastService = inject(ToastService);
+
+  tiposIva = signal(TIPOS_IVA_DEFAULT);
   estaGuardando = signal(false);
   formEnviado = signal(false);
   facturaActualizada = signal(false);
-
   searchInsuranceQuery = signal('');
   isSearchingInsurances = signal(false);
   isOpenInsuranceCombobox = signal(false);
   sidebarClientOpen = signal(false);
-
-  isCreationState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'EnCreacion')?.value);
-  isPendingState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'PdteAprobacion')?.value);
-  isAprovedState = computed(() => this.factura().status === INVOICE_STATUS.find(s => s.statusName === 'AprobadaCerrada')?.value);
-
-  isNotEditable = computed(() => this.isPendingState() || this.isAprovedState());
-
-  hasValidAmount = computed(() => {
-    const factura = this.factura();
-    return factura && factura.importe !== null && factura.importe > 0;
-  });
-
   selectedInsurance = signal<Insurance | null>(null);
-  isSelectionInsurance = false; // Bandera para distinguir entre escritura y selección en el input de aseguradora
+  isSelectionInsurance = false;
 
-  //aseguradoraTocada = signal(false);
-  textoBoton = computed(() =>
-    this.estaGuardando() ? 'Guardando...' : this.isSaved() ? 'Actualizar Factura' : 'Crear Factura',
-  );
-
-  // ID de la ruta como signal, actualizable automáticamente
   idRuta = toSignal(
     this.route.paramMap.pipe(map((params: ParamMap) => params.get('id') ?? 'nueva')),
     { initialValue: 'nueva' as string },
   );
 
-  insuranceSearch = toObservable(this.searchInsuranceQuery).pipe(
-    filter((query) => {
-      if (this.isSelectionInsurance) {
-        this.isSelectionInsurance = false;
-        return false;
-      }
-      return query.length >= 3;
-    }),
-    debounceTime(300),
-    distinctUntilChanged(),
-    tap(() => {
-      this.isSearchingInsurances.set(true);
-      this.isOpenInsuranceCombobox.set(true);
-    }),
-    switchMap((query) => this.insuranceService.loadFilteredInsurances(query)),
-    tap(() => this.isSearchingInsurances.set(false)),
-    takeUntilDestroyed(this.destroyRef),
+
+  isSaved = computed(() => this.idRuta() !== 'nueva');
+
+  isCreationState = computed(
+    () =>
+      this.factura().status === INVOICE_STATUS.find((s) => s.statusName === 'EnCreacion')?.value,
+  );
+  isPendingState = computed(
+    () =>
+      this.factura().status ===
+      INVOICE_STATUS.find((s) => s.statusName === 'PdteAprobacion')?.value,
+  );
+  isAprovedState = computed(
+    () =>
+      this.factura().status ===
+      INVOICE_STATUS.find((s) => s.statusName === 'AprobadaCerrada')?.value,
   );
 
-  // Computeds derivados
-  isSaved = computed(() => this.idRuta() !== 'nueva');
+  isNotEditable = computed(() => this.isPendingState() || this.isAprovedState());
+  hasValidAmount = computed(() => {
+    const factura = this.factura();
+    return factura && factura.importe !== null && factura.importe > 0;
+  });
+  textoBoton = computed(() =>
+    this.estaGuardando() ? 'Guardando...' : this.isSaved() ? 'Actualizar Factura' : 'Crear Factura',
+  );
 
   aseguradoraValida = computed(() => {
     const id = this.factura().aseguradora;
@@ -157,6 +143,24 @@ export class DetalleFacturaComponent implements OnInit {
   formularioEsValido = computed(
     () => this.aseguradoraValida() && this.numeroFacturaValido() && this.validClientSelected(),
   );
+  insuranceSearch = toObservable(this.searchInsuranceQuery).pipe(
+    filter((query) => {
+      if (this.isSelectionInsurance) {
+        this.isSelectionInsurance = false;
+        return false;
+      }
+      return query.length >= 3;
+    }),
+    debounceTime(300),
+    distinctUntilChanged(),
+    tap(() => {
+      this.isSearchingInsurances.set(true);
+      this.isOpenInsuranceCombobox.set(true);
+    }),
+    switchMap((query) => this.insuranceService.loadFilteredInsurances(query)),
+    tap(() => this.isSearchingInsurances.set(false)),
+    takeUntilDestroyed(this.destroyRef),
+  );
 
   constructor() {
     toObservable(this.idRuta)
@@ -184,7 +188,7 @@ export class DetalleFacturaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.clientsService.loadClients().subscribe(); // Cargamos todos los clientes al inicio para tenerlos disponibles en el filtro
+    this.clientsService.loadClients().subscribe();
   }
 
   guardarCabecera() {
@@ -219,12 +223,20 @@ export class DetalleFacturaComponent implements OnInit {
               tipoToast: 'submit',
             });
           },
-          error: () => {
+          error: (err) => {
             this.estaGuardando.set(false);
-            this.toastService.mostrar({
-              texto: 'Error al actualizar la factura',
-              tipoToast: 'delete',
-            });
+            if(err.status === 415){
+              this.toastService.mostrar({
+                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+                tipoToast: 'delete',
+                duration: 5000
+              });
+            } else {
+              this.toastService.mostrar({
+                texto: 'Error al actualizar la factura',
+                tipoToast: 'delete',
+              });
+            }
           },
         });
       }
@@ -298,37 +310,94 @@ export class DetalleFacturaComponent implements OnInit {
   sendToValidate() {
     if (this.formularioEsValido() && this.hasValidAmount()) {
       this.estaGuardando.set(true);
-      this.facturasService.sendToValidate(this.factura().idFactura!).subscribe({
+      this.facturasService.sendToValidate(this.factura().idFactura!, this.factura().entityRowVersion.toString()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
+          this.toastService.mostrar({
+              texto: 'Se ha actualizado la factura correctamente',
+              tipoToast: 'submit',
+            });
         },
+        error: (err) => {
+           this.estaGuardando.set(false);
+            if(err.status === 415){
+              this.toastService.mostrar({
+                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+                tipoToast: 'delete',
+                duration: 5000
+              });
+            } else {
+              this.toastService.mostrar({
+                texto: 'Error al actualizar la factura',
+                tipoToast: 'delete',
+              });
+            }
+          },
       });
     }
   }
   sendToCancelValidate() {
     if (this.formularioEsValido() && this.hasValidAmount()) {
       this.estaGuardando.set(true);
-      this.facturasService.sendToCancelValidate(this.factura().idFactura!).subscribe({
+      this.facturasService.sendToCancelValidate(this.factura().idFactura!, this.factura().entityRowVersion.toString()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
+          this.toastService.mostrar({
+              texto: 'Se ha actualizado la factura correctamente',
+              tipoToast: 'submit',
+            });
         },
+        error: (err) => {
+            this.estaGuardando.set(false);
+            if(err.status === 415){
+              this.toastService.mostrar({
+                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+                tipoToast: 'delete',
+                duration: 5000
+              });
+            } else {
+              this.toastService.mostrar({
+                texto: 'Error al actualizar la factura',
+                tipoToast: 'delete',
+              });
+            }
+          }
       });
     }
   }
   sendToApprove() {
     if (this.isPendingState()) {
       this.estaGuardando.set(true);
-      this.facturasService.sendToApprove(this.factura().idFactura!).subscribe({
+      this.facturasService.sendToApprove(this.factura().idFactura!,this.factura().entityRowVersion.toString()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
+          this.toastService.mostrar({
+              texto: 'Se ha actualizado la factura correctamente',
+              tipoToast: 'submit',
+            });
         },
+        error: (err) => {
+            this.estaGuardando.set(false);
+            if(err.status === 415){
+              this.toastService.mostrar({
+                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+                tipoToast: 'delete',
+                duration: 5000
+              });
+            } else {
+              this.toastService.mostrar({
+                texto: 'Error al actualizar la factura',
+                tipoToast: 'delete',
+              });
+            }
+          },
       });
     }
   }
-  createNewClient(){
+  createNewClient() {
     this.sidebarClientOpen.set(true);
   }
-  closeSidebar(){
+  closeSidebar() {
     this.sidebarClientOpen.set(false);
   }
 }

@@ -20,6 +20,7 @@ export interface Factura {
   creadoPor: number;
   modificado: string;
   modificadoPor: number;
+  entityRowVersion: number;
 
   // Campos de la Vista (JOINs)
   clientLegalName: string | null;
@@ -51,7 +52,7 @@ export interface FacturaCreate {
 
 export interface FacturaUpdate extends FacturaCreate{
 idFactura: string;
-
+entityRowVersion: number;
 }
 
 export interface FacturaLineasCreate {

@@ -184,7 +184,7 @@
                   appConfirm
                   action="delete"
                   [message]="'¿Estás seguro de que deseas eliminar la factura?'"
-                  (confirmed)="borrarfactura(factura.idFactura.toString())"
+                  (confirmed)="borrarfactura(factura.idFactura.toString(), factura.entityRowVersion.toString())"
                   [texto]="'Borrar'"
                   [variante]="'danger'"
                 >

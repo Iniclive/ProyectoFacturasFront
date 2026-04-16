@@ -11,21 +11,27 @@ import { Factura } from '../../../core/models/factura.model';
 import { INVOICE_STATUS } from '../../../core/constants/factura.constants';
 import { FacturaDetailSidebarComponent } from '../factura-detail-sidebar/factura-detail-sidebar';
 
-
 @Component({
   selector: 'app-listado-facturas',
-  imports: [CurrencyPipe, BotonPropioComponent, MatIconModule,ConfirmDirective,FacturaDetailSidebarComponent],
+  imports: [
+    CurrencyPipe,
+    BotonPropioComponent,
+    MatIconModule,
+    ConfirmDirective,
+    FacturaDetailSidebarComponent,
+  ],
   templateUrl: './listado-facturas.component.html',
   styleUrl: './listado-facturas.component.css',
   standalone: true,
 })
 export class ListadoFacturasComponent {
-  facturasService = inject(FacturasService);
+  private facturasService = inject(FacturasService);
   private readonly router = inject(Router);
-  facturas = this.facturasService.facturasCompleto;
-  error = signal('');
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
+
+  facturas = this.facturasService.facturasCompleto;
+
   mostrarFiltros = signal(false);
   searchNumero = signal('');
   searchAseguradora = signal('');
@@ -41,6 +47,51 @@ export class ListadoFacturasComponent {
     return factura.status != 3; // Solo se pueden editar las facturas que no están aprobadas
   }
 
+  facturasFiltradas = computed(() => {
+    let resultado = this.facturas();
+
+    const numero = this.searchNumero().toLowerCase().trim();
+    if (numero) {
+      resultado = resultado.filter((f) =>
+        f.numeroFactura?.toString().toLowerCase().includes(numero),
+      );
+    }
+
+    const aseguradora = this.searchAseguradora().toLowerCase().trim();
+    if (aseguradora) {
+      resultado = resultado.filter((f) => f.insuranceName?.toLowerCase().includes(aseguradora));
+    }
+
+    const client = this.searchClient().toLowerCase().trim();
+    if (client) {
+      resultado = resultado.filter((f) => f.clientLegalName?.toLowerCase().includes(client));
+    }
+
+    const status = this.searchStatus().toLowerCase().trim();
+    if (status) {
+      resultado = resultado.filter((f) => f.status?.toString().toLowerCase().includes(status));
+    }
+
+    const operador = this.importeOperador();
+    const valor = this.importeValor();
+    if (operador && valor !== null) {
+      resultado = resultado.filter((f) =>
+        operador === 'mayor'
+          ? f.importeTotal !== null && f.importeTotal > valor
+          : f.importeTotal !== null && f.importeTotal < valor,
+      );
+    }
+
+    return resultado;
+  });
+  hayFiltrosActivos = computed(
+    () =>
+      !!this.searchNumero() ||
+      !!this.searchClient() ||
+      !!this.searchAseguradora() ||
+      !!this.searchStatus() ||
+      (!!this.importeOperador() && this.importeValor() !== null),
+  );
 
   ngOnInit() {
     this.facturasService
@@ -51,7 +102,7 @@ export class ListadoFacturasComponent {
           console.log('¡Datos llegados al componente!', datos);
         },
         error: () => {
-          this.error.set('Error al cargar las imagenes');
+          console.log('Error al cargar las facturas');
         },
         complete: () => {},
       });
@@ -65,89 +116,39 @@ export class ListadoFacturasComponent {
       console.log('Redirigiendo a creación de nueva factura');
       this.router.navigate(['/facturas', 'nueva']);
     }
-
   }
-  borrarfactura(id: string) {
-      console.log("Intentando borrar la factura con id " + id)
-      this.facturasService.eliminarFactura(id).subscribe({
-    next: () => {
-      this.toastService.mostrar({texto: 'Se ha eliminado la factura correctamente', tipoToast: 'submit'})
-    },
-    error: () => {
-      this.toastService.mostrar({texto: 'Error al eliminar la factura', tipoToast: 'delete'});
-    }
-  });
-    }
-
-    // Computed con todos los filtros combinados
-facturasFiltradas = computed(() => {
-  let resultado = this.facturas();
-
-  const numero = this.searchNumero().toLowerCase().trim();
-  if (numero) {
-    resultado = resultado.filter(f =>
-      f.numeroFactura?.toString().toLowerCase().includes(numero)
-    );
+  borrarfactura(id: string, entityRowVersion: string) {
+    console.log('Intentando borrar la factura con id ' + id);
+    this.facturasService.eliminarFactura(id,entityRowVersion).subscribe({
+      next: () => {
+        this.toastService.mostrar({
+          texto: 'Se ha eliminado la factura correctamente',
+          tipoToast: 'submit',
+        });
+      },
+      error: () => {
+        this.toastService.mostrar({ texto: 'Error al eliminar la factura', tipoToast: 'delete' });
+      },
+    });
   }
 
-  const aseguradora = this.searchAseguradora().toLowerCase().trim();
-  if (aseguradora) {
-    resultado = resultado.filter(f =>
-      f.insuranceName?.toLowerCase().includes(aseguradora)
-    );
+  // Computed con todos los filtros combinados
+
+  limpiarFiltros() {
+    this.searchNumero.set('');
+    this.searchAseguradora.set('');
+    this.searchClient.set('');
+    this.searchStatus.set('');
+    this.importeOperador.set('');
+    this.importeValor.set(null);
+  }
+  abrirDetalle(id: string) {
+    this.selectedFacturaId.set(id);
+    this.sidebarOpen.set(true);
   }
 
-  const client = this.searchClient().toLowerCase().trim();
-  if (client) {
-    resultado = resultado.filter(f =>
-      f.clientLegalName?.toLowerCase().includes(client)
-    );
+  cerrarSidebar() {
+    this.sidebarOpen.set(false);
+    this.selectedFacturaId.set(null);
   }
-
-  const status = this.searchStatus().toLowerCase().trim();
-  if (status) {
-    resultado = resultado.filter(f =>
-      f.status?.toString().toLowerCase().includes(status)
-    );
-  }
-
-  const operador = this.importeOperador();
-  const valor = this.importeValor();
-  if (operador && valor !== null) {
-    resultado = resultado.filter(f =>
-      operador === 'mayor'
-        ? (f.importeTotal !== null && f.importeTotal > valor)
-        : (f.importeTotal !== null && f.importeTotal < valor)
-    );
-  }
-
-  return resultado;
-});
-
-hayFiltrosActivos = computed(() =>
-  !!this.searchNumero() ||
-  !!this.searchClient() ||
-  !!this.searchAseguradora() ||
-  !!this.searchStatus() ||
-  (!!this.importeOperador() && this.importeValor() !== null)
-);
-
-limpiarFiltros() {
-  this.searchNumero.set('');
-  this.searchAseguradora.set('');
-  this.searchClient.set('');
-  this.searchStatus.set('');
-  this.importeOperador.set('');
-  this.importeValor.set(null);
-}
-abrirDetalle(id: string) {
-  this.selectedFacturaId.set(id);
-  this.sidebarOpen.set(true);
-}
-
-cerrarSidebar() {
-  this.sidebarOpen.set(false);
-  this.selectedFacturaId.set(null);
-}
-
 }

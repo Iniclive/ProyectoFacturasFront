@@ -21,6 +21,7 @@ export const FACTURA_INICIAL: Factura = {
   creadoPor: 0,
   modificado: '',
   modificadoPor: 0,
+  entityRowVersion: 0,
 
   // Campos de la Vista
   clientCif: '',

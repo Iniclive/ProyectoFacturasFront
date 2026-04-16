@@ -34,16 +34,34 @@ import { LINEA_INICIAL } from '../../../core/constants/linea-factura.constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetalleLineaComponent implements OnInit {
-  readonly onCreateProduct = output<void>();
+
+
   readonly newProduct = input<Product | null>(null);
   readonly idLinea = input<number | null>(null);
   readonly idFactura = input.required<number>();
+
+  readonly onCreateProduct = output<void>();
+  readonly onClose = output<void>();
+  readonly onSaved = output<void>();
 
   private readonly lineasService = inject(LineasFacturaService);
   private readonly productService = inject(ProductsService);
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+
+  readonly products = this.productService.products;
+  readonly filteredProducts = this.productService.filteredProductsList;
+
   currentLine = signal<LineaFactura>(LINEA_INICIAL);
+
+  readonly searchProductQuery = signal('');
+  readonly estaGuardando = signal(false);
+  readonly formEnviado = signal(false);
+  readonly isOpenProductCombobox = signal(false);
+  readonly selectedProduct = signal<Product | null>(null);
+  private isSelectionProduct = false;
+
+
   readonly originalLine = computed(() =>
     this.isEditing()
       ? (this.lineasService
@@ -52,27 +70,14 @@ export class DetalleLineaComponent implements OnInit {
       : LINEA_INICIAL,
   );
 
-  readonly onClose = output<void>();
-  readonly onSaved = output<void>();
-  readonly filteredProducts = this.productService.filteredProductsList;
-  readonly products = this.productService.products;
-  readonly searchProductQuery = signal('');
-  readonly estaGuardando = signal(false);
-  readonly formEnviado = signal(false);
-  readonly isOpenProductCombobox = signal(false);
-  readonly selectedProduct = signal<Product | null>(null);
-
-  private isSelectionProduct = false;
-
   readonly isEditing = computed(() => this.idLinea() !== null);
-
   readonly materialValido = computed(() => this.searchProductQuery().length >= 3);
   readonly cantidadValida = computed(() => this.currentLine().cantidad > 0);
   readonly importeValido = computed(() => this.currentLine().importe > 0);
+
   readonly importeTotalCalculado = computed(
     () => this.currentLine().cantidad * this.currentLine().importe,
   );
-
   readonly formularioEsValido = computed(
     () => this.materialValido() && this.cantidadValida() && this.importeValido(),
   );
@@ -96,6 +101,9 @@ export class DetalleLineaComponent implements OnInit {
         this.isSelectionProduct = true;
         this.selectedProduct.set(product);
         this.searchProductQuery.set(product.name);
+      }
+      else{
+      console.log("No se ha encontrado producto al editar")
       }
     }
   }
@@ -170,7 +178,7 @@ export class DetalleLineaComponent implements OnInit {
     this.onClose.emit();
   }
 
-  onSearchInputMaterial(event: Event): void {
+  onSearchInputProduct(event: Event): void {
     const valor = (event.target as HTMLInputElement).value;
     this.searchProductQuery.set(valor);
     this.isOpenProductCombobox.set(valor.length >= 3);

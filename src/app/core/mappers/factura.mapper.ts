@@ -20,7 +20,8 @@ export function mapearAFacturaUpdate(f: Factura): FacturaUpdate {
     importe: f.importe,
     tipoIva: f.tipoIva,
     clientId: f.clientId,
-    status: f.status
+    status: f.status,
+    entityRowVersion: f.entityRowVersion
   };
 }
 export function mapearAFacturaSimple(f: Factura): FacturaSimple {

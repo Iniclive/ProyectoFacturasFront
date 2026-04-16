@@ -8,7 +8,7 @@
       <app-boton-propio
         [texto]="'Nueva Línea'"
         [color]="'#27ae60'"
-        (pulsado)="abrirSidebarLinea()"
+        (pulsado)="openSidebarLinea()"
       />
     }
   </header>
@@ -21,7 +21,9 @@
           <th class="text-right">Cantidad</th>
           <th class="text-right">Importe</th>
           <th class="text-right">Total</th>
+          @if (isEditable()) {
           <th class="text-center">Acciones</th>
+          }
         </tr>
       </thead>
       <tbody>
@@ -37,7 +39,7 @@
               @if (isEditable()) {
                 <app-boton-propio
                   [texto]="'Editar'"
-                  (pulsado)="abrirSidebarLinea(linea.idLineaFactura)"
+                  (pulsado)="openSidebarLinea(linea.idLineaFactura)"
                 />
                 <app-boton-propio
                   appConfirm
@@ -63,7 +65,7 @@
   </div>
 
   @if (sidebarOpen()) {
-    <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
   }
   <aside class="sidebar" [class.open]="sidebarOpen()">
     @if (sidebarOpen()) {
@@ -71,20 +73,20 @@
         [idLinea]="selectedLineaId()"
         [idFactura]="idFactura()"
         [newProduct]="newlyCreatedProduct()"
-        (onClose)="cerrarSidebar()"
-        (onSaved)="onLineaGuardada()"
-        (onCreateProduct)="abrirSidebarProducto()"
+        (onClose)="closeSidebar()"
+        (onSaved)="onLineaSaved()"
+        (onCreateProduct)="openSidebarProduct()"
       />
     }
   </aside>
   @if (sidebarProductOpen()) {
-    <div class="sidebar-overlay" (click)="cerrarSidebarProducto()"></div>
+    <div class="sidebar-overlay" (click)="closeSidebarProduct()"></div>
   }
   <aside class="sidebar sidebar-producto" [class.open]="sidebarProductOpen()">
     @if (sidebarProductOpen()) {
       <app-product-service-details
         [productId]="null"
-        (onClose)="onProductoGuardado($event)"
+        (onClose)="onProductSaved($event)"
       />
     }
   </aside>

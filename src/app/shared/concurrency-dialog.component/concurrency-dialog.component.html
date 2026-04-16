@@ -1,0 +1,23 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon class="title-icon">sync_problem</mat-icon>
+  ¡Atención: Datos desactualizados!
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <div class="warning-banner">
+    <mat-icon class="warning-icon">warning_amber</mat-icon>
+    <div class="warning-text">
+      <p>Parece que otro usuario o proceso ha modificado esta factura mientras la editabas.</p>
+      <p>Para evitar pérdida de información, es necesario recargar los datos más recientes.</p>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <app-boton-propio
+          (pulsado)="recargarPagina()"
+          [tipo]="'button'"
+          [texto]="'Recargar'"
+          [variante]="'neutral'"
+  />
+</mat-dialog-actions>
