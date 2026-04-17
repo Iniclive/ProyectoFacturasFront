@@ -81,9 +81,9 @@ export class FacturasService {
     );
   }
 
-  sendToValidate(idFac: string,rowVersion: string) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE(idFac),{
-    headers: { 'If-Match': rowVersion}}).pipe(
+  sendToValidate(invoice: Factura) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE,invoice)
+    .pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
       }),
@@ -93,10 +93,9 @@ export class FacturasService {
       }),
     );
   }
-  sendToCancelValidate(idFac: string,rowVersion: string) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE(idFac), {}, {
-      headers: { 'If-Match': rowVersion }
-    }).pipe(
+  sendToCancelValidate(invoice: Factura) {
+   return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE,invoice)
+    .pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
       }),
@@ -106,10 +105,10 @@ export class FacturasService {
       }),
     );
   }
-  sendToApprove(idFac: string,rowVersion: string) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE(idFac), {}, {
-      headers: { 'If-Match': rowVersion }
-    }).pipe(
+
+  sendToApprove(invoice: Factura) {
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE,invoice)
+    .pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
       }),

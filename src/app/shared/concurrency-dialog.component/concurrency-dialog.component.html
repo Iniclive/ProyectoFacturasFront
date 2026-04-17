@@ -5,7 +5,6 @@
 
 <mat-dialog-content class="dialog-content">
   <div class="warning-banner">
-    <mat-icon class="warning-icon">warning_amber</mat-icon>
     <div class="warning-text">
       <p>Parece que otro usuario o proceso ha modificado esta factura mientras la editabas.</p>
       <p>Para evitar pérdida de información, es necesario recargar los datos más recientes.</p>
@@ -18,6 +17,6 @@
           (pulsado)="recargarPagina()"
           [tipo]="'button'"
           [texto]="'Recargar'"
-          [variante]="'neutral'"
+          [variante]="'primary'"
   />
 </mat-dialog-actions>

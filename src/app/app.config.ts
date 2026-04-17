@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     ), //provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([credentialsInterceptor, authErrorInterceptor, concurrencyErrorInterceptor]),
+      withInterceptors([credentialsInterceptor, authErrorInterceptor]),
     ),
     provideAppInitializer(async () => {
       const authService = inject(AuthService);

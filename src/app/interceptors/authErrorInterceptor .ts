@@ -4,13 +4,17 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { environment } from '@env/environment';
+import { MatDialog } from '@angular/material/dialog';
+import { ConcurrencyDialogComponent } from '../shared/concurrency-dialog.component/concurrency-dialog.component';
 
 
 const API_URL = environment.apiUrl;
 
+
 export const authErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-
+  const dialog = inject(MatDialog);
+  
   if (!req.url.startsWith(API_URL)) {
     return next(req);
   }
@@ -19,17 +23,14 @@ export const authErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       switch (error.status) {
         case 401:
-          // No autenticado — el authGuard ya cubre la mayoría de casos,
-          // pero esto captura sesiones que expiran mid-navegación
-          //router.navigate(['/login']);
-          /*if (!req.url.includes(ENDPOINTS.AUTH_ME)) {
-            router.navigate(['/login']);
-          }*/
           break;
         case 403:
-          // Autenticado pero sin permiso (tu Forbid())
           router.navigate(['/forbidden']);
           break;
+          case 409:
+           dialog.open(ConcurrencyDialogComponent, {
+           width: '400px',
+                  });
       }
       return throwError(() => error);
     })

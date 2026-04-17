@@ -310,7 +310,7 @@ export class DetalleFacturaComponent implements OnInit {
   sendToValidate() {
     if (this.formularioEsValido() && this.hasValidAmount()) {
       this.estaGuardando.set(true);
-      this.facturasService.sendToValidate(this.factura().idFactura!, this.factura().entityRowVersion.toString()).subscribe({
+      this.facturasService.sendToValidate(this.factura()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
           this.toastService.mostrar({
@@ -339,7 +339,7 @@ export class DetalleFacturaComponent implements OnInit {
   sendToCancelValidate() {
     if (this.formularioEsValido() && this.hasValidAmount()) {
       this.estaGuardando.set(true);
-      this.facturasService.sendToCancelValidate(this.factura().idFactura!, this.factura().entityRowVersion.toString()).subscribe({
+      this.facturasService.sendToCancelValidate(this.factura()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
           this.toastService.mostrar({
@@ -368,7 +368,7 @@ export class DetalleFacturaComponent implements OnInit {
   sendToApprove() {
     if (this.isPendingState()) {
       this.estaGuardando.set(true);
-      this.facturasService.sendToApprove(this.factura().idFactura!,this.factura().entityRowVersion.toString()).subscribe({
+      this.facturasService.sendToApprove(this.factura()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
           this.toastService.mostrar({
