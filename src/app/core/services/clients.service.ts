@@ -77,6 +77,14 @@ export class ClientsService {
       this.selectedClient.set({ ...DEFAULT_CLIENT });
     }
   }
+  getClientDetails(id : string){
+    return this.httpClient.get<Client>(ENDPOINTS.CLIENTS_ID(id)).pipe(
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => new Error('Error en API'));
+      }),
+    )
+  }
 
   updateCurrentClient(cambios: Partial<Client>) {
       this.selectedClient.update((c) => ({ ...c, ...cambios } as Client));

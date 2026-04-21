@@ -10,6 +10,8 @@ import { DetalleLineaComponent } from '../detalle-lineas/detalle-lineas.componen
 import { Product } from '../../../core/models/product.models';
 import { ProductServiceDetails } from "../../products-and-services/product-service-details/product-service-details";
 import { ProductsService } from '../../../core/services/products.service';
+import { LINEAS_INICIALES } from '../../../core/constants/linea-factura.constants';
+import { LineaFactura } from '../../../core/models/linea-factura.model';
 
 @Component({
   selector: 'app-listado-lineas',
@@ -37,7 +39,7 @@ export class ListadoLineasComponent {
   readonly newlyCreatedProduct = signal<Product | null>(null);
   readonly sidebarProductOpen = signal(false);
   readonly pendingLineaId = signal<number | null>(null);
-  readonly lineas = this.lineasService.lineas;
+  readonly lineas = signal<LineaFactura[]>(LINEAS_INICIALES);
   readonly error = signal('');
 
   readonly sidebarOpen = signal(false);
@@ -53,7 +55,7 @@ export class ListadoLineasComponent {
       .cargarLineas(String(this.idFactura()))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (datos) => console.log('¡Líneas cargadas!', datos),
+        next: (datos) => this.lineas.set(datos),
         error: () => this.error.set('Error al cargar las líneas'),
       });
   }

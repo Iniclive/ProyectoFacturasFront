@@ -112,7 +112,6 @@
 }
 
 .detail-item--highlight {
-  grid-column: 1 / -1;
   background: #f0fdf4;
   border-color: #bbf7d0;
 }
@@ -189,6 +188,14 @@
   gap: 12px;
 
   mat-icon { font-size: 40px; width: 40px; height: 40px; }
+}
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;        /* ← altura fija a la ventana */
+  max-height: 100vh;    /* ← evita que crezca más */
+  overflow: hidden;     /* ← corta cualquier desbordamiento del contenedor */
 }
 
 @media (max-width: 600px) {

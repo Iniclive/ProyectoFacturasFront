@@ -10,8 +10,6 @@
          @if (isAprovedState()) {
             <app-factura-pdf-download
               [factura]="factura()"
-              [lineas]="lineas()"
-              [client]="currentClient()"
               (onDescargaIniciada)="onPdfDescargado()"
             />
           }

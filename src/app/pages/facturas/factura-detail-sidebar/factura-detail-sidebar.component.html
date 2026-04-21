@@ -3,12 +3,18 @@
     <div class="header-left">
       <mat-icon>receipt_long</mat-icon>
       <div>
-        <h2 class="sidebar-title">Factura #{{ factura()?.numeroFactura }}</h2>
-        <span class="status-badge" [class]="'status-' + factura()?.status">
-          {{ factura()?.statusName }}
+        <h2 class="sidebar-title">Factura #{{ factura().numeroFactura }}</h2>
+        <span class="status-badge" [class]="'status-' + factura().status">
+          {{ factura().statusName }}
         </span>
       </div>
     </div>
+    @if (isAprovedState()) {
+            <app-factura-pdf-download
+              [factura]="factura()"
+              (onDescargaIniciada)="onPdfDescargado()"
+            />
+          }
     <button class="close-btn" (click)="cerrar()" aria-label="Cerrar">
       <mat-icon>close</mat-icon>
     </button>
@@ -25,15 +31,15 @@
         <div class="detail-grid">
           <div class="detail-item">
             <span class="detail-label">Usuario</span>
-            <span class="detail-value">{{ factura()?.userName }}</span>
+            <span class="detail-value">{{ factura().userName }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">Fecha de Creación</span>
-            <span class="detail-value">{{ factura()?.creado | date: 'dd/MM/yyyy HH:mm' }}</span>
+            <span class="detail-value">{{ factura().creado | date: 'dd/MM/yyyy HH:mm' }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">Fecha Ultima Modificación</span>
-            <span class="detail-value">{{ factura()?.modificado | date: 'dd/MM/yyyy HH:mm' }}</span>
+            <span class="detail-value">{{ factura().modificado | date: 'dd/MM/yyyy HH:mm' }}</span>
           </div>
         </div>
       </section>
@@ -46,16 +52,16 @@
          <div class="detail-grid">
           <div class="detail-item">
             <span class="detail-label">CIF</span>
-            <span class="detail-value">{{ factura()?.clientCif }}</span>
+            <span class="detail-value">{{ factura().clientCif }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">Nombre Legal</span>
-            <span class="detail-value">{{ factura()?.clientLegalName }}</span>
+            <span class="detail-value">{{ factura().clientLegalName }}</span>
           </div>
         </div>
       </section>
 
-      @if (factura()?.insuranceName) {
+      @if (factura().insuranceName) {
         <section class="detail-section">
           <h3 class="section-title">
             <mat-icon>business</mat-icon>
@@ -64,7 +70,7 @@
           <div class="detail-grid">
             <div class="detail-item">
               <span class="detail-label">Nombre</span>
-              <span class="detail-value">{{ factura()?.insuranceName }}</span>
+              <span class="detail-value">{{ factura().insuranceName }}</span>
             </div>
           </div>
         </section>
@@ -79,17 +85,17 @@
           <div class="detail-item">
             <span class="detail-label">Base imponible</span>
             <span class="detail-value">
-              {{ factura()?.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+              {{ factura().importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
             </span>
           </div>
           <div class="detail-item">
             <span class="detail-label">IVA</span>
-            <span class="detail-value">{{ factura()?.tipoIva }}%</span>
+            <span class="detail-value">{{ factura().tipoIva }}%</span>
           </div>
           <div class="detail-item detail-item--highlight">
             <span class="detail-label">Total</span>
             <span class="detail-value total">
-              {{ factura()?.importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+              {{ factura().importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
             </span>
           </div>
         </div>
@@ -101,7 +107,7 @@
       <button class="btn-secondary" (click)="cerrar()">Cerrar</button>
       <button class="btn-primary" (click)="irAEdicion()">
         <mat-icon>{{ isEditable() ? 'edit' : 'visibility' }}</mat-icon>
-        {{ isEditable() ? 'Editar factura' : 'Consultar factura' }}
+        {{ isEditable() ? 'Editar factura' : 'Consultar detalles' }}
       </button>
     </footer>
 

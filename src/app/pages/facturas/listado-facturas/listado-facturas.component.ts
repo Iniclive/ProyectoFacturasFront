@@ -150,5 +150,6 @@ export class ListadoFacturasComponent {
   cerrarSidebar() {
     this.sidebarOpen.set(false);
     this.selectedFacturaId.set(null);
+    
   }
 }

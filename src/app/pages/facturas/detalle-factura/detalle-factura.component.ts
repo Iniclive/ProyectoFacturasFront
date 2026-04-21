@@ -69,7 +69,6 @@ export class DetalleFacturaComponent implements OnInit {
   private readonly clientsService = inject(ClientsService);
   private readonly facturaState = inject(FacturaStateService);
   private readonly loadingService = inject(LoadingService);
-  private readonly lineasFacturaService = inject(LineasFacturaService);
   private toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -79,7 +78,7 @@ export class DetalleFacturaComponent implements OnInit {
   filteredInsurances = this.insuranceService.filteredInsurancesList;
   clients = this.clientsService.clients;
   factura = this.facturaState.currentFactura;
-  lineas = this.lineasFacturaService.lineas;
+
 
   currentClient = this.clientsService.selectedClient;
 
@@ -199,16 +198,6 @@ export class DetalleFacturaComponent implements OnInit {
       )
       .subscribe();
     this.insuranceSearch.subscribe();
-
-    toObservable(this.factura)
-      .pipe(
-        map((f) => f.clientId),
-        filter((id) => !!id && id !== 0),
-        distinctUntilChanged(),
-        tap((id) => this.clientsService.loadCurrentClientInfoById(id.toString())),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe();
   }
 
   ngOnInit(): void {

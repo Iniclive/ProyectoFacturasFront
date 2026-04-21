@@ -19,3 +19,5 @@ export const LINEA_INICIAL: LineaFactura = {
   // Campos de la Vista
   productName: '',
 };
+
+export const LINEAS_INICIALES: LineaFactura[] = [];
