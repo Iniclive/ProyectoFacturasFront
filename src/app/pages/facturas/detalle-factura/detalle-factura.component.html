@@ -30,6 +30,12 @@
             <label>MODIFICADO</label>
             <span>{{ factura().modificado | date: 'dd/MM/yyyy HH:mm' }}</span>
           </div>
+          @if(isSaved()){
+            <div class="audit-item">
+            <label>ESTADO</label>
+            <span>{{ showEstatusName()}}</span>
+          </div>
+          }
         </div>
 
         <div class="form-grid">

@@ -79,7 +79,6 @@ export class DetalleFacturaComponent implements OnInit {
   clients = this.clientsService.clients;
   factura = this.facturaState.currentFactura;
 
-
   currentClient = this.clientsService.selectedClient;
 
   tiposIva = signal(TIPOS_IVA_DEFAULT);
@@ -114,6 +113,13 @@ export class DetalleFacturaComponent implements OnInit {
       this.factura().status ===
       INVOICE_STATUS.find((s) => s.statusName === 'AprobadaCerrada')?.value,
   );
+
+  showEstatusName = computed(() => {
+    if (this.isCreationState()) return "En Creación";
+    if (this.isPendingState()) return "Pendiente de Aprobación";
+    if (this.isAprovedState()) return "Aprobada - Cerrada";
+    return "";
+  });
 
   isNotEditable = computed(() => this.isPendingState() || this.isAprovedState());
   hasValidAmount = computed(() => {
