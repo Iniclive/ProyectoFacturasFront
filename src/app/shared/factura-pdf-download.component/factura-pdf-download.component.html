@@ -1,0 +1,15 @@
+ <button
+      class="pdf-btn"
+      [class.pdf-btn--loading]="isGenerating()"
+      [disabled]="isDisabled()"
+      (click)="descargar()"
+      [title]="tooltipText()"
+    >
+      @if (isGenerating()) {
+        <span class="pdf-btn__spinner"></span>
+        <span>Generando...</span>
+      } @else {
+        <mat-icon>picture_as_pdf</mat-icon>
+        <span>{{ labelTexto() }}</span>
+      }
+    </button>

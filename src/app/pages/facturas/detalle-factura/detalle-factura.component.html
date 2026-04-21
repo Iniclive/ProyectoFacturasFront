@@ -6,6 +6,16 @@
           <mat-icon>receipt_long</mat-icon>
           {{ isSaved() ? 'Factura: ' + factura().numeroFactura : 'Crear Factura' }}
         </h1>
+
+         @if (isAprovedState()) {
+            <app-factura-pdf-download
+              [factura]="factura()"
+              [lineas]="lineas()"
+              [client]="currentClient()"
+              (onDescargaIniciada)="onPdfDescargado()"
+            />
+          }
+
       </header>
 
       <form #facturaForm="ngForm" (ngSubmit)="guardarCabecera()" class="factura-content">
@@ -184,9 +194,6 @@
         </div>
 
         <footer class="form-actions">
-          @if (isAprovedState()) {
-            <span class="approved-label"><mat-icon>check_circle</mat-icon> Factura Aprobada</span>
-          }
           @if (!isAprovedState()) {
             <app-boton-propio
               appConfirm

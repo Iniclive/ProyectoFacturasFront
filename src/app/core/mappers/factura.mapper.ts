@@ -1,4 +1,4 @@
-import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate } from "../models/factura.model";
+import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate, StatusTransitionPayload } from "../models/factura.model";
 export function mapearAFacturaCreate(f: Factura): FacturaCreate {
   return {
     numeroFactura: f.numeroFactura,
@@ -32,5 +32,12 @@ export function mapearAFacturaSimple(f: Factura): FacturaSimple {
     importe: f.importe || 0,
     tipoIva: f.tipoIva || 0,
     importeTotal: f.importeTotal || 0
+  };
+}
+
+export function mapFacturaToStatusPayload(f: Factura): StatusTransitionPayload {
+  return {
+    idFactura: f.idFactura,
+    entityRowVersion: f.entityRowVersion
   };
 }

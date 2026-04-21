@@ -13,7 +13,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { mapearAFacturaCreate, mapearAFacturaUpdate } from '../../../core/mappers/factura.mapper';
+import {
+  mapearAFacturaCreate,
+  mapearAFacturaUpdate,
+  mapFacturaToStatusPayload,
+} from '../../../core/mappers/factura.mapper';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs';
 import { ListadoLineasComponent } from '../../lineas-factura/listado-lineas/listado-lineas.component';
@@ -28,6 +32,8 @@ import { ClientsService } from '../../../core/services/clients.service';
 import { Insurance } from '../../../core/models/catalogos.model';
 import { Client } from '../../../core/models/client.models';
 import { ClientDetailsComponent } from '../../clients/client-details.component/client-details.component';
+import { FacturaPdfDownload } from '../../../shared/factura-pdf-download.component/factura-pdf-download';
+import { LineasFacturaService } from '../../../core/services/lineas-factura.service';
 
 @Component({
   standalone: true,
@@ -49,16 +55,21 @@ import { ClientDetailsComponent } from '../../clients/client-details.component/c
     DisabledTooltipDirective,
     LoadingComponent,
     ClientDetailsComponent,
+    FacturaPdfDownload,
   ],
   templateUrl: './detalle-factura.component.html',
   styleUrl: './detalle-factura.component.css',
 })
 export class DetalleFacturaComponent implements OnInit {
+  onPdfDescargado() {
+    throw new Error('Method not implemented.');
+  }
   private readonly facturasService = inject(FacturasService);
   private readonly insuranceService = inject(InsuranceService);
   private readonly clientsService = inject(ClientsService);
   private readonly facturaState = inject(FacturaStateService);
   private readonly loadingService = inject(LoadingService);
+  private readonly lineasFacturaService = inject(LineasFacturaService);
   private toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -68,6 +79,9 @@ export class DetalleFacturaComponent implements OnInit {
   filteredInsurances = this.insuranceService.filteredInsurancesList;
   clients = this.clientsService.clients;
   factura = this.facturaState.currentFactura;
+  lineas = this.lineasFacturaService.lineas;
+
+  currentClient = this.clientsService.selectedClient;
 
   tiposIva = signal(TIPOS_IVA_DEFAULT);
   estaGuardando = signal(false);
@@ -84,7 +98,6 @@ export class DetalleFacturaComponent implements OnInit {
     this.route.paramMap.pipe(map((params: ParamMap) => params.get('id') ?? 'nueva')),
     { initialValue: 'nueva' as string },
   );
-
 
   isSaved = computed(() => this.idRuta() !== 'nueva');
 
@@ -143,6 +156,7 @@ export class DetalleFacturaComponent implements OnInit {
   formularioEsValido = computed(
     () => this.aseguradoraValida() && this.numeroFacturaValido() && this.validClientSelected(),
   );
+
   insuranceSearch = toObservable(this.searchInsuranceQuery).pipe(
     filter((query) => {
       if (this.isSelectionInsurance) {
@@ -185,6 +199,16 @@ export class DetalleFacturaComponent implements OnInit {
       )
       .subscribe();
     this.insuranceSearch.subscribe();
+
+    toObservable(this.factura)
+      .pipe(
+        map((f) => f.clientId),
+        filter((id) => !!id && id !== 0),
+        distinctUntilChanged(),
+        tap((id) => this.clientsService.loadCurrentClientInfoById(id.toString())),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   ngOnInit(): void {
@@ -225,11 +249,12 @@ export class DetalleFacturaComponent implements OnInit {
           },
           error: (err) => {
             this.estaGuardando.set(false);
-            if(err.status === 415){
+            if (err.status === 415) {
               this.toastService.mostrar({
-                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+                texto:
+                  'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
                 tipoToast: 'delete',
-                duration: 5000
+                duration: 5000,
               });
             } else {
               this.toastService.mostrar({
@@ -314,25 +339,26 @@ export class DetalleFacturaComponent implements OnInit {
         next: () => {
           this.estaGuardando.set(false);
           this.toastService.mostrar({
-              texto: 'Se ha actualizado la factura correctamente',
-              tipoToast: 'submit',
-            });
+            texto: 'Se ha actualizado la factura correctamente',
+            tipoToast: 'submit',
+          });
         },
         error: (err) => {
-           this.estaGuardando.set(false);
-            if(err.status === 415){
-              this.toastService.mostrar({
-                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
-                tipoToast: 'delete',
-                duration: 5000
-              });
-            } else {
-              this.toastService.mostrar({
-                texto: 'Error al actualizar la factura',
-                tipoToast: 'delete',
-              });
-            }
-          },
+          this.estaGuardando.set(false);
+          if (err.status === 415) {
+            this.toastService.mostrar({
+              texto:
+                'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+              tipoToast: 'delete',
+              duration: 5000,
+            });
+          } else {
+            this.toastService.mostrar({
+              texto: 'Error al actualizar la factura',
+              tipoToast: 'delete',
+            });
+          }
+        },
       });
     }
   }
@@ -343,54 +369,57 @@ export class DetalleFacturaComponent implements OnInit {
         next: () => {
           this.estaGuardando.set(false);
           this.toastService.mostrar({
-              texto: 'Se ha actualizado la factura correctamente',
-              tipoToast: 'submit',
-            });
+            texto: 'Se ha actualizado la factura correctamente',
+            tipoToast: 'submit',
+          });
         },
         error: (err) => {
-            this.estaGuardando.set(false);
-            if(err.status === 415){
-              this.toastService.mostrar({
-                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
-                tipoToast: 'delete',
-                duration: 5000
-              });
-            } else {
-              this.toastService.mostrar({
-                texto: 'Error al actualizar la factura',
-                tipoToast: 'delete',
-              });
-            }
+          this.estaGuardando.set(false);
+          if (err.status === 415) {
+            this.toastService.mostrar({
+              texto:
+                'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+              tipoToast: 'delete',
+              duration: 5000,
+            });
+          } else {
+            this.toastService.mostrar({
+              texto: 'Error al actualizar la factura',
+              tipoToast: 'delete',
+            });
           }
+        },
       });
     }
   }
   sendToApprove() {
     if (this.isPendingState()) {
       this.estaGuardando.set(true);
+
       this.facturasService.sendToApprove(this.factura()).subscribe({
         next: () => {
           this.estaGuardando.set(false);
           this.toastService.mostrar({
-              texto: 'Se ha actualizado la factura correctamente',
-              tipoToast: 'submit',
-            });
+            texto: 'Se ha actualizado la factura correctamente',
+            tipoToast: 'submit',
+          });
         },
         error: (err) => {
-            this.estaGuardando.set(false);
-            if(err.status === 415){
-              this.toastService.mostrar({
-                texto: 'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
-                tipoToast: 'delete',
-                duration: 5000
-              });
-            } else {
-              this.toastService.mostrar({
-                texto: 'Error al actualizar la factura',
-                tipoToast: 'delete',
-              });
-            }
-          },
+          this.estaGuardando.set(false);
+          if (err.status === 415) {
+            this.toastService.mostrar({
+              texto:
+                'Es necesario recargar la página para actualizar esta factura, ya que ha sido modificada desde otra sesión',
+              tipoToast: 'delete',
+              duration: 5000,
+            });
+          } else {
+            this.toastService.mostrar({
+              texto: 'Error al actualizar la factura',
+              tipoToast: 'delete',
+            });
+          }
+        },
       });
     }
   }

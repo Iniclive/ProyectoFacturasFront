@@ -4,10 +4,10 @@
       <mat-icon>manage_accounts</mat-icon>
       <div>
         <h2 class="sidebar-title">
-          {{ isEditing() ? (currentClient()?.legalName || 'Cliente') : 'Nuevo Cliente' }}
+          {{ isEditing() ? (currentClient().legalName || 'Cliente') : 'Nuevo Cliente' }}
         </h2>
-        @if (isEditing() && currentClient()?.cif) {
-          <span class="cif-badge">{{ currentClient()?.cif }}</span>
+        @if (isEditing() && currentClient().cif) {
+          <span class="cif-badge">{{ currentClient().cif }}</span>
         } @else if (!isEditing()) {
           <span class="cif-badge cif-badge--new">Nuevo</span>
         }
@@ -32,7 +32,7 @@
             class="modern-input"
             [class.input-error]="showCifError()"
             type="text"
-            [value]="currentClient()?.cif"
+            [value]="currentClient().cif"
             (input)="updateField({ cif: $any($event.target).value })"
             placeholder="Ej: B1324657"
             [disabled]="isEditing()"
@@ -47,7 +47,7 @@
             class="modern-input"
             [class.input-error]="showLegalNameError()"
             type="text"
-            [value]="currentClient()?.legalName"
+            [value]="currentClient().legalName"
             (input)="updateField({ legalName: $any($event.target).value })"
             placeholder="Ej: Empresa S.A."
           />
@@ -60,7 +60,7 @@
             id="client-commercialName"
             class="modern-input"
             type="text"
-            [value]="currentClient()?.commercialName"
+            [value]="currentClient().commercialName"
             (input)="updateField({ commercialName: $any($event.target).value })"
             placeholder="Ej: Nombre Comercial"
           />
@@ -81,7 +81,7 @@
             class="modern-input"
             [class.input-error]="showEmailError()"
             type="text"
-            [value]="currentClient()?.email"
+            [value]="currentClient().email"
             (input)="updateField({ email: $any($event.target).value })"
             placeholder="Ej: usuario@email.com"
           />
@@ -94,7 +94,7 @@
             id="client-phone"
             class="modern-input"
             type="text"
-            [value]="currentClient()?.phone"
+            [value]="currentClient().phone"
             (input)="updateField({ phone: $any($event.target).value })"
             placeholder="Ej: 612345678"
           />
@@ -106,7 +106,7 @@
             id="client-address"
             class="modern-input"
             type="text"
-            [value]="currentClient()?.address"
+            [value]="currentClient().address"
             (input)="updateField({ address: $any($event.target).value })"
             placeholder="Ej: Calle Falsa 123"
           />

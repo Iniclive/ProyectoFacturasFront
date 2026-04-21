@@ -11,7 +11,7 @@ import { DEFAULT_CLIENT } from '../constants/client.constants';
 export class ClientsService {
   private httpClient = inject(HttpClient);
   private clientsList = signal<Client[]>([]);
-  selectedClient = signal<Client | null>(null);
+  selectedClient = signal<Client>(DEFAULT_CLIENT);
   clients = this.clientsList.asReadonly();
 
 
@@ -71,7 +71,7 @@ export class ClientsService {
   }
   loadCurrentClientInfoById(id : string|null){
     if(id && id !== ''){
-      this.selectedClient.set(this.clientsList().find((c) => String(c.clientId) === String(id)) || null);
+      this.selectedClient.set(this.clientsList().find((c) => String(c.clientId) === String(id)) || DEFAULT_CLIENT);
     }
     else{
       this.selectedClient.set({ ...DEFAULT_CLIENT });

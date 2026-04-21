@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
-import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate } from '../models/factura.model';
+import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate, StatusTransitionPayload } from '../models/factura.model';
 import { FACTURA_INICIAL } from '../constants/factura.constants';
 import { FacturaStateService } from './facturas-state.service';
 //import { ErrorService } from '../compartido/compartido/error.service';
@@ -82,7 +82,8 @@ export class FacturasService {
   }
 
   sendToValidate(invoice: Factura) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE,invoice)
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_VALIDATE(invoice.idFactura),
+    { entityRowVersion: invoice.entityRowVersion} )
     .pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
@@ -94,7 +95,7 @@ export class FacturasService {
     );
   }
   sendToCancelValidate(invoice: Factura) {
-   return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE,invoice)
+   return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_CANCEL_VALIDATE(invoice.idFactura),{ entityRowVersion: invoice.entityRowVersion } )
     .pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);
@@ -107,7 +108,7 @@ export class FacturasService {
   }
 
   sendToApprove(invoice: Factura) {
-    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE,invoice)
+    return this.httpClient.put<Factura>(ENDPOINTS.FACTURA_SEND_TO_APPROVE(invoice.idFactura),{ entityRowVersion: invoice.entityRowVersion } )
     .pipe(
       tap((updatedInvoice) => {
         this.estadoFactura.setFactura(updatedInvoice);

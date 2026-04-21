@@ -35,7 +35,7 @@ export class ProductsService {
   }
 
   loadFilteredProducts(searchString: string) {
-      return this.httpClient.get<Product[]>(ENDPOINTS.PRODUCTS_FILTERED(searchString)).pipe(
+      return this.httpClient.get<Product[]>(ENDPOINTS.PRODUCTS, {params: { q: searchString }}).pipe(
         tap((products) => {
                 this.filteredProducts.set(products);
                 console.log("Cargando materiales fitrados")

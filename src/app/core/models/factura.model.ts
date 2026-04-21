@@ -68,5 +68,9 @@ importeIva: number | null;
 importeTotal: number | null;
 modificado: string;
 modificadoPor: number;
+}
 
+export interface StatusTransitionPayload{
+idFactura: string;
+entityRowVersion: number;
 }
