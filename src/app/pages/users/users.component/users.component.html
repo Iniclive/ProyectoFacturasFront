@@ -27,7 +27,8 @@
     >
       <ng-template #actions let-user>
         <app-boton-propio
-          [texto]="'Editar'"
+          [icono]="'edit'"
+          [ariaLabel]="'Editar'"
           (pulsado)="showUserDetails(user.idUser)"
         />
         <app-boton-propio
@@ -35,7 +36,8 @@
           action="delete"
           [message]="'¿Estás seguro de que deseas eliminar el usuario?'"
           (confirmed)="deleteUser(user.idUser)"
-          [texto]="'Borrar'"
+          [icono]="'delete'"
+          [ariaLabel]="'Borrar'"
           [variante]="'danger'"
         />
       </ng-template>

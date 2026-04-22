@@ -1,15 +1,21 @@
- <button
+<button
       class="pdf-btn"
       [class.pdf-btn--loading]="isGenerating()"
+      [class.pdf-btn--icon-only]="!labelTexto() && !isGenerating()"
       [disabled]="isDisabled()"
       (click)="descargar()"
       [title]="tooltipText()"
+      [attr.aria-label]="tooltipText()"
     >
       @if (isGenerating()) {
         <span class="pdf-btn__spinner"></span>
-        <span>Generando...</span>
+        @if (labelTexto()) {
+          <span>Generando...</span>
+        }
       } @else {
         <mat-icon>picture_as_pdf</mat-icon>
-        <span>{{ labelTexto() }}</span>
+        @if (labelTexto()) {
+          <span>{{ labelTexto() }}</span>
+        }
       }
     </button>

@@ -65,7 +65,7 @@ export class LoginComponent {
         next: () => {
           this.isLoginIn.set(false);
           this.storageService.setItem('lastRegisteredEmail', this.formData().email);
-          this.router.navigate(['/facturas'], { replaceUrl: true });
+          this.router.navigate(['/dashboard'], { replaceUrl: true });
           this.toastService.mostrar({
             texto: 'Usuario logeado correctamente',
             tipoToast: 'submit',

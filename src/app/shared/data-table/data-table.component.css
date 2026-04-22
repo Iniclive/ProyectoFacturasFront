@@ -189,21 +189,8 @@
   border-radius: 8px;
 }
 
-.modern-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 700px;
-}
-
+/* Overrides específicos del componente data-table (base en styles.css global) */
 .modern-table th {
-  background-color: #f1f5f9;
-  color: #475569;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  padding: 16px;
-  text-align: left;
-  border-bottom: 2px solid #e2e8f0;
   user-select: none;
 }
 
@@ -213,7 +200,7 @@
 }
 
 .modern-table th.sortable:hover {
-  background-color: #e2e8f0;
+  background-color: var(--color-gray-200);
 }
 
 .th-content {
@@ -226,60 +213,15 @@
   font-size: 16px;
   width: 16px;
   height: 16px;
-  color: #94a3b8;
-}
-
-.modern-table td {
-  padding: 16px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
-  font-size: 0.95rem;
-}
-
-.modern-table tr:hover {
-  background-color: #f8fafc;
+  color: var(--color-gray-400);
 }
 
 .modern-table tr.row-active {
   background-color: #eef2f7;
 }
 
-.text-right {
-  text-align: right;
-  padding-right: 16px !important;
-}
-
-.text-center {
-  text-align: center !important;
-}
-
-.bold {
-  font-weight: 600;
-}
-
 .clickable-row {
   cursor: pointer;
-}
-
-.actions-cell {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-  border-bottom: none;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px !important;
-  color: #94a3b8;
-}
-
-.empty-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
 }
 
 /* ========== Paginador ========== */

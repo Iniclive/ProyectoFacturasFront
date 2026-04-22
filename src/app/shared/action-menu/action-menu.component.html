@@ -1,0 +1,21 @@
+<app-boton-propio
+  #trigger
+  [icono]="icono()"
+  [ariaLabel]="ariaLabel()"
+  [variante]="'neutral'"
+  [attr.title]="tooltip()"
+  [attr.aria-haspopup]="'menu'"
+  [attr.aria-expanded]="isOpen()"
+  (pulsado)="toggle()"
+/>
+@if (isOpen()) {
+  <div
+    class="action-menu-panel"
+    role="menu"
+    [style.top.px]="position().top"
+    [style.right.px]="position().right"
+    (click)="close()"
+  >
+    <ng-content />
+  </div>
+}

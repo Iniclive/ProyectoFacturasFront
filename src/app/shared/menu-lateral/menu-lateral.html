@@ -1,0 +1,59 @@
+<aside class="side-nav" aria-label="Menú principal">
+  <nav class="side-nav-links">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active-link"
+      class="side-nav-link"
+    >
+      <mat-icon>dashboard</mat-icon>
+      <span class="side-nav-label">Dashboard</span>
+    </a>
+    <a
+      routerLink="/facturas"
+      routerLinkActive="active-link"
+      class="side-nav-link"
+    >
+      <mat-icon>receipt_long</mat-icon>
+      <span class="side-nav-label">Facturas</span>
+    </a>
+    <a
+      routerLink="/clients"
+      routerLinkActive="active-link"
+      class="side-nav-link"
+    >
+      <mat-icon>group</mat-icon>
+      <span class="side-nav-label">Clientes</span>
+    </a>
+    <a
+      routerLink="/products"
+      routerLinkActive="active-link"
+      class="side-nav-link"
+    >
+      <mat-icon>work_outline</mat-icon>
+      <span class="side-nav-label">Productos</span>
+    </a>
+    @if (isAdmin()) {
+      <a
+        routerLink="/users"
+        routerLinkActive="active-link"
+        class="side-nav-link"
+      >
+        <mat-icon>person</mat-icon>
+        <span class="side-nav-label">Usuarios</span>
+      </a>
+    }
+  </nav>
+
+  <div class="side-nav-footer">
+    <button
+      type="button"
+      class="side-nav-link side-nav-logout"
+      appConfirm
+      action="logout"
+      (confirmed)="logout()"
+    >
+      <mat-icon>logout</mat-icon>
+      <span class="side-nav-label">Cerrar sesión</span>
+    </button>
+  </div>
+</aside>

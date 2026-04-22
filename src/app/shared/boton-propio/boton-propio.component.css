@@ -61,6 +61,18 @@
     border-color: #dcdfe3;
     box-shadow: none;
   }
+
+  &.icon-only {
+    padding: 0.35rem;
+    aspect-ratio: 1;
+  }
+
+  mat-icon {
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    line-height: 1.125rem;
+  }
 }
 
 :host {

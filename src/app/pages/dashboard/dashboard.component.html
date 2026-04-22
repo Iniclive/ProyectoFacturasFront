@@ -1,0 +1,117 @@
+<div class="page-container">
+  <div class="page-card dashboard-card">
+    <header class="dashboard-header">
+      <div class="dashboard-greeting">
+        <h1 class="dashboard-title">
+          {{ saludo() }}, {{ currentUser()?.name }}
+        </h1>
+        <p class="dashboard-subtitle">Resumen de tu actividad</p>
+      </div>
+
+      <div class="dashboard-cta">
+        <app-boton-propio
+          [texto]="'Crear Nueva Factura'"
+          [variante]="'success'"
+          [icono]="'add'"
+          (pulsado)="nuevaFactura()"
+        />
+      </div>
+    </header>
+
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon--primary">
+          <mat-icon>group</mat-icon>
+        </div>
+        <div class="kpi-body">
+          <p class="kpi-label">Total de clientes</p>
+          <p class="kpi-value">{{ summary()?.totalClientes ?? '—' }}</p>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon--success">
+          <mat-icon>euro_symbol</mat-icon>
+        </div>
+        <div class="kpi-body">
+          <p class="kpi-label">Total facturado</p>
+          <p class="kpi-value">
+            @if (summary()?.totalFacturado !== undefined && summary()?.totalFacturado !== null) {
+              {{ summary()!.totalFacturado | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+            } @else {
+              —
+            }
+          </p>
+        </div>
+      </div>
+
+      @if (isAdmin()) {
+        <div class="kpi-card">
+          <div class="kpi-icon kpi-icon--accent">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="kpi-body">
+            <p class="kpi-label">Total de usuarios</p>
+            <p class="kpi-value">{{ summary()?.totalUsuarios ?? '—' }}</p>
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="recent-section">
+      <div class="recent-header">
+        <h2 class="recent-title">
+          <mat-icon>history</mat-icon>
+          Actividad reciente
+        </h2>
+        <a routerLink="/facturas" class="link-ver-todas">
+          Ver todas
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+
+      @if (facturasRecientes().length === 0) {
+        <div class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <p>Aún no hay actividad reciente</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Nº Factura</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th class="text-right">Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (factura of facturasRecientes(); track factura.idFactura) {
+                <tr
+                  class="clickable-row"
+                  (click)="abrirFactura(factura.idFactura.toString())"
+                  title="Ver factura"
+                >
+                  <td class="bold">{{ factura.numeroFactura ?? '—' }}</td>
+                  <td>{{ factura.fechaFactura | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ factura.clientLegalName ?? '—' }}</td>
+                  <td class="text-right bold">
+                    {{ factura.importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
+                  </td>
+                  <td>
+                    <app-status-badge
+                      [status]="factura.status"
+                      [label]="factura.statusName"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+</div>

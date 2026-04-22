@@ -112,10 +112,12 @@
 }
 
 .registro-link {
-  color: #3e21bd; /* Usamos el mismo verde de tu botón para mantener coherencia */
+  color: #3e21bd;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
+  cursor: pointer;
+  display: inline-block;
 }
 
 .registro-link:hover {
@@ -126,16 +128,12 @@
 /* --- MEDIA QUERIES (Para móviles) --- */
 @media (max-width: 480px) {
   .login-card {
-    padding: 30px 20px; /* Reducimos el padding en pantallas pequeñas */
+    padding: 30px 20px;
   }
 
   .card-title {
     font-size: 1.5rem;
   }
-}
-.registro-link {
-  cursor: pointer; /* Fuerza a que salga la mano al pasar por encima */
-  display: inline-block;
 }
 .input-wrapper {
   position: relative;

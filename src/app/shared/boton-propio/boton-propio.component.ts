@@ -1,4 +1,5 @@
 import { Component, input, computed, output } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 // Definimos los colores por defecto para cada propósito
 const COLORES_POR_VARIANTE: Record<string, string> = {
@@ -11,6 +12,7 @@ const COLORES_POR_VARIANTE: Record<string, string> = {
 @Component({
   selector: 'app-boton-propio',
   standalone: true,
+  imports: [MatIcon],
   templateUrl: './boton-propio.component.html',
   styleUrls: ['./boton-propio.component.css'],
   host: {
@@ -20,7 +22,9 @@ const COLORES_POR_VARIANTE: Record<string, string> = {
   }
 })
 export class BotonPropioComponent {
-  texto = input.required<string>();
+  texto = input<string>('');
+  icono = input<string | undefined>(undefined);
+  ariaLabel = input<string | undefined>(undefined);
   tipo = input<'button' | 'submit' | 'reset'>('button');
   variante = input<'primary' | 'success' | 'danger' | 'neutral'>('primary');
   disabled = input<boolean>(false);

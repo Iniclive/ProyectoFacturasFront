@@ -1,20 +1,4 @@
-/* Reutilizamos el contenedor de página y tarjeta */
-.page-container {
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
-  background-color: #f8fafc;
-  min-height: 100vh;
-}
-
-.factura-card {
-  background: white;
-  width: 100%;
-  max-width: 1100px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-  padding: 40px 50px;
-}
+/* .page-container y .factura-card viven en styles.css global */
 
 /* Encabezado: Título y Botón alineados */
 .list-header {
@@ -36,112 +20,28 @@
   margin: 0;
 }
 
-/* Estilos de la Tabla Moderna */
+/* Estilos de la Tabla Moderna (base en styles.css global) */
 .table-responsive {
   width: 100%;
-  overflow-x: auto; /* Scroll horizontal en móvil */
+  overflow-x: auto;
   border-radius: 8px;
 }
-
-.modern-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 700px; /* Evita que las columnas se amontonen */
-}
-
-.modern-table th {
-  background-color: #f1f5f9;
-  color: #475569;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  padding: 16px;
-  text-align: left;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.modern-table td {
-  padding: 16px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
-  font-size: 0.95rem;
-}
-
-.modern-table tr:hover {
-  background-color: #f8fafc;
-}
-
-/* Detalles de celdas */
 
 .total-cell {
   color: #2c3e50;
   font-size: 1rem;
 }
 
-.actions-cell {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-
-/* Estados */
-.text-right {text-align: right; }
-.text-center { text-align: center; }
-.bold { font-weight: 600; }
-
-.empty-state {
-  text-align: center;
-  padding: 60px !important;
-  color: #94a3b8;
-}
-
-.empty-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
-}
-
-
-
-.modern-table th.text-right {
-  text-align: right;
-  /* Aseguramos que el padding sea idéntico al de los td para que encajen */
-  padding-right: 16px;
-}
-
-.modern-table td.text-right {
-  text-align: right;
-  padding-right: 16px;
-}
-
-/* Si usas iconos de ordenación (sort) de Material,
-   esto evita que el icono desplace el texto a la izquierda */
-::ng-deep .mat-sort-header-container {
-  display: flex;
-  justify-content: flex-end; /* Alinea el contenido del header de Material a la derecha */
-}
-
-/* Alineación estándar para texto */
-.text-center {
-  text-align: center !important;
-}
-
-/* Ajuste específico para la celda de botones */
-.actions-cell {
-  display: flex;
-  gap: 12px;                /* Espacio entre botones */
-  justify-content: center;  /* Esto es lo que centra los botones horizontalmente */
-  align-items: center;      /* Esto los centra verticalmente */
-  border-bottom: none;      /* Limpieza visual si es necesario */
-}
-
-/* Ajuste para el encabezado (th) */
+/* Específico: th con text-center necesita display:table-cell por Angular Material */
 .modern-table th.text-center {
-  text-align: center;
-  /* Si Angular Material está metiendo mano, esto asegura el centrado */
   display: table-cell;
   vertical-align: middle;
+}
+
+/* Alinea el contenido del header de Material a la derecha para columnas ordenables */
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .filtros-panel {
@@ -313,41 +213,15 @@
 
 .clickable-row { cursor: pointer; }
 
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  width: min(95vw, 880px);
-  max-width: 880px;
-  background: #fff;
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  z-index: 1000;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+/* Oculta el botón del componente PDF reutilizado sólo para invocar su descargar() desde el menú */
+.hidden-pdf-trigger { display: none; }
 
-.sidebar.open { transform: translateX(0); }
-
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 999;
-}
-
+/* Override: overlay oculto por defecto, visible cuando .page-container tiene .sidebar-open */
+.sidebar-overlay { display: none; }
 .page-container.sidebar-open .sidebar-overlay { display: block; }
 
 /* Responsividad para móviles */
 @media (max-width: 768px) {
-  .factura-card {
-    padding: 20px;
-  }
-
   .list-header {
     flex-direction: column;
     align-items: flex-start;
@@ -367,10 +241,5 @@
   .header-actions {
     width: 100%;
     justify-content: flex-start;
-  }
-
-  .sidebar {
-    width: 100vw;
-    max-width: 100vw;
   }
 }

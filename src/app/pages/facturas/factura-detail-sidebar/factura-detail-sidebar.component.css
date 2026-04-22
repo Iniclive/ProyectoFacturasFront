@@ -1,7 +1,9 @@
 .sidebar-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 /* Header */
@@ -34,21 +36,6 @@
   color: #1a202c;
   margin: 0 0 6px 0;
 }
-
-.status-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.status-1 { background: #fef9c3; color: #854d0e; }
-.status-2 { background: #dbeafe; color: #1e40af; }
-.status-3 { background: #dcfce7; color: #166534; }
-.status-4 { background: #fee2e2; color: #991b1b; }
 
 .close-btn {
   background: none;
@@ -146,38 +133,6 @@
   flex-shrink: 0;
 }
 
-.btn-secondary {
-  padding: 9px 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background: #fff;
-  color: #4a5568;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover { background: #f1f5f9; }
-}
-
-.btn-primary {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 20px;
-  border: none;
-  border-radius: 6px;
-  background: #2c3e50;
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  mat-icon { font-size: 18px; width: 18px; height: 18px; }
-  &:hover { background: #1a252f; }
-}
-
 .loading {
   flex: 1;
   display: flex;
@@ -188,14 +143,6 @@
   gap: 12px;
 
   mat-icon { font-size: 40px; width: 40px; height: 40px; }
-}
-
-.sidebar-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;        /* ← altura fija a la ventana */
-  max-height: 100vh;    /* ← evita que crezca más */
-  overflow: hidden;     /* ← corta cualquier desbordamiento del contenedor */
 }
 
 @media (max-width: 600px) {

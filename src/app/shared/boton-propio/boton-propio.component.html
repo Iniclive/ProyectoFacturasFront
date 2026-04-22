@@ -2,8 +2,15 @@
   [type]="tipo()"
   [disabled]="disabled()"
   [style.--boton-color]="colorFinal()"
+  [attr.aria-label]="ariaLabel() || texto() || icono() || null"
   (click)="manejarClick($event)"
   class="mi-boton-base"
+  [class.icon-only]="!!icono() && !texto()"
 >
-  {{ texto() }}
+  @if (icono()) {
+    <mat-icon>{{ icono() }}</mat-icon>
+  }
+  @if (texto()) {
+    <span>{{ texto() }}</span>
+  }
 </button>

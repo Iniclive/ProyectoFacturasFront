@@ -5,10 +5,12 @@ import { Router } from '@angular/router';
 import { FacturasService } from '../../../core/services/facturas.service';
 import { FACTURA_INICIAL, INVOICE_STATUS } from '../../../core/constants/factura.constants';
 import { FacturaPdfDownload } from "../../../shared/factura-pdf-download.component/factura-pdf-download";
+import { StatusBadgeComponent } from "../../../shared/status-badge/status-badge.component";
+import { BotonPropioComponent } from "../../../shared/boton-propio/boton-propio.component";
 
 @Component({
   selector: 'app-factura-detail-sidebar',
-  imports: [MatIcon, CurrencyPipe, DatePipe, FacturaPdfDownload],
+  imports: [MatIcon, CurrencyPipe, DatePipe, FacturaPdfDownload, StatusBadgeComponent, BotonPropioComponent],
   templateUrl: './factura-detail-sidebar.component.html',
   styleUrl: './factura-detail-sidebar.component.css',
 })

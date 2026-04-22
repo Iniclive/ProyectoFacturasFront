@@ -4,7 +4,7 @@
       <div class="header-top">
         <h1 class="main-title">
           <mat-icon>format_list_bulleted</mat-icon>
-          LISTADO DE CLIENTES
+          CLIENTES
         </h1>
 
         <div class="header-actions">
@@ -142,7 +142,8 @@
               <td>{{ client.email }}</td>
               <td class="text-center actions-cell">
                 <app-boton-propio
-                  [texto]="'Editar'"
+                  [icono]="'edit'"
+                  [ariaLabel]="'Editar'"
                   (pulsado)="showClientDetails(client.clientId)"
                 ></app-boton-propio>
                 <app-boton-propio
@@ -150,7 +151,8 @@
                   action="delete"
                   [message]="'¿Estás seguro de que deseas eliminar el cliente?'"
                   (confirmed)="deleteClient(client.clientId)"
-                  [texto]="'Borrar'"
+                  [icono]="'delete'"
+                  [ariaLabel]="'Borrar'"
                   [variante]="'danger'"
                 >
                 </app-boton-propio>

@@ -1,14 +1,11 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { forkJoin } from 'rxjs';
 import { Factura } from '../../core/models/factura.model';
-import { LineaFactura } from '../../core/models/linea-factura.model';
-import { Client } from '../../core/models/client.models';
 import { FacturaPdfService } from '../../core/services/factura-pdf.service';
 import { ToastService } from '../../core/services/toast.service';
 import { LineasFacturaService } from '../../core/services/lineas-factura.service';
 import { ClientsService } from '../../core/services/clients.service';
-import { DEFAULT_CLIENT } from '../../core/constants/client.constants';
-import { LINEA_INICIAL, LINEAS_INICIALES } from '../../core/constants/linea-factura.constants';
 
 @Component({
   selector: 'app-factura-pdf-download',
@@ -23,14 +20,11 @@ lineasFacturaservice = inject(LineasFacturaService);
   private readonly toastService = inject(ToastService);
 
   // ── Inputs ──────────────────────────────────────────────────────────────────
-  factura = input.required<Factura>(); // Asumo que tienes este input porque lo usas abajo
+  factura = input.required<Factura>();
   label = input<string>('Descargar PDF');
   disabled = input<boolean>(false);
 
-  // ── Estado interno (Convertido a Signals) ───────────────────────────────────
-  // Es mejor usar signals para los datos asíncronos para que la vista se actualice correctamente
-  client = signal<Client>(DEFAULT_CLIENT);
-  lineas = signal<LineaFactura[]>(LINEAS_INICIALES);
+  // ── Estado interno ──────────────────────────────────────────────────────────
   isGenerating = signal(false);
 
   // ── Outputs ─────────────────────────────────────────────────────────────────
@@ -46,55 +40,44 @@ lineasFacturaservice = inject(LineasFacturaService);
     return `Descargar factura ${f.numeroFactura ?? f.idFactura}`;
   });
 
-  ngOnInit(): void {
-    // 1. Llamada para obtener el cliente
-    this.clientsService.getClientDetails(this.factura().clientId.toString()).subscribe({
-      next: (clientData) => {
-        this.client.set(clientData);
-      },
-      error: (err) => {
-        this.onError.emit(err);
-      }
-    });
-
-    this.lineasFacturaservice.cargarLineas(this.factura().idFactura).subscribe({
-      next: (lineasData) => {
-        this.lineas.set(lineasData);
-      },
-      error: (err) => console.error(err)
-    });
-  }
-
   // ── Acción ────────────────────────────────────────────────────────────────────
 
   descargar(): void {
     if (this.isDisabled()) return;
 
     this.isGenerating.set(true);
+    const f = this.factura();
 
-    // setTimeout(0) libera el hilo para que Angular renderice el estado "Generando..."
-    // antes de que jsPDF bloquee el hilo con la generación del PDF.
-    setTimeout(() => {
-      try {
-        this.pdfService.generate(
-          this.factura(),
-          this.lineas(),
-          this.client(),
-          //this.emisor(),
-        );
-        this.onDescargaIniciada.emit();
-        this.toastService.mostrar({
-          texto: `Factura ${this.factura().numeroFactura ?? this.factura().idFactura} descargada`,
-          tipoToast: 'submit',
-        });
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error('Error al generar el PDF');
-        this.onError.emit(error);
-        this.toastService.mostrar({ texto: 'Error al generar el PDF', tipoToast: 'delete' });
-      } finally {
+    forkJoin({
+      client: this.clientsService.getClientDetails(f.clientId.toString()),
+      lineas: this.lineasFacturaservice.cargarLineas(f.idFactura),
+    }).subscribe({
+      next: ({ client, lineas }) => {
+        // setTimeout(0) libera el hilo para que Angular renderice "Generando..."
+        // antes de que jsPDF bloquee el hilo con la generación del PDF.
+        setTimeout(() => {
+          try {
+            this.pdfService.generate(f, lineas, client);
+            this.onDescargaIniciada.emit();
+            this.toastService.mostrar({
+              texto: `Factura ${f.numeroFactura ?? f.idFactura} descargada`,
+              tipoToast: 'submit',
+            });
+          } catch (err) {
+            const error = err instanceof Error ? err : new Error('Error al generar el PDF');
+            this.onError.emit(error);
+            this.toastService.mostrar({ texto: 'Error al generar el PDF', tipoToast: 'delete' });
+          } finally {
+            this.isGenerating.set(false);
+          }
+        }, 0);
+      },
+      error: (err) => {
         this.isGenerating.set(false);
-      }
-    }, 0);
+        this.onError.emit(err);
+        this.toastService.mostrar({ texto: 'Error al cargar datos de la factura', tipoToast: 'delete' });
+      },
+    });
   }
 }
 

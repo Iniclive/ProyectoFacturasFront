@@ -4,7 +4,7 @@
       <div class="header-top">
         <h1 class="main-title">
           <mat-icon>format_list_bulleted</mat-icon>
-          LISTADO DE FACTURAS
+          FACTURAS
         </h1>
 
         <div class="header-actions">
@@ -162,11 +162,15 @@
         </thead>
         <tbody>
           @for (factura of facturasFiltradas(); track factura.idFactura) {
-            <tr  (click)="abrirDetalle(factura.idFactura.toString())" class="clickable-row">
+            <tr (click)="abrirDetalle(factura.idFactura.toString())"
+                class="clickable-row"
+                title="Ver resumen">
               <td class="bold">{{ factura.numeroFactura }}</td>
               <td>{{ factura.clientLegalName }}</td>
               <td>{{ factura.insuranceName }}</td>
-              <td>{{ factura.statusName }}</td>
+              <td>
+                <app-status-badge [status]="factura.status" [label]="factura.statusName" />
+              </td>
               <td class="text-right">
                 {{ factura.importe | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
               </td>
@@ -175,20 +179,43 @@
                 {{ factura.importeTotal | currency: 'EUR' : 'symbol' : '1.2-2' : 'es-ES' }}
               </td>
 
-              <td class="text-center actions-cell">
+              <td class="text-center actions-cell"
+                  (click)="$event.stopPropagation()">
+                <app-factura-pdf-download
+                  #pdfBtn
+                  [factura]="factura"
+                  [label]="''"
+                  class="hidden-pdf-trigger"
+                />
                 <app-boton-propio
-                  [texto]="isEditable(factura) ? ' Editar ' : 'Consultar'"
+                  [icono]="isEditable(factura) ? 'edit' : 'visibility'"
+                  [ariaLabel]="isEditable(factura) ? 'Editar' : 'Consultar'"
+                  [attr.title]="isEditable(factura) ? 'Ir a edición' : 'Ir a consulta'"
                   (pulsado)="editarFactura(factura.idFactura.toString())"
                 ></app-boton-propio>
-                <app-boton-propio
-                  appConfirm
-                  action="delete"
-                  [message]="'¿Estás seguro de que deseas eliminar la factura?'"
-                  (confirmed)="borrarfactura(factura.idFactura.toString(), factura.entityRowVersion.toString())"
-                  [texto]="'Borrar'"
-                  [variante]="'danger'"
-                >
-                </app-boton-propio>
+                <app-action-menu>
+                  <app-action-menu-item
+                    [icono]="'visibility'"
+                    [texto]="'Ver resumen'"
+                    (pulsado)="abrirDetalle(factura.idFactura.toString())"
+                  />
+                  @if (!isEditable(factura)) {
+                    <app-action-menu-item
+                      [icono]="'picture_as_pdf'"
+                      [texto]="'Descargar PDF'"
+                      (pulsado)="pdfBtn.descargar()"
+                    />
+                  }
+                  <app-action-menu-item
+                    [icono]="'delete'"
+                    [texto]="'Eliminar'"
+                    [variante]="'danger'"
+                    appConfirm
+                    action="delete"
+                    [message]="'¿Estás seguro de que deseas eliminar la factura?'"
+                    (confirmed)="borrarfactura(factura.idFactura.toString(), factura.entityRowVersion.toString())"
+                  />
+                </app-action-menu>
               </td>
             </tr>
           } @empty {

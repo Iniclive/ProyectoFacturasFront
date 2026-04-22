@@ -6,10 +6,14 @@
 }
 
 .contenedor-principal {
-  flex: 1; /* Esto empuja al footer hacia abajo y deja espacio al contenido */
+  flex: 1; /* empuja el footer hacia abajo y da espacio al contenido */
   padding: 20px;
 }
 
-footer{
-margin-left: 3%;
+/* Cuando hay menú lateral (usuario autenticado) desplazamos el contenido principal
+   a la derecha del sidebar (96px de ancho + gap). El footer se mantiene full-width. */
+@media (min-width: 769px) {
+  :host.with-side-nav .contenedor-principal {
+    padding-left: 116px;
+  }
 }

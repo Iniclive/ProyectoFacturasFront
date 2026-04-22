@@ -21,6 +21,15 @@
 
     .pdf-btn--loading { background-color: #0a3660; }
 
+    .pdf-btn--icon-only {
+      padding: 0.35rem;
+      aspect-ratio: 1;
+      min-height: 2.05rem;
+      justify-content: center;
+
+      mat-icon { font-size: 1.125rem; width: 1.125rem; height: 1.125rem; }
+    }
+
     .pdf-btn__spinner {
       width: 16px;
       height: 16px;

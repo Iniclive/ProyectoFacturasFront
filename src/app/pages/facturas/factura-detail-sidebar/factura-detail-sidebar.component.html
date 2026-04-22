@@ -4,9 +4,7 @@
       <mat-icon>receipt_long</mat-icon>
       <div>
         <h2 class="sidebar-title">Factura #{{ factura().numeroFactura }}</h2>
-        <span class="status-badge" [class]="'status-' + factura().status">
-          {{ factura().statusName }}
-        </span>
+        <app-status-badge [status]="factura().status" [label]="factura().statusName" />
       </div>
     </div>
     @if (isAprovedState()) {
@@ -104,11 +102,16 @@
     </div>
 
     <footer class="sidebar-footer">
-      <button class="btn-secondary" (click)="cerrar()">Cerrar</button>
-      <button class="btn-primary" (click)="irAEdicion()">
-        <mat-icon>{{ isEditable() ? 'edit' : 'visibility' }}</mat-icon>
-        {{ isEditable() ? 'Editar factura' : 'Consultar detalles' }}
-      </button>
+      <app-boton-propio
+        [texto]="'Cerrar'"
+        [variante]="'neutral'"
+        (pulsado)="cerrar()"
+      />
+      <app-boton-propio
+        [texto]="isEditable() ? 'Editar factura' : 'Consultar detalles'"
+        [icono]="isEditable() ? 'edit' : 'visibility'"
+        (pulsado)="irAEdicion()"
+      />
     </footer>
 
   } @else {

@@ -1,0 +1,13 @@
+<button
+  type="button"
+  class="menu-item"
+  [class.menu-item--danger]="variante() === 'danger'"
+  [disabled]="disabled()"
+  role="menuitem"
+  (click)="onClick($event)"
+>
+  @if (icono()) {
+    <mat-icon>{{ icono() }}</mat-icon>
+  }
+  <span class="menu-item__label">{{ texto() }}</span>
+</button>

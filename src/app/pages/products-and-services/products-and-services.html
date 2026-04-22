@@ -4,7 +4,7 @@
       <div class="header-top">
         <h1 class="main-title">
           <mat-icon>format_list_bulleted</mat-icon>
-          LISTADO DE PRODUCTOS Y SERVICIOS
+          PRODUCTOS Y SERVICIOS
         </h1>
 
         <div class="header-actions">
@@ -27,7 +27,8 @@
     >
       <ng-template #actions let-product>
         <app-boton-propio
-          [texto]="'Editar'"
+          [icono]="'edit'"
+          [ariaLabel]="'Editar'"
           (pulsado)="showProductDetails(product)"
         />
         <app-boton-propio
@@ -35,7 +36,8 @@
           action="delete"
           [message]="'¿Estás seguro de que deseas eliminar el producto?'"
           (confirmed)="deleteProduct(product.productId)"
-          [texto]="'Borrar'"
+          [icono]="'delete'"
+          [ariaLabel]="'Borrar'"
           [variante]="'danger'"
         />
       </ng-template>

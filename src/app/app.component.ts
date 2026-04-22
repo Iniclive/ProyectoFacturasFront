@@ -1,5 +1,5 @@
-import { Component, computed, inject } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   Router,
   RouterOutlet,
@@ -8,29 +8,29 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
 import { Encabezado } from './shared/encabezado/encabezado';
+import { MenuLateral } from './shared/menu-lateral/menu-lateral';
 import { LoadingComponent } from './shared/loading-component/loading-component';
+import { FooterComponent } from './shared/footer/footer.component';
 import { LoadingService } from './core/services/loading.service';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Encabezado, LoadingComponent],
+  imports: [RouterOutlet, Encabezado, MenuLateral, LoadingComponent, FooterComponent],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css',
+  host: {
+    '[class.with-side-nav]': 'isAuthenticated()',
+  },
 })
 export class App {
   private router = inject(Router);
   private loading = inject(LoadingService);
+  private authService = inject(AuthService);
 
-  private routerUrl = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map((e) => (e as NavigationEnd).urlAfterRedirects),
-    ),
-    { initialValue: this.router.url },
-  );
+  readonly isAuthenticated = this.authService.isAuthenticated;
 
   constructor() {
     this.router.events.pipe(takeUntilDestroyed()).subscribe((evt) => {

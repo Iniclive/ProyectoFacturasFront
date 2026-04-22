@@ -9,11 +9,12 @@ import { ForbiddenComponent } from './pages/auth/forbidden/forbidden.component';
 import { UsersComponent } from './pages/users/users.component/users.component';
 import { ClientComponent } from './pages/clients/client.component/client.component';
 import { ProductsAndServices } from './pages/products-and-services/products-and-services';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 export const routes: Routes = [
-  // 1. Ruta inicial: Cuando la URL esté vacía, redirige al listado
+  // 1. Ruta inicial: redirige al dashboard (el authGuard mandará al login si no hay sesión)
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
@@ -21,7 +22,13 @@ export const routes: Routes = [
     component: LoginComponent,
     canActivate: [noAuthGuard]
   },
-  // 2. Ruta del Listado: Aquí se mostrará tu tabla actual
+  // 2. Dashboard: página principal tras el login
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard]
+  },
+  // 3. Ruta del Listado: Aquí se mostrará tu tabla actual
   {
     path: 'facturas',
     component: ListadoFacturasComponent,
@@ -32,7 +39,6 @@ export const routes: Routes = [
     path: 'facturas/:id', // Este :id capturará tanto un número como la palabra 'nueva'
     component: DetalleFacturaComponent,
     canActivate: [authGuard],
-    title: 'Detalle de Factura',
   },
   {
     path: 'register',
@@ -57,9 +63,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     component: ProductsAndServices,
   },
-  // 5. Comodín (Wildcard): Si el usuario escribe cualquier otra cosa, al listado
+  // 5. Comodín (Wildcard): Si el usuario escribe cualquier otra cosa, al dashboard
   {
     path: '**',
-    redirectTo: 'facturas',
+    redirectTo: 'dashboard',
   },
 ];

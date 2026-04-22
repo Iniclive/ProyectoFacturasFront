@@ -3,7 +3,6 @@ import { environment } from '@env/environment';
 const API_URL = environment.apiUrl;
 
 export const ENDPOINTS = {
-  FACTURAS_SIMPLE: `${API_URL}/api/FacturaSimple`,
   FACTURAS: `${API_URL}/api/Facturas`,
   FACTURA_POR_ID: (id: string) => `${API_URL}/api/Facturas/${id}`,
   FACTURA_SEND_TO_VALIDATE: (id: string) =>`${API_URL}/api/Facturas/${id}/send-to-validate`,
@@ -25,5 +24,6 @@ export const ENDPOINTS = {
   USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
   CLIENTS: `${API_URL}/api/Clients`,
   CLIENTS_ID: (id: string) => `${API_URL}/api/Clients/${id}`,
+  DASHBOARD_SUMMARY: `${API_URL}/api/Dashboard/summary`,
 
 };

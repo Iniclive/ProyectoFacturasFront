@@ -5,11 +5,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BotonPropioComponent } from '../../../shared/boton-propio/boton-propio.component';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { ActionMenuComponent } from '../../../shared/action-menu/action-menu.component';
+import { ActionMenuItemComponent } from '../../../shared/action-menu/action-menu-item.component';
 import { ConfirmDirective } from '../../../core/directives/app-confirm.directive';
 import { ToastService } from '../../../core/services/toast.service';
 import { Factura } from '../../../core/models/factura.model';
 import { INVOICE_STATUS } from '../../../core/constants/factura.constants';
 import { FacturaDetailSidebarComponent } from '../factura-detail-sidebar/factura-detail-sidebar';
+import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
+import { FacturaPdfDownload } from '../../../shared/factura-pdf-download.component/factura-pdf-download';
 
 @Component({
   selector: 'app-listado-facturas',
@@ -19,6 +23,10 @@ import { FacturaDetailSidebarComponent } from '../factura-detail-sidebar/factura
     MatIconModule,
     ConfirmDirective,
     FacturaDetailSidebarComponent,
+    StatusBadgeComponent,
+    FacturaPdfDownload,
+    ActionMenuComponent,
+    ActionMenuItemComponent,
   ],
   templateUrl: './listado-facturas.component.html',
   styleUrl: './listado-facturas.component.css',

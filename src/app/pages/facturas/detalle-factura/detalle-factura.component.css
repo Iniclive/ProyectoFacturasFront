@@ -1,15 +1,9 @@
 /* --- CONFIGURACIÓN BASE (Móvil primero / Responsive) --- */
 
+/* Override específico: esta vista usa max-width 1000px (no 1100px). Base en styles.css global. */
 .factura-card {
-  background: white;
-  width: 100%;
   max-width: 1000px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
   margin: 0 auto;
-  /* Padding reducido para móviles */
-  padding: 20px;
-  box-sizing: border-box;
 }
 
 .main-title {
@@ -99,10 +93,6 @@
 /* --- ESTILOS PARA ESCRITORIO (Pantallas > 768px) --- */
 
 @media (min-width: 768px) {
-  .factura-card {
-    padding: 40px 50px; /* Recuperamos tus márgenes amplios */
-  }
-
   .main-title {
     font-size: 2rem;
   }
@@ -297,70 +287,31 @@
 
 .crear-cliente-link {
   display: block;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 0.85rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 0.8rem;
   color: #4f46e5;
   cursor: pointer;
+  margin-left: auto;
 }
 
 .crear-cliente-link:hover {
   color: #3730a3;
-  cursor: pointer;
 }
 
 .campo-label-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px; /* sustituye el margin-bottom del label original */
+  margin-bottom: 8px;
 }
 
-/* Sobrescribe el label dentro de esta fila para quitar su margin-bottom */
 .campo-label-row label {
   margin-bottom: 0;
 }
-
-/* Ajusta el link para que no tenga márgenes verticales propios */
-.crear-cliente-link {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 0.8rem;
-  margin-left: auto /* ligeramente más pequeño que el label para jerarquía visual */
-}
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  width: min(95vw, 880px);
-  max-width: 880px;
-  background: #fff;
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  z-index: 1000;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 999;
-}
-
-.page-container.sidebar-open .sidebar-overlay {
-  display: block;
-}
+/* Override: overlay oculto por defecto, visible cuando .page-container tiene .sidebar-open */
+.sidebar-overlay { display: none; }
+.page-container.sidebar-open .sidebar-overlay { display: block; }
 
 .factura-header {
   display: flex;
@@ -370,10 +321,6 @@
 
 /* Responsividad para móviles */
 @media (max-width: 768px) {
-  .factura-card {
-    padding: 20px;
-  }
-
   .list-header {
     flex-direction: column;
     align-items: flex-start;
@@ -393,11 +340,6 @@
   .header-actions {
     width: 100%;
     justify-content: flex-start;
-  }
-
-  .sidebar {
-    width: 100vw;
-    max-width: 100vw;
   }
 }
 

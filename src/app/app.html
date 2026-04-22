@@ -1,5 +1,8 @@
 <app-encabezado />
 
+@if (isAuthenticated()) {
+  <app-menu-lateral />
+}
 
 <main class="contenedor-principal">
   <app-loading-component>
@@ -7,6 +10,5 @@
   </app-loading-component>
 </main>
 
-<footer>
-  <p>© 2026 - Gestión de Facturas</p>
-</footer>
+<app-footer />
+

@@ -1,15 +1,23 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 .main-header {
+  position: relative;
   width: 100%;
-  background: linear-gradient(135deg, #2c0a4c 0%, #450d80 100%);
-  color: whitesmoke;
+  background: linear-gradient(135deg, var(--color-header-bg-start) 0%, var(--color-header-bg-end) 100%);
+  color: var(--color-header-text);
   padding: 1rem 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-bottom: 3px solid #6b46c1; /* Línea de acento */
+  box-shadow: var(--shadow-header);
+  border-bottom: 3px solid var(--color-header-border);
   box-sizing: border-box;
 }
 
 .header-content {
-  max-width: 1200px; /* Alineado con el ancho de tus tablas/formularios */
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -19,84 +27,136 @@
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
+  gap: 1rem;
+  min-width: 0;
 }
 
-/* Círculo decorativo para el icono */
-.icon-circle {
-  background: rgba(255, 255, 255, 0.1);
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  backdrop-filter: blur(5px);
-}
-
-.icon-circle mat-icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-  color: #a78bfa;
-}
-
-.title-group h1 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.5px;
-  line-height: 1;
+.brand-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
 }
 
 .subtitle {
-  margin: 4px 0 0 0;
   font-size: 0.75rem;
   opacity: 0.7;
   text-transform: uppercase;
   letter-spacing: 1px;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
 }
 
-.user-tag {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
 .clickable-logo {
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
 .clickable-logo:hover {
-  opacity: 0.8; /* Efecto sutil de pulsado */
+  opacity: 0.8;
 }
 
-/* Ajustes Responsive */
+/* ===== Menú hamburguesa (tablet / móvil) ===== */
+.mobile-menu-root {
+  display: none; /* Oculto en desktop */
+  position: relative;
+}
+
+.mobile-menu-toggle {
+  background: var(--color-header-chip-bg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-header-text);
+  cursor: pointer;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  padding: 0;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-menu-toggle mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  min-width: 220px;
+  background: var(--color-header-bg-start);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 50;
+}
+
+.mobile-nav-link {
+  color: var(--color-header-text);
+  text-decoration: none;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  /* Reset para el <button> que también usa esta clase (logout) */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+}
+
+.mobile-nav-logout:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.mobile-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-header-link-hover);
+}
+
+.mobile-nav-link.active-link {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-header-link-hover);
+}
+
+.mobile-menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.35rem 0.2rem;
+}
+
+/* ===== Ajustes Responsive ===== */
 @media (max-width: 768px) {
   .main-header {
     padding: 1rem;
   }
 
   .subtitle {
-    display: none; /* Simplificamos en móvil */
-  }
-
-  .header-nav {
     display: none;
   }
-}
-.header-nav a {
-  color: whitesmoke;
-  text-decoration: none;
-  margin-left: 1.5rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-.header-nav a:hover {
-  color: #bfb2e4;
+
+  .mobile-menu-root {
+    display: block;
+  }
 }
