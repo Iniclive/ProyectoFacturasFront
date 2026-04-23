@@ -22,8 +22,9 @@ export const ENDPOINTS = {
   AUTH_ME: `${API_URL}/api/Auth/me`,
   USERS: `${API_URL}/api/Users`,
   USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
+  USERS_CHANGE_PASSWORD: `${API_URL}/api/Users/change-password`,
   CLIENTS: `${API_URL}/api/Clients`,
   CLIENTS_ID: (id: string) => `${API_URL}/api/Clients/${id}`,
-  DASHBOARD_SUMMARY: `${API_URL}/api/Dashboard/summary`,
+  DASHBOARD: `${API_URL}/api/Dashboard`,
 
 };

@@ -14,7 +14,7 @@ export class DashboardService {
   summary = this._summary.asReadonly();
 
   cargarResumen() {
-    return this.httpClient.get<DashboardSummary>(ENDPOINTS.DASHBOARD_SUMMARY).pipe(
+    return this.httpClient.get<DashboardSummary>(ENDPOINTS.DASHBOARD).pipe(
       tap((data) => this._summary.set(data)),
       catchError((err) => {
         this._summary.set(null);

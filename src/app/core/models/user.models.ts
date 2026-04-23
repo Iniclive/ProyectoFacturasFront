@@ -4,3 +4,8 @@ export interface User {
   email: string;
   role: 'admin' | 'user';
 }
+
+export interface UpdatePasswordRequest{
+currentPassword: string;
+newPassword: string;
+}

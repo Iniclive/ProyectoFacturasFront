@@ -6,7 +6,47 @@
     </div>
 
     @if (isAutenticated()) {
-      <div class="mobile-menu-root">
+      <div class="header-actions">
+        <div class="user-menu-root">
+          <button
+            type="button"
+            class="user-avatar-btn"
+            (click)="toggleUserMenu()"
+            [attr.aria-expanded]="userMenuOpen()"
+            aria-haspopup="menu"
+            aria-label="Menú de usuario"
+          >
+            <span class="avatar-initial">{{ userInitial() }}</span>
+          </button>
+
+          @if (userMenuOpen()) {
+            <div class="user-menu-panel" role="menu">
+              <button
+                type="button"
+                class="user-menu-item"
+                role="menuitem"
+                (click)="goToProfile()"
+              >
+                <mat-icon>account_circle</mat-icon>
+                Mi Perfil
+              </button>
+              <div class="mobile-menu-divider"></div>
+              <button
+                type="button"
+                class="user-menu-item user-menu-logout"
+                role="menuitem"
+                appConfirm
+                action="logout"
+                (confirmed)="logout()"
+              >
+                <mat-icon>logout</mat-icon>
+                Cerrar sesión
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="mobile-menu-root">
         <button
           type="button"
           class="mobile-menu-toggle"
@@ -79,6 +119,7 @@
             </button>
           </div>
         }
+        </div>
       </div>
     }
   </div>

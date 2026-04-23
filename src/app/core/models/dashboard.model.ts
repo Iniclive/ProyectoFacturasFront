@@ -1,8 +1,8 @@
 import { Factura } from './factura.model';
 
 export interface DashboardSummary {
-  totalClientes: number;
+  totalClients: number;
   totalFacturado: number;
-  totalUsuarios?: number;
+  totalUsers: number;
   facturasRecientes: Factura[];
 }

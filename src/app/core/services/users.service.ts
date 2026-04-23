@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of,  tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
-import { User } from '../models/user.models';
+import { UpdatePasswordRequest, User } from '../models/user.models';
 import { UserInfoCreate, UserInfoUpdate } from '../models/auth.model';
 //import { ErrorService } from '../compartido/compartido/error.service';
 @Injectable({
@@ -69,6 +69,13 @@ export class UsersService {
         console.error(err);
         return throwError(() => new Error('Error al actualizar usuario'));
       }),
+    );
+  }
+
+ 
+  changePassword( request: UpdatePasswordRequest) {
+    return this.httpClient.post<void>(ENDPOINTS.USERS_CHANGE_PASSWORD, request).pipe(
+      catchError((err) => throwError(() => err)),
     );
   }
 }
