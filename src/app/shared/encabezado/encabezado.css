@@ -234,6 +234,9 @@
   margin: 0.35rem 0.2rem;
 }
 
+.user-menu-panel.hidden {
+  display: none;
+}
 /* ===== Ajustes Responsive ===== */
 @media (max-width: 768px) {
   .main-header {

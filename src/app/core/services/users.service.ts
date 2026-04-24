@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of,  tap, throwError } from 'rxjs';
 import { ENDPOINTS } from '../constants/endpoints';
-import { UpdatePasswordRequest, User } from '../models/user.models';
+import { UpdateEmailRequest, UpdateNameRequest, UpdatePasswordRequest, User } from '../models/user.models';
 import { UserInfoCreate, UserInfoUpdate } from '../models/auth.model';
 //import { ErrorService } from '../compartido/compartido/error.service';
 @Injectable({
@@ -72,9 +72,21 @@ export class UsersService {
     );
   }
 
- 
+
   changePassword( request: UpdatePasswordRequest) {
-    return this.httpClient.post<void>(ENDPOINTS.USERS_CHANGE_PASSWORD, request).pipe(
+    return this.httpClient.put<void>(ENDPOINTS.USERS_CHANGE_PASSWORD, request).pipe(
+      catchError((err) => throwError(() => err)),
+    );
+  }
+
+  changeName( request: UpdateNameRequest) {
+    return this.httpClient.patch<void>(ENDPOINTS.USERS_CHANGE_NAME, request).pipe(
+      catchError((err) => throwError(() => err)),
+    );
+  }
+
+  changeEmail( request: UpdateEmailRequest) {
+    return this.httpClient.patch<void>(ENDPOINTS.USERS_CHANGE_EMAIL, request).pipe(
       catchError((err) => throwError(() => err)),
     );
   }

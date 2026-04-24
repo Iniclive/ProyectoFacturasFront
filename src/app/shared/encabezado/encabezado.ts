@@ -45,7 +45,7 @@ closeUserMenu() {
 
 goToProfile() {
   this.closeUserMenu();
-  this.router.navigate(['/perfil']);
+  this.router.navigate(['/profile']);
 }
 
 @HostListener('document:click', ['$event'])

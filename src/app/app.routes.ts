@@ -19,7 +19,7 @@ export const APP_PATHS = {
   USERS: 'users',
   CLIENTS: 'clients',
   PRODUCTS: 'products',
-  PROFILE: 'perfil',
+  PROFILE: 'profile',
 
   WILDCARD: '**',
 } as const;

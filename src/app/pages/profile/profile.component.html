@@ -7,197 +7,164 @@
   <section class="profile-section">
     <h2 class="section-title">Ajustes de Cuenta</h2>
 
-    <!-- ========== Tarjeta: Nombre completo ========== -->
+    <!-- Nombre -->
     <article class="profile-card">
-      <div class="card-icon">
-        <mat-icon>person</mat-icon>
-      </div>
+      <div class="card-icon"><mat-icon>person</mat-icon></div>
       <div class="card-content">
         <span class="card-label">Nombre completo</span>
-
         @if (editingCard() !== 'name') {
           <span class="card-value">{{ currentUser()?.name }}</span>
         } @else {
-          <input
-            type="text"
-            class="modern-input"
-            [class.input-error]="showNameError()"
-            [ngModel]="nameDraft()"
-            (ngModelChange)="nameDraft.set($event)"
-            placeholder="Nombre completo"
-            autocomplete="name"
-          />
-          @if (showNameError()) {
-            <small class="error-text">{{ nameError() }}</small>
-          }
+          <div class="campo">
+            <input
+              type="text"
+              class="modern-input"
+              [class.input-error]="showNameError()"
+              [value]="nameDraft()"
+              (input)="nameDraft.set($any($event.target).value)"
+              placeholder="Nombre completo"
+              autocomplete="name"
+            />
+            <app-form-error [mostrar]="showNameError()" [mensaje]="nameError()" />
+          </div>
         }
       </div>
       <div class="card-actions">
         @if (editingCard() !== 'name') {
-          <app-boton-propio
-            variante="primary"
-            icono="edit"
-            texto="Editar"
-            [disabled]="editingCard() !== null"
-            (pulsado)="startEdit('name')"
-          />
+          <app-boton-propio variante="primary" icono="edit" texto="Editar"
+            [disabled]="editingCard() !== null" (pulsado)="startEdit('name')" />
         } @else {
-          <app-boton-propio
-            variante="success"
-            icono="save"
-            texto="Guardar"
-            [disabled]="saving()"
-            (pulsado)="saveName()"
-          />
-          <app-boton-propio
-            variante="neutral"
-            icono="close"
-            texto="Cancelar"
-            [disabled]="saving()"
-            (pulsado)="cancelEdit()"
-          />
+          <app-boton-propio variante="success" icono="save" texto="Guardar"
+            [disabled]="saving()" (pulsado)="saveName()" />
+          <app-boton-propio variante="neutral" icono="close" texto="Cancelar"
+            [disabled]="saving()" (pulsado)="cancelEdit()" />
         }
       </div>
     </article>
 
-    <!-- ========== Tarjeta: Correo electrónico ========== -->
+    <!-- Email -->
     <article class="profile-card">
-      <div class="card-icon">
-        <mat-icon>mail_outline</mat-icon>
-      </div>
+      <div class="card-icon"><mat-icon>mail_outline</mat-icon></div>
       <div class="card-content">
         <span class="card-label">Correo electrónico</span>
-
         @if (editingCard() !== 'email') {
           <span class="card-value">{{ currentUser()?.email }}</span>
         } @else {
-          <input
-            type="email"
-            class="modern-input"
-            [class.input-error]="showEmailError()"
-            [ngModel]="emailDraft()"
-            (ngModelChange)="emailDraft.set($event)"
-            placeholder="correo@ejemplo.com"
-            autocomplete="email"
-          />
-          @if (showEmailError()) {
-            <small class="error-text">{{ emailError() }}</small>
-          }
+          <div class="campo">
+            <input
+              type="email"
+              class="modern-input"
+              [class.input-error]="showEmailError()"
+              [value]="emailDraft()"
+              (input)="emailDraft.set($any($event.target).value)"
+              placeholder="correo@ejemplo.com"
+              autocomplete="email"
+            />
+            <app-form-error [mostrar]="showEmailError()" [mensaje]="emailError()" />
+          </div>
         }
       </div>
       <div class="card-actions">
         @if (editingCard() !== 'email') {
-          <app-boton-propio
-            variante="primary"
-            icono="edit"
-            texto="Editar"
-            [disabled]="editingCard() !== null"
-            (pulsado)="startEdit('email')"
-          />
+          <app-boton-propio variante="primary" icono="edit" texto="Editar"
+            [disabled]="editingCard() !== null" (pulsado)="startEdit('email')" />
         } @else {
-          <app-boton-propio
-            variante="success"
-            icono="save"
-            texto="Guardar"
-            [disabled]="saving()"
-            (pulsado)="saveEmail()"
-          />
-          <app-boton-propio
-            variante="neutral"
-            icono="close"
-            texto="Cancelar"
-            [disabled]="saving()"
-            (pulsado)="cancelEdit()"
-          />
+          <app-boton-propio variante="success" icono="save" texto="Guardar"
+            [disabled]="saving()" (pulsado)="saveEmail()" />
+          <app-boton-propio variante="neutral" icono="close" texto="Cancelar"
+            [disabled]="saving()" (pulsado)="cancelEdit()" />
         }
       </div>
     </article>
 
-    <!-- ========== Tarjeta: Contraseña ========== -->
+    <!-- Contraseña -->
     <article class="profile-card">
-      <div class="card-icon">
-        <mat-icon>lock</mat-icon>
-      </div>
+      <div class="card-icon"><mat-icon>lock</mat-icon></div>
       <div class="card-content">
         <span class="card-label">Contraseña</span>
-
         @if (editingCard() !== 'password') {
           <span class="card-value card-value-masked">••••••••</span>
         } @else {
           <div class="password-fields">
-            <div class="password-field">
-              <input
-                type="password"
-                class="modern-input"
-                [class.input-error]="showCurrentPwdError()"
-                [ngModel]="currentPwd()"
-                (ngModelChange)="currentPwd.set($event)"
-                placeholder="Contraseña actual"
-                autocomplete="current-password"
-              />
-              @if (showCurrentPwdError()) {
-                <small class="error-text">{{ currentPwdError() }}</small>
-              }
+
+            <div class="campo">
+              <label>Contraseña actual</label>
+              <div class="input-wrapper">
+                <input
+                  class="modern-input"
+                  [class.input-error]="showCurrentPwdError()"
+                  [type]="showCurrentPwd() ? 'text' : 'password'"
+                  [value]="pwdDraft().current"
+                  (input)="updatePwdField({ current: $any($event.target).value })"
+                  placeholder="Contraseña actual"
+                  autocomplete="current-password"
+                />
+                <button type="button" class="toggle-visibility"
+                  (click)="showCurrentPwd.update(v => !v)"
+                  [attr.aria-label]="showCurrentPwd() ? 'Ocultar' : 'Mostrar'">
+                  <mat-icon>{{ showCurrentPwd() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <app-form-error [mostrar]="showCurrentPwdError()" [mensaje]="currentPwdError()" />
             </div>
 
-            <div class="password-field">
-              <input
-                type="password"
-                class="modern-input"
-                [class.input-error]="showNewPwdError()"
-                [ngModel]="newPwd()"
-                (ngModelChange)="newPwd.set($event)"
-                placeholder="Nueva contraseña"
-                autocomplete="new-password"
-              />
-              @if (showNewPwdError()) {
-                <small class="error-text">{{ newPwdError() }}</small>
-              }
+            <div class="campo">
+              <label>Nueva contraseña</label>
+              <div class="input-wrapper">
+                <input
+                  class="modern-input"
+                  [class.input-error]="showNewPwdError()"
+                  [type]="showNewPwd() ? 'text' : 'password'"
+                  [value]="pwdDraft().next"
+                  (input)="updatePwdField({ next: $any($event.target).value })"
+                  placeholder="Nueva contraseña"
+                  autocomplete="new-password"
+                />
+                <button type="button" class="toggle-visibility"
+                  (click)="showNewPwd.update(v => !v)"
+                  [attr.aria-label]="showNewPwd() ? 'Ocultar' : 'Mostrar'">
+                  <mat-icon>{{ showNewPwd() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <app-form-error [mostrar]="showNewPwdError()" [mensaje]="newPwdError()" />
             </div>
 
-            <div class="password-field">
-              <input
-                type="password"
-                class="modern-input"
-                [class.input-error]="showConfirmPwdError()"
-                [ngModel]="confirmPwd()"
-                (ngModelChange)="confirmPwd.set($event)"
-                placeholder="Confirmar nueva contraseña"
-                autocomplete="new-password"
-              />
-              @if (showConfirmPwdError()) {
-                <small class="error-text">{{ confirmPwdError() }}</small>
-              }
+            <div class="campo">
+              <label>Confirmar contraseña</label>
+              <div class="input-wrapper">
+                <input
+                  class="modern-input"
+                  [class.input-error]="showConfirmPwdError()"
+                  [type]="showConfirmPwd() ? 'text' : 'password'"
+                  [value]="pwdDraft().confirm"
+                  (input)="updatePwdField({ confirm: $any($event.target).value })"
+                  placeholder="Confirmar nueva contraseña"
+                  autocomplete="new-password"
+                />
+                <button type="button" class="toggle-visibility"
+                  (click)="showConfirmPwd.update(v => !v)"
+                  [attr.aria-label]="showConfirmPwd() ? 'Ocultar' : 'Mostrar'">
+                  <mat-icon>{{ showConfirmPwd() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <app-form-error [mostrar]="showConfirmPwdError()" [mensaje]="confirmPwdError()" />
             </div>
+
           </div>
         }
       </div>
       <div class="card-actions">
         @if (editingCard() !== 'password') {
-          <app-boton-propio
-            variante="primary"
-            icono="edit"
-            texto="Editar"
-            [disabled]="editingCard() !== null"
-            (pulsado)="startEdit('password')"
-          />
+          <app-boton-propio variante="primary" icono="edit" texto="Editar"
+            [disabled]="editingCard() !== null" (pulsado)="startEdit('password')" />
         } @else {
-          <app-boton-propio
-            variante="success"
-            icono="save"
-            texto="Guardar"
-            [disabled]="saving()"
-            (pulsado)="savePassword()"
-          />
-          <app-boton-propio
-            variante="neutral"
-            icono="close"
-            texto="Cancelar"
-            [disabled]="saving()"
-            (pulsado)="cancelEdit()"
-          />
+          <app-boton-propio variante="success" icono="save" texto="Guardar"
+            [disabled]="saving()" (pulsado)="savePassword()" />
+          <app-boton-propio variante="neutral" icono="close" texto="Cancelar"
+            [disabled]="saving()" (pulsado)="cancelEdit()" />
         }
       </div>
     </article>
+
   </section>
 </div>

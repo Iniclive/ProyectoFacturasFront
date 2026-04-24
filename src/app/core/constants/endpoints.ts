@@ -23,6 +23,8 @@ export const ENDPOINTS = {
   USERS: `${API_URL}/api/Users`,
   USERS_ID: (id: string) => `${API_URL}/api/Users/${id}`,
   USERS_CHANGE_PASSWORD: `${API_URL}/api/Users/change-password`,
+  USERS_CHANGE_EMAIL: `${API_URL}/api/Users/email`,
+  USERS_CHANGE_NAME: `${API_URL}/api/Users/name`,
   CLIENTS: `${API_URL}/api/Clients`,
   CLIENTS_ID: (id: string) => `${API_URL}/api/Clients/${id}`,
   DASHBOARD: `${API_URL}/api/Dashboard`,

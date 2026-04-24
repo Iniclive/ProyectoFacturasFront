@@ -43,17 +43,14 @@
       </a>
     }
   </nav>
-
   <div class="side-nav-footer">
-    <button
-      type="button"
-      class="side-nav-link side-nav-logout"
-      appConfirm
-      action="logout"
-      (confirmed)="logout()"
-    >
-      <mat-icon>logout</mat-icon>
-      <span class="side-nav-label">Cerrar sesión</span>
-    </button>
+    <a
+        routerLink="/profile"
+        routerLinkActive="active-link"
+        class="side-nav-link"
+      >
+        <mat-icon>account_circle</mat-icon>
+        <span class="side-nav-label">Mi Perfil</span>
+      </a>
   </div>
 </aside>

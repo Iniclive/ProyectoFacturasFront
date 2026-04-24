@@ -19,97 +19,16 @@
             <span class="avatar-initial">{{ userInitial() }}</span>
           </button>
 
-          @if (userMenuOpen()) {
-            <div class="user-menu-panel" role="menu">
-              <button
-                type="button"
-                class="user-menu-item"
-                role="menuitem"
-                (click)="goToProfile()"
-              >
-                <mat-icon>account_circle</mat-icon>
-                Mi Perfil
-              </button>
-              <div class="mobile-menu-divider"></div>
-              <button
-                type="button"
-                class="user-menu-item user-menu-logout"
-                role="menuitem"
-                appConfirm
-                action="logout"
-                (confirmed)="logout()"
-              >
-                <mat-icon>logout</mat-icon>
-                Cerrar sesión
-              </button>
-            </div>
-          }
-        </div>
-
-        <div class="mobile-menu-root">
-        <button
-          type="button"
-          class="mobile-menu-toggle"
-          (click)="toggleMobileMenu()"
-          [attr.aria-expanded]="mobileMenuOpen()"
-          aria-label="Abrir menú de navegación"
-        >
-          <mat-icon>{{ mobileMenuOpen() ? 'close' : 'menu' }}</mat-icon>
-        </button>
-
-        @if (mobileMenuOpen()) {
-          <div class="mobile-menu-panel" role="menu">
-            <a
-              routerLink="/dashboard"
-              routerLinkActive="active-link"
-              class="mobile-nav-link"
-              (click)="closeMobileMenu()"
-            >
-              <mat-icon>dashboard</mat-icon>
-              Dashboard
-            </a>
-            <a
-              routerLink="/facturas"
-              routerLinkActive="active-link"
-              class="mobile-nav-link"
-              (click)="closeMobileMenu()"
-            >
-              <mat-icon>receipt_long</mat-icon>
-              Facturas
-            </a>
-            <a
-              routerLink="/clients"
-              routerLinkActive="active-link"
-              class="mobile-nav-link"
-              (click)="closeMobileMenu()"
-            >
-              <mat-icon>group</mat-icon>
-              Clientes
-            </a>
-            <a
-              routerLink="/products"
-              routerLinkActive="active-link"
-              class="mobile-nav-link"
-              (click)="closeMobileMenu()"
-            >
-              <mat-icon>work_outline</mat-icon>
-              Productos
-            </a>
-            @if (currentUser()?.role === 'admin') {
-              <a
-                routerLink="/users"
-                routerLinkActive="active-link"
-                class="mobile-nav-link"
-                (click)="closeMobileMenu()"
-              >
-                <mat-icon>person</mat-icon>
-                Usuarios
-              </a>
-            }
+          <div class="user-menu-panel" role="menu" [class.hidden]="!userMenuOpen()">
+            <button type="button" class="user-menu-item" role="menuitem" (click)="goToProfile()">
+              <mat-icon>account_circle</mat-icon>
+              Mi Perfil
+            </button>
             <div class="mobile-menu-divider"></div>
             <button
               type="button"
-              class="mobile-nav-link mobile-nav-logout"
+              class="user-menu-item user-menu-logout"
+              role="menuitem"
               appConfirm
               action="logout"
               (confirmed)="logout()"
@@ -118,7 +37,72 @@
               Cerrar sesión
             </button>
           </div>
-        }
+        </div>
+
+        <div class="mobile-menu-root">
+          <button
+            type="button"
+            class="mobile-menu-toggle"
+            (click)="toggleMobileMenu()"
+            [attr.aria-expanded]="mobileMenuOpen()"
+            aria-label="Abrir menú de navegación"
+          >
+            <mat-icon>{{ mobileMenuOpen() ? 'close' : 'menu' }}</mat-icon>
+          </button>
+
+          @if (mobileMenuOpen()) {
+            <div class="mobile-menu-panel" role="menu">
+              <a
+                routerLink="/dashboard"
+                routerLinkActive="active-link"
+                class="mobile-nav-link"
+                (click)="closeMobileMenu()"
+              >
+                <mat-icon>dashboard</mat-icon>
+                Dashboard
+              </a>
+              <a
+                routerLink="/facturas"
+                routerLinkActive="active-link"
+                class="mobile-nav-link"
+                (click)="closeMobileMenu()"
+              >
+                <mat-icon>receipt_long</mat-icon>
+                Facturas
+              </a>
+              <a
+                routerLink="/clients"
+                routerLinkActive="active-link"
+                class="mobile-nav-link"
+                (click)="closeMobileMenu()"
+              >
+                <mat-icon>group</mat-icon>
+                Clientes
+              </a>
+              <a
+                routerLink="/products"
+                routerLinkActive="active-link"
+                class="mobile-nav-link"
+                (click)="closeMobileMenu()"
+              >
+                <mat-icon>work_outline</mat-icon>
+                Productos
+              </a>
+              @if (currentUser()?.role === 'admin') {
+                <a
+                  routerLink="/users"
+                  routerLinkActive="active-link"
+                  class="mobile-nav-link"
+                  (click)="closeMobileMenu()"
+                >
+                  <mat-icon>person</mat-icon>
+                  Usuarios
+                </a>
+              }
+              <div class="mobile-menu-divider"></div>
+              
+            </div>
+          }
         </div>
       </div>
     }

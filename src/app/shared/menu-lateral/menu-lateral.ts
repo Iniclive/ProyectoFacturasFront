@@ -7,7 +7,7 @@ import { ConfirmDirective } from '../../core/directives/app-confirm.directive';
 @Component({
   selector: 'app-menu-lateral',
   standalone: true,
-  imports: [MatIconModule, RouterLink, RouterLinkActive, ConfirmDirective],
+  imports: [MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './menu-lateral.html',
   styleUrl: './menu-lateral.css',
 })

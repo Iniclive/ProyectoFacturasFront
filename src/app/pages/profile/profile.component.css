@@ -127,7 +127,87 @@
   color: var(--color-danger, #e74c3c);
   font-size: 0.8rem;
 }
+/* --- Inputs al estilo login --- */
+.modern-input {
+  width: 100%;
+  height: 45px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #2d3748;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 
+.modern-input:focus {
+  outline: none;
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+}
+
+.input-error {
+  border-color: #e74c3c !important;
+  background-color: #fff5f5 !important;
+}
+
+/* --- Toggle visibilidad contraseña --- */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .modern-input {
+  padding-right: 2.8rem;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-visibility:hover {
+  color: #333;
+}
+
+.toggle-visibility mat-icon {
+  font-size: 1.2rem;
+}
+
+/* --- Campo con label y error --- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.error-text {
+  font-size: 0.8rem;
+  color: #e74c3c;
+}
+
+/* --- Campos de contraseña apilados --- */
+.password-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
 @media (max-width: 640px) {
   .profile-card {
     flex-direction: column;
