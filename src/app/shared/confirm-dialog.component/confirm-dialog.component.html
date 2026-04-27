@@ -1,25 +1,24 @@
 <div class="dialog-container">
-  <div class="dialog-header">
-    <mat-icon [color]="data().color || 'warn'" class="header-icon">
-      {{ data().icon || 'delete_outline' }}
-    </mat-icon>
-    <h2 mat-dialog-title>{{ data().title }}</h2>
+  <div class="dialog-body">
+    <div class="icon-wrapper" [style.background-color]="resolvedColor() + '18'">
+      <mat-icon class="dialog-icon" [style.color]="resolvedColor()">
+        {{ resolvedIcon() }}
+      </mat-icon>
+    </div>
+    <h2 mat-dialog-title class="dialog-title">{{ data().title }}</h2>
+    <p class="dialog-message">{{ data().message }}</p>
   </div>
 
-  <mat-dialog-content class="dialog-content">
-    <p>{{ data().message }}</p>
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end" class="dialog-actions">
-    <button mat-button (click)="onCancel()" class="btn-secondary">
-      {{ data().cancelText || 'Cancelar' }}
-    </button>
-    <button
-      mat-flat-button
-      [color]="data().color || 'warn'"
-      (click)="onConfirm()"
-      class="btn-primary">
-      {{ data().confirmText || 'Confirmar' }}
-    </button>
+  <mat-dialog-actions class="dialog-actions">
+    <app-boton-propio
+      [texto]="data().cancelText || 'Cancelar'"
+      variante="neutral"
+      (pulsado)="onCancel()"
+    />
+    <app-boton-propio
+      [texto]="data().confirmText || 'Confirmar'"
+      [color]="resolvedColor()"
+      (pulsado)="onConfirm()"
+    />
   </mat-dialog-actions>
 </div>

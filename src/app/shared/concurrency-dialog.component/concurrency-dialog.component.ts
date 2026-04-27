@@ -11,7 +11,6 @@ import { BotonPropioComponent } from "../boton-propio/boton-propio.component";
 })
 export class ConcurrencyDialogComponent {
   recargarPagina() {
-  console.log("Intentado recargar")
   window.location.reload();
 }
 }

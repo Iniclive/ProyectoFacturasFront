@@ -1,64 +1,109 @@
-/* Eliminamos el padding por defecto de Material para controlarlo nosotros */
 :host {
   display: block;
-  padding: 16px 24px;
+  /* Neutraliza el padding que MatDialog aplica al contenedor */
+  --mdc-dialog-subhead-padding: 0;
+  --mdc-dialog-supporting-text-padding: 0;
+  --mdc-dialog-action-button-space-between: 0;
 }
+
 
 .dialog-container {
   display: flex;
   flex-direction: column;
+  width: 340px;
 }
 
-.dialog-header {
+.dialog-body {
   display: flex;
-  align-items: center; /* Alinea icono y texto verticalmente */
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-/* El icono ahora tiene un tamaño consistente y color suave de fondo si quieres */
-.header-icon {
-  width: 28px;
-  height: 28px;
-  font-size: 28px;
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
-
-h2[mat-dialog-title] {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: 1.4rem;
-  font-weight: 500;
-  letter-spacing: -0.5px;
-}
-
-.dialog-content {
-  margin: 0 !important;
-  padding: 0 0 24px 0 !important; /* Espacio solo abajo para separar de botones */
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 1rem;
-  min-height: auto !important;
-}
-
-.dialog-actions {
-  padding: 0 !important;
-  margin: 0 !important;
+  text-align: center;
+  padding: 32px 24px 20px;
   gap: 8px;
 }
 
-/* Botones con bordes más redondeados para estilo moderno */
-button {
-  border-radius: 20px !important;
-  padding: 0 20px !important;
-  text-transform: none; /* Evita mayúsculas forzadas */
+.icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(229, 57, 53, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 4px;
 }
 
-/* Ajuste responsive para móviles estrechos */
-@media (max-width: 400px) {
-  .dialog-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.dialog-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #e53935;
+  line-height: 20px;
+}
+
+.dialog-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 !important;
+  padding: 0 !important;
+  letter-spacing: -0.01em;
+}
+
+.dialog-message {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  padding: 4px 20px 24px !important;
+  margin: 0 !important;
+  min-height: auto !important;
+}
+
+.btn-cancel,
+.btn-confirm {
+  flex: 1;
+  min-height: 2rem;
+  border-radius: 6px !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-cancel {
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #6b7280;
+  background: transparent;
+}
+
+.btn-cancel:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.btn-confirm {
+  border: 1px solid rgba(229, 57, 53, 0.35) !important;
+  background-color: rgba(229, 57, 53, 0.08);
+  color: #c62828;
+}
+
+.btn-confirm:hover {
+  background-color: rgba(229, 57, 53, 0.14);
+  border-color: rgba(229, 57, 53, 0.55) !important;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  padding: 4px 24px 24px !important;
+  margin: 0 !important;
+  min-height: unset !important;
+  justify-content: center;
 }

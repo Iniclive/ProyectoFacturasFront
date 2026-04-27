@@ -283,3 +283,27 @@
   height: 48px;
   margin-bottom: 10px;
 }
+
+.confirm-dialog-panel .mat-mdc-dialog-surface {
+  padding: 0 !important;
+}
+
+.confirm-dialog-panel .mat-mdc-dialog-surface {
+  padding: 0 !important;
+  border-radius: 12px !important;
+}
+
+.confirm-dialog-panel .mat-mdc-dialog-title {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.confirm-dialog-panel .mat-mdc-dialog-title::before {
+  display: none !important;  /* MDC inserta un ::before que añade altura extra */
+}
+
+.confirm-dialog-panel .mat-mdc-dialog-actions {
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: unset !important;
+}

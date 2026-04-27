@@ -225,7 +225,7 @@
               <app-boton-propio
                 appConfirm
                 [message]="'¿Quieres enviar la factura a validación?'"
-                [action]="'custom'"
+                [action]="'save'"
                 [texto]="'Enviar a Validar'"
                 (confirmed)="sendToValidate()"
                 [variante]="'primary'"
@@ -239,7 +239,7 @@
               <app-boton-propio
                 appConfirm
                 [message]="'¿Quieres cancelar la validación de la factura?'"
-                [action]="'custom'"
+                [action]="'delete'"
                 [texto]="'Cancelar Validación'"
                 (confirmed)="sendToCancelValidate()"
                 [variante]="'danger'"
@@ -251,7 +251,7 @@
               <app-boton-propio
                 appConfirm
                 [message]="'¿Quieres aprobar la factura?'"
-                [action]="'custom'"
+                [action]="'save'"
                 [texto]="'Aprobar Factura'"
                 (confirmed)="sendToApprove()"
                 [variante]="'success'"

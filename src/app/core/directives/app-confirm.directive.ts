@@ -1,14 +1,13 @@
-import { Directive, HostListener, inject, input, output } from "@angular/core";
-import { ConfirmService } from "../services/confirm.service";
+import { Directive, HostListener, inject, input, output } from '@angular/core';
+import { ConfirmService } from '../services/confirm.service';
 
 export type ConfirmAction = 'delete' | 'save' | 'logout' | 'custom';
 
 @Directive({
   selector: '[appConfirm]',
-  standalone: true
+  standalone: true,
 })
 export class ConfirmDirective {
-
   private confirmService = inject(ConfirmService);
   action = input<ConfirmAction>('delete');
   message = input<string>();
@@ -18,7 +17,6 @@ export class ConfirmDirective {
 
   @HostListener('click')
   async onClick() {
-
     // Si está deshabilitado, emite directamente sin mostrar modal
     if (!this.enabled()) {
       this.confirmed.emit();
@@ -41,8 +39,7 @@ export class ConfirmDirective {
         ok = await this.confirmService.confirm({
           title: this.title() ?? 'Confirmar acción',
           message: this.message() ?? '¿Deseas continuar?',
-          icon: 'help',
-          color: 'primary'
+          type: 'info',
         });
         break;
     }
