@@ -1,4 +1,4 @@
-import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate, StatusTransitionPayload } from "../models/factura.model";
+import { Factura, FacturaCreate, FacturaSimple, FacturaUpdate, StatusTransitionPayload } from "../../features/facturas/factura.model";
 export function mapearAFacturaCreate(f: Factura): FacturaCreate {
   return {
     numeroFactura: f.numeroFactura,

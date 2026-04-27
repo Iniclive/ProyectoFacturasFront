@@ -1,5 +1,6 @@
+import { Factura } from '../../features/facturas/factura.model';
 import { InvoiceStatus, IvaItem } from '../models/catalogos.model';
-import { Factura } from '../models/factura.model';
+
 
 export const FACTURA_INICIAL: Factura = {
   // Identificadores (C# Int32 lo tratamos como string '0' por tu interfaz)

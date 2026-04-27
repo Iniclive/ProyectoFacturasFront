@@ -1,4 +1,4 @@
-import { Client } from "../models/client.models";
+import { Client } from "../../features/clients/client.models";
 
 export const DEFAULT_CLIENT: Client = {
   clientId: '',

@@ -70,7 +70,7 @@ export const routes: Routes = [
       {
         path: APP_PATHS.DASHBOARD,
         loadComponent: () =>
-          import('./pages/dashboard/dashboard.component').then(
+          import('./features/dashboard/dashboard.component/dashboard.component').then(
             (m) => m.DashboardComponent
           ),
       },
@@ -79,7 +79,7 @@ export const routes: Routes = [
         path: APP_PATHS.FACTURAS,
         loadComponent: () =>
           import(
-            './pages/facturas/listado-facturas/listado-facturas.component'
+            './features/facturas/listado-facturas/listado-facturas.component'
           ).then((m) => m.ListadoFacturasComponent),
       },
 
@@ -87,7 +87,7 @@ export const routes: Routes = [
         path: APP_PATHS.FACTURA_DETALLE,
         loadComponent: () =>
           import(
-            './pages/facturas/detalle-factura/detalle-factura.component'
+            './features/facturas/detalle-factura/detalle-factura.component'
           ).then((m) => m.DetalleFacturaComponent),
       },
 
@@ -95,7 +95,7 @@ export const routes: Routes = [
         path: APP_PATHS.USERS,
         loadComponent: () =>
           import(
-            './pages/users/users.component/users.component'
+            './features/users/users.component/users.component'
           ).then((m) => m.UsersComponent),
       },
 
@@ -103,7 +103,7 @@ export const routes: Routes = [
         path: APP_PATHS.CLIENTS,
         loadComponent: () =>
           import(
-            './pages/clients/client.component/client.component'
+            './features/clients/client.component/client.component'
           ).then((m) => m.ClientComponent),
       },
 
@@ -111,14 +111,14 @@ export const routes: Routes = [
         path: APP_PATHS.PRODUCTS,
         loadComponent: () =>
           import(
-            './pages/products-and-services/products-and-services'
+            './features/products-and-services/products-and-services'
           ).then((m) => m.ProductsAndServices),
       },
 
       {
         path: APP_PATHS.PROFILE,
         loadComponent: () =>
-          import('./pages/profile/profile.component').then(
+          import('./features/profile/profile.component').then(
             (m) => m.ProfileComponent
           ),
       },

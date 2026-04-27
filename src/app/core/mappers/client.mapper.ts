@@ -1,4 +1,4 @@
-import { Client, ClientCreate, ClientUpdate } from "../models/client.models";
+import { Client, ClientCreate, ClientUpdate } from "../../features/clients/client.models";
 
 export function mapToClientUpdate(c: Client): ClientUpdate {
   return {

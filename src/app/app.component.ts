@@ -8,10 +8,10 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
-import { Encabezado } from './shared/encabezado/encabezado';
-import { MenuLateral } from './shared/menu-lateral/menu-lateral';
+import { Encabezado } from './layout/encabezado/encabezado';
+import { MenuLateral } from './layout/menu-lateral/menu-lateral';
 import { LoadingComponent } from './shared/loading-component/loading-component';
-import { FooterComponent } from './shared/footer/footer.component';
+import { FooterComponent } from './layout/footer/footer.component';
 import { LoadingService } from './core/services/loading.service';
 import { AuthService } from './core/services/auth.service';
 

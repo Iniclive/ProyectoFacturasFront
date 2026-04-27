@@ -11,11 +11,10 @@ import { registerLocaleData } from '@angular/common';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { credentialsInterceptor } from './interceptors/credentials.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { firstValueFrom } from 'rxjs';
-import { authErrorInterceptor } from './interceptors/authErrorInterceptor ';
-import { concurrencyErrorInterceptor } from './interceptors/concurrecyError.interceptor';
+import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
+import { authErrorInterceptor } from './core/interceptors/authErrorInterceptor ';
 registerLocaleData(localeEs);
 export const appConfig: ApplicationConfig = {
   providers: [

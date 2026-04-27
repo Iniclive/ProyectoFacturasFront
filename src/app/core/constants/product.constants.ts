@@ -1,4 +1,4 @@
-import { Product } from "../models/product.models";
+import { Product } from "../../features/products-and-services/product.models";
 
 
 export const DEFAULT_PRODUCT: Product = {

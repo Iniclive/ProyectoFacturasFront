@@ -1,4 +1,4 @@
-import { LineaFactura, LineaFacturaCreate, LineaFacturaUpdate, LineaSimple } from '../models/linea-factura.model';
+import { LineaFactura, LineaFacturaCreate, LineaFacturaUpdate, LineaSimple } from '../../features/lineas-factura/linea-factura.model';
 
 
 export function mapearALineaSimple(l: LineaFactura): LineaSimple {

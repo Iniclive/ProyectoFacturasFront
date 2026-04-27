@@ -1,4 +1,4 @@
-import { LineaFactura } from "../models/linea-factura.model";
+import { LineaFactura } from "../../features/lineas-factura/linea-factura.model";
 
 export const LINEA_INICIAL: LineaFactura = {
   // Identificadores
